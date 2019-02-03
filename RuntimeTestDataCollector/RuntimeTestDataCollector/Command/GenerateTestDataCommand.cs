@@ -1,10 +1,11 @@
 ﻿using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using RuntimeTestDataCollector.CodeGeneration;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.ComponentModel.Design;
-using EnvDTE80;
-using RuntimeTestDataCollector.CodeGeneration;
+using RuntimeTestDataCollector.CodeGeneration.Factory;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command
@@ -91,22 +92,23 @@ namespace RuntimeTestDataCollector.Command
 
             if (_stackDataDumpControl != null)
             {
-                var codeGeneratorManager = new CodeGeneratorManager();
-                _stackDataDumpControl.StackDumpText.Text = codeGeneratorManager.GenerateStackDump(_dte);
+                var currentExpressionData = new DebuggerStackFrameAnalyzer().AnalyzeCurrentStack(_dte);
+
+                var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
+                _stackDataDumpControl.StackDumpText.Text = codeGeneratorManager.GenerateStackDump(currentExpressionData);
+                return;
             }
-            else
+
+            package.JoinableTaskFactory.RunAsync(async () =>
             {
-                package.JoinableTaskFactory.RunAsync(async () =>
-                {
-                    ToolWindowPane window = await package.ShowToolWindowAsync(
-                        typeof(StackDataDump),
-                        0,
-                        create: true,
-                        cancellationToken: package.DisposalToken);
-                    var stackDataDump = window as StackDataDump;
-                    _stackDataDumpControl = stackDataDump.Content as StackDataDumpControl;
-                });
-            }
+                ToolWindowPane window = await package.ShowToolWindowAsync(
+                    typeof(StackDataDump),
+                    0,
+                    create: true,
+                    cancellationToken: package.DisposalToken);
+                var stackDataDump = window as StackDataDump;
+                _stackDataDumpControl = stackDataDump.Content as StackDataDumpControl;
+            });
         }
     }
 }

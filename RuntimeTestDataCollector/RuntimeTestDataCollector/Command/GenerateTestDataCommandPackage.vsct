@@ -72,7 +72,7 @@
         <CommandFlag>DynamicVisibility</CommandFlag>-->
         <Strings>
           <CommandName>GenerateTestDataCommandId</CommandName>
-          <ButtonText>Invoke GenerateTestDataCommand</ButtonText>
+          <ButtonText>Dump current stack</ButtonText>
         </Strings>
       </Button>
     </Buttons>

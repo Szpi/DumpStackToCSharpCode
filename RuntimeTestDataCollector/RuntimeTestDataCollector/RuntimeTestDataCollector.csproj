@@ -56,6 +56,11 @@
   <ItemGroup>
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
     <Compile Include="CodeGeneration\CodeGeneratorManager.cs" />
+    <Compile Include="CodeGeneration\DebuggerStackFrameAnalyzer.cs" />
+    <Compile Include="CodeGeneration\ExpressionData.cs" />
+    <Compile Include="CodeGeneration\ExpressionSyntaxGenerator.cs" />
+    <Compile Include="CodeGeneration\Factory\CodeGeneratorManagerFactory.cs" />
+    <Compile Include="CodeGeneration\TypeAnalyzer.cs" />
     <Compile Include="Command\GenerateTestDataCommand.cs" />
     <Compile Include="Command\GenerateTestDataCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

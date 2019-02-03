@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using RuntimeTestDataCollector.CodeGeneration;
+using RuntimeTestDataCollector.CodeGeneration.Factory;
 using RuntimeTestDataCollector.Window;
 using Task = System.Threading.Tasks.Task;
 
@@ -92,10 +93,11 @@ namespace RuntimeTestDataCollector.Command
             // Perform as much work as possible in this method which is being run on a background thread.
             // The object returned from this method is passed into the constructor of the SampleToolWindow 
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-
-            var codeGeneratorManager = new CodeGeneratorManager();
             
-            return codeGeneratorManager.GenerateStackDump(dte);
+            var currentExpressionData = new DebuggerStackFrameAnalyzer().AnalyzeCurrentStack(dte);
+
+            var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
+            return codeGeneratorManager.GenerateStackDump(currentExpressionData);
         }
         #endregion
     }
