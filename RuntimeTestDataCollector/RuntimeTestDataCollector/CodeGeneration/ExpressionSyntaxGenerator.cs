@@ -105,8 +105,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
                                        Token(
                                            TriviaList(),
                                            SyntaxKind.CloseParenToken,
-                                           TriviaList(
-                                               LineFeed))));
+                                           TriviaList())));
             }
         }
 
