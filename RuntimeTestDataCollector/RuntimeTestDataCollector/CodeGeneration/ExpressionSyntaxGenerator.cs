@@ -47,6 +47,10 @@ namespace RuntimeTestDataCollector.CodeGeneration
         {
             switch (expressionData.Type)
             {
+                case "short":
+                case "ushort":
+                case "byte":
+                case "sbyte":
                 case "int":
                     {
                         return LiteralExpression(
@@ -71,6 +75,24 @@ namespace RuntimeTestDataCollector.CodeGeneration
                             SyntaxKind.NumericLiteralExpression,
                             Literal(decimal.Parse(expressionData.Value)));
                     }
+                case "uint":
+                    {
+                        return LiteralExpression(
+                            SyntaxKind.NumericLiteralExpression,
+                            Literal(uint.Parse(expressionData.Value)));
+                    }
+                case "long":
+                    {
+                        return LiteralExpression(
+                            SyntaxKind.NumericLiteralExpression,
+                            Literal(long.Parse(expressionData.Value)));
+                    }
+                case "ulong":
+                    {
+                        return LiteralExpression(
+                            SyntaxKind.NumericLiteralExpression,
+                            Literal(ulong.Parse(expressionData.Value)));
+                    }
                 case "char":
                     {
                         return LiteralExpression(
@@ -86,7 +108,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
 
                         return LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            Literal(expressionData.Value.Replace("\"",string.Empty)));
+                            Literal(expressionData.Value.Replace("\"", string.Empty)));
                     }
                 case "bool":
                     return LiteralExpression(expressionData.Value == TrueValue ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
