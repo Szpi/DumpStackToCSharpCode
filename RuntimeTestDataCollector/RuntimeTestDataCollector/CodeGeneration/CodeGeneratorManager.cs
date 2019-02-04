@@ -1,8 +1,6 @@
-﻿using EnvDTE;
-using EnvDTE80;
-using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
 
 namespace RuntimeTestDataCollector.CodeGeneration
 {
@@ -23,8 +21,15 @@ namespace RuntimeTestDataCollector.CodeGeneration
 
             foreach (var expression in expressionsData)
             {
+                if (_typeAnalyzer.IsPrimitiveType(expression.Type))
+                {
+                    var generatedPrimitiveExpression = _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression);
+                    codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedPrimitiveExpression);
+                    continue;
+                }
+
                 var generatedExpressionsData = IterateThroughUnderlyingExpressionsData(expression.UnderlyingExpressionData);
-                codeGenerator.AddOneExpression(expression.Type, generatedExpressionsData);
+                codeGenerator.AddOneExpression(expression.Type, expression.Name, generatedExpressionsData);
             }
 
             return codeGenerator.GetStringDump();
@@ -52,7 +57,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
                 return _expressionSyntaxGenerator.GenerateAssignmentExpressionForPrimitiveType(expression);
             }
 
-            var expressionsSyntax =  new SeparatedSyntaxList<ExpressionSyntax>();
+            var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
             {
                 var deepestExpression = IterateThroughExpressionsData(underlyingExpressionData, expression.Type);

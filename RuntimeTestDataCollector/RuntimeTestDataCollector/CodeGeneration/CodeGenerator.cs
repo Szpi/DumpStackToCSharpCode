@@ -13,7 +13,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
             _compilationUnitSyntax = CompilationUnit();
         }
 
-        public void AddOneExpression(string type, SeparatedSyntaxList<ExpressionSyntax> expressions)
+        public void AddOneExpression(string type, string name, SeparatedSyntaxList<ExpressionSyntax> expressions)
         {
             _compilationUnitSyntax = _compilationUnitSyntax.AddMembers(FieldDeclaration(
                                        VariableDeclaration(
@@ -22,9 +22,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
                                                SingletonSeparatedList<
                                                    VariableDeclaratorSyntax>(
                                                    VariableDeclarator(
-                                                           Identifier(
-                                                               FirstToLowerWithoutComma(
-                                                                   type)))
+                                                           Identifier(name))
                                                        .WithInitializer(
                                                            EqualsValueClause(
                                                                ObjectCreationExpression(
@@ -49,17 +47,45 @@ namespace RuntimeTestDataCollector.CodeGeneration
                                                                                    TriviaList(
                                                                                        LineFeed))));
         }
+
+        public void AddOnePrimitiveExpression(string name, ExpressionSyntax expression)
+        {
+            _compilationUnitSyntax = _compilationUnitSyntax.AddMembers(FieldDeclaration(
+                                                   VariableDeclaration(
+                                                           IdentifierName(
+                                                               Identifier(
+                                                                   TriviaList(),
+                                                                   "var",
+                                                                   TriviaList(
+                                                                       Space))))
+                                                       .WithVariables(
+                                                           SingletonSeparatedList<VariableDeclaratorSyntax>(
+                                                               VariableDeclarator(
+                                                                       Identifier(
+                                                                           TriviaList(),
+                                                                           name,
+                                                                           TriviaList(
+                                                                               Space)))
+                                                                   .WithInitializer(
+                                                                       EqualsValueClause(expression)
+                                                                           .WithEqualsToken(
+                                                                               Token(
+                                                                                   TriviaList(),
+                                                                                   SyntaxKind.EqualsToken,
+                                                                                   TriviaList(
+                                                                                       Space)))))))
+                                                                           .WithSemicolonToken(
+                                                                               Token(
+                                                                                   TriviaList(),
+                                                                                   SyntaxKind.SemicolonToken,
+                                                                                   TriviaList(
+                                                                                       LineFeed))));
+        }
         public string GetStringDump()
         {
             var workspace = new AdhocWorkspace();
             var formattedSyntax = Microsoft.CodeAnalysis.Formatting.Formatter.Format(_compilationUnitSyntax, workspace);
             return formattedSyntax.ToFullString();
         }
-      
-        private string FirstToLowerWithoutComma(string @string)
-        {
-            return @string[0].ToString().ToLower() + @string.Replace(".", string.Empty).Substring(1);
-        }
     }
-
 }
