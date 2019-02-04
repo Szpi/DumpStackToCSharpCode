@@ -17,7 +17,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
 
         public string GenerateStackDump(IReadOnlyList<ExpressionData> expressionsData)
         {
-            var codeGenerator = new CodeGenerator();
+            var codeGenerator = new CodeGenerator(_typeAnalyzer);
 
             foreach (var expression in expressionsData)
             {
@@ -28,19 +28,19 @@ namespace RuntimeTestDataCollector.CodeGeneration
                     continue;
                 }
 
-                var generatedExpressionsData = IterateThroughUnderlyingExpressionsData(expression.UnderlyingExpressionData);
-                codeGenerator.AddOneExpression(expression.Type, expression.Name, generatedExpressionsData);
+                var generatedExpressionsData = IterateThroughUnderlyingExpressionsData(expression.UnderlyingExpressionData, expression.Type);
+                codeGenerator.AddOneExpression(_expressionSyntaxGenerator.GetConcreteType(expression.Type), expression.Name, generatedExpressionsData);
             }
 
             return codeGenerator.GetStringDump();
         }
 
-        private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData)
+        private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData, string parentType)
         {
             var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var expressionData in expressionsData)
             {
-                expressionsSyntax = expressionsSyntax.Add(IterateThroughExpressionsData(expressionData, string.Empty));
+                expressionsSyntax = expressionsSyntax.Add(IterateThroughExpressionsData(expressionData, parentType));
             }
 
             return expressionsSyntax;
@@ -50,10 +50,11 @@ namespace RuntimeTestDataCollector.CodeGeneration
         {
             if (expression.UnderlyingExpressionData.Count == 0)
             {
-                if (_typeAnalyzer.IsCollection(parentType))
+                if (_typeAnalyzer.IsCollection(parentType) || _typeAnalyzer.IsArray(parentType))
                 {
                     return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression);
                 }
+
                 return _expressionSyntaxGenerator.GenerateAssignmentExpressionForPrimitiveType(expression);
             }
 

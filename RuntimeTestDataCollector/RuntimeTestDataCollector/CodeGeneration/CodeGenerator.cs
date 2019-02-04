@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -8,13 +9,28 @@ namespace RuntimeTestDataCollector.CodeGeneration
     public class CodeGenerator
     {
         private CompilationUnitSyntax _compilationUnitSyntax;
-        public CodeGenerator()
+        private TypeAnalyzer _typeAnalyzer;
+        public CodeGenerator(TypeAnalyzer typeAnalyzer)
         {
+            _typeAnalyzer = typeAnalyzer;
             _compilationUnitSyntax = CompilationUnit();
         }
 
         public void AddOneExpression(string type, string name, SeparatedSyntaxList<ExpressionSyntax> expressions)
         {
+           ArgumentListSyntax argumentList = null;
+      
+            if (!_typeAnalyzer.IsArray(type))
+            {
+                argumentList =
+                    ArgumentList().WithCloseParenToken(
+                        Token(
+                            TriviaList(),
+                            SyntaxKind.CloseParenToken,
+                            TriviaList(
+                                LineFeed)));
+            }
+
             _compilationUnitSyntax = _compilationUnitSyntax.AddMembers(FieldDeclaration(
                                        VariableDeclaration(
                                                IdentifierName("var"))
@@ -28,13 +44,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
                                                                ObjectCreationExpression(
                                                                        IdentifierName(
                                                                            type))
-                                                                   .WithArgumentList(
-                                                                       ArgumentList().WithCloseParenToken(
-                                                                           Token(
-                                                                               TriviaList(),
-                                                                               SyntaxKind.CloseParenToken,
-                                                                               TriviaList(
-                                                                                   LineFeed))))
+                                                                   .WithArgumentList(argumentList)
                                                                    .WithInitializer(
                                                                        InitializerExpression(
                                                                            SyntaxKind
