@@ -60,6 +60,7 @@ namespace RuntimeTestDataCollector.Command
         /// Gets the service provider from the owner package.
         /// </summary>
         private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => this.package;
+        private StackDataDumpControl _stackDataDumpControl;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -83,7 +84,6 @@ namespace RuntimeTestDataCollector.Command
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private StackDataDumpControl _stackDataDumpControl;
 
 
         private void Execute(object sender, EventArgs e)
@@ -107,7 +107,7 @@ namespace RuntimeTestDataCollector.Command
                     create: true,
                     cancellationToken: package.DisposalToken);
                 var stackDataDump = window as StackDataDump;
-                _stackDataDumpControl = stackDataDump.Content as StackDataDumpControl;
+                _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
             });
         }
     }

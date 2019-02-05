@@ -19,12 +19,13 @@
     public class StackDataDump : ToolWindowPane
     {
         public const string WindowGuidString = "a89bfe9d-7c36-4e87-89be-9e4ca047a865"; // Replace with new GUID in your own code
+        public const string Title = "StackDataDump"; // Replace with new GUID in your own code
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDump"/> class.
         /// </summary>
         public StackDataDump(string stackDataDumpText) : base(null)
         {
-            this.Caption = "StackDataDump";
+            this.Caption = Title;
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on

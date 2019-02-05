@@ -26,6 +26,7 @@
 
   <Extern href="vsdebugguids.h" />
   <Extern href="vsdbgcmd.h" />
+
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidGenerateTestDataCommandPackage">
@@ -42,8 +43,11 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
     <Groups>
-      <Group guid="guidGenerateTestDataCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      <Group guid="guidGenerateTestDataCommandPackageCmdSet" id="MyMenuGroup" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+      </Group> 
+      <Group guid="guidGenerateTestDataCommandPackageCmdSet" id="MyMenuGroup" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS"/>
       </Group>
       <Group guid="guidGenerateTestDataCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidVSDebugGroup" id="IDM_AUTOS_CONTEXT"/>

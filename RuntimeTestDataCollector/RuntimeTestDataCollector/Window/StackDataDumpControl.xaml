@@ -12,7 +12,7 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <TextBlock Margin="10" HorizontalAlignment="Center">StackDataDump</TextBlock>
-            <Button Content="Copy to clipboard" Click="button1_Click" Width="120" Height="80" Name="button1"
+            <Button Content="Copy to clipboard" Click="CopyToClipBoard_Click" Width="120" Height="80" Name="button1"
                     Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                     FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                     Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>

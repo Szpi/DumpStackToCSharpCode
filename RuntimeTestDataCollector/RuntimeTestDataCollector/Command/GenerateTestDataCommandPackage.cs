@@ -1,20 +1,13 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
-using EnvDTE;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
 using RuntimeTestDataCollector.CodeGeneration;
 using RuntimeTestDataCollector.CodeGeneration.Factory;
 using RuntimeTestDataCollector.Window;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command
@@ -85,7 +78,7 @@ namespace RuntimeTestDataCollector.Command
 
         protected override string GetToolWindowTitle(Type toolWindowType, int id)
         {
-            return toolWindowType == typeof(StackDataDump) ? "test" : base.GetToolWindowTitle(toolWindowType, id);
+            return toolWindowType == typeof(StackDataDump) ? StackDataDump.Title : base.GetToolWindowTitle(toolWindowType, id);
         }
 
         protected override async Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
@@ -93,7 +86,7 @@ namespace RuntimeTestDataCollector.Command
             // Perform as much work as possible in this method which is being run on a background thread.
             // The object returned from this method is passed into the constructor of the SampleToolWindow 
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-            
+
             var currentExpressionData = new DebuggerStackFrameAnalyzer().AnalyzeCurrentStack(dte);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();

@@ -26,10 +26,11 @@
         /// <param name="e">The event args.</param>
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void CopyToClipBoard_Click(object sender, RoutedEventArgs e)
         {
+            StackDumpText.SelectionStart = 0;
+            StackDumpText.SelectionLength = StackDumpText.Text.Length;
             Clipboard.SetText(StackDumpText.Text);
-            StackDumpText.SelectAll();
         }
     }
 }
