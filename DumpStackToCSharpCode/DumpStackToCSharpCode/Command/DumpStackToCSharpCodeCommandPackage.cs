@@ -32,21 +32,21 @@ namespace RuntimeTestDataCollector.Command
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [Guid(GenerateTestDataCommandPackage.PackageGuidString)]
+    [Guid(DumpStackToCSharpCodeCommandPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(StackDataDump), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left)]
 
-    public sealed class GenerateTestDataCommandPackage : AsyncPackage
+    public sealed class DumpStackToCSharpCodeCommandPackage : AsyncPackage
     {
         /// <summary>
-        /// GenerateTestDataCommandPackage GUID string.
+        /// DumpStackToCSharpCodeCommandPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "36d95c06-eb80-476f-b124-8bd72ecca9ad";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenerateTestDataCommandPackage"/> class.
+        /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommandPackage"/> class.
         /// </summary>
-        public GenerateTestDataCommandPackage()
+        public DumpStackToCSharpCodeCommandPackage()
         {
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
@@ -69,7 +69,7 @@ namespace RuntimeTestDataCollector.Command
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await GenerateTestDataCommand.InitializeAsync(this);
+            await DumpStackToCSharpCodeCommand.InitializeAsync(this);
         }
         public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
         {

@@ -9,6 +9,11 @@ namespace RuntimeTestDataCollector.CodeGeneration
         public IReadOnlyList<ExpressionData> AnalyzeCurrentStack(DTE2 dte)
         {
             var currentStackExpressionsData = new List<ExpressionData>();
+            if (dte?.Debugger == null || dte.Debugger.CurrentStackFrame == null)
+            {
+                return currentStackExpressionsData;
+            }
+
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
             {
                 var expressionData = IterateThroughExpressionsData(expression);

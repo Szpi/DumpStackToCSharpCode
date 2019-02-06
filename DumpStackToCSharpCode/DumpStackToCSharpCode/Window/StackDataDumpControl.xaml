@@ -17,7 +17,8 @@
                     FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                     Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
 
-            <TextBox TextWrapping="Wrap" Text="TextBox" Margin="0,10,0,0" Name="StackDumpText"
+            <TextBox TextWrapping="Wrap" Text="TextBox" Margin="0,10,0,0" Name="StackDumpText" 
+                     HorizontalContentAlignment="Stretch"
                      Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                      FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                      Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />

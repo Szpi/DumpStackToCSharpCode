@@ -13,7 +13,7 @@ namespace RuntimeTestDataCollector.Command
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class GenerateTestDataCommand
+    internal sealed class DumpStackToCSharpCodeCommand
     {
         /// <summary>
         /// Command ID.
@@ -32,12 +32,12 @@ namespace RuntimeTestDataCollector.Command
 
         private static DTE2 _dte;
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenerateTestDataCommand"/> class.
+        /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private GenerateTestDataCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private DumpStackToCSharpCodeCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -50,7 +50,7 @@ namespace RuntimeTestDataCollector.Command
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static GenerateTestDataCommand Instance
+        public static DumpStackToCSharpCodeCommand Instance
         {
             get;
             private set;
@@ -68,13 +68,13 @@ namespace RuntimeTestDataCollector.Command
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in GenerateTestDataCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in DumpStackToCSharpCodeCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
             _dte = await package.GetServiceAsync(typeof(DTE)) as DTE2;
 
             OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-            Instance = new GenerateTestDataCommand(package, commandService);
+            Instance = new DumpStackToCSharpCodeCommand(package, commandService);
         }
 
         /// <summary>
