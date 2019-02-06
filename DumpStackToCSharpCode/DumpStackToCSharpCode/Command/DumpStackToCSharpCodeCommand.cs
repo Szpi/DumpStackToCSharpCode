@@ -90,25 +90,33 @@ namespace RuntimeTestDataCollector.Command
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (_stackDataDumpControl != null)
+            if (DumpStackToCSharpCode())
             {
-                var currentExpressionData = new DebuggerStackFrameAnalyzer().AnalyzeCurrentStack(_dte);
-
-                var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
-                _stackDataDumpControl.StackDumpText.Text = codeGeneratorManager.GenerateStackDump(currentExpressionData);
                 return;
             }
 
             package.JoinableTaskFactory.RunAsync(async () =>
             {
-                ToolWindowPane window = await package.ShowToolWindowAsync(
-                    typeof(StackDataDump),
-                    0,
-                    create: true,
-                    cancellationToken: package.DisposalToken);
+                var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
                 var stackDataDump = window as StackDataDump;
                 _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
+                DumpStackToCSharpCode();
             });
+        }
+
+        private bool DumpStackToCSharpCode()
+        {
+            if (_stackDataDumpControl == null)
+            {
+                return false;
+            }
+
+            var currentExpressionData = new DebuggerStackFrameAnalyzer(int.Parse(_stackDataDumpControl.MaxDepth.Text)).AnalyzeCurrentStack(_dte);
+
+            var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
+            _stackDataDumpControl.StackDumpText.Text = codeGeneratorManager.GenerateStackDump(currentExpressionData);
+
+            return true;
         }
     }
 }

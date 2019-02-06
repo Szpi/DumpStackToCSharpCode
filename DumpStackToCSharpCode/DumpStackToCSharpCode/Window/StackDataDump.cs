@@ -20,6 +20,7 @@
     {
         public const string WindowGuidString = "a89bfe9d-7c36-4e87-89be-9e4ca047a865"; // Replace with new GUID in your own code
         public const string Title = "StackDataDump"; // Replace with new GUID in your own code
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDump"/> class.
         /// </summary>
