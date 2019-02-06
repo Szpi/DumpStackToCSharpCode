@@ -23,9 +23,8 @@ namespace RuntimeTestDataCollector.CodeGeneration
 
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
             {
-                var currentDepth = 0;
-                var result = IterateThroughExpressionsData(expression, ref currentDepth);
-                if (!result.Success)
+                var result = IterateThroughExpressionsData(expression, 0);
+                if (result.currentDepth >= _maxObjectDepth)
                 {
                     continue;
                 }
@@ -36,17 +35,17 @@ namespace RuntimeTestDataCollector.CodeGeneration
             return currentStackExpressionsData;
         }
 
-        private (ExpressionData ExpressionData, bool Success) IterateThroughExpressionsData(Expression expression, ref int depth)
+        private (ExpressionData ExpressionData, int currentDepth) IterateThroughExpressionsData(Expression expression, int depth)
         {
             if (expression == null || depth == _maxObjectDepth)
             {
-                return (null, false);
+                return (null, depth);
             }
 
             depth++;
             if (expression.DataMembers.Count == 0)
             {
-                return (GetExpressionData(expression), true);
+                return (GetExpressionData(expression), depth);
             }
 
             var expressionsData = new List<ExpressionData>();
@@ -57,16 +56,26 @@ namespace RuntimeTestDataCollector.CodeGeneration
                     continue;
                 }
 
-                var deepestResult = IterateThroughExpressionsData(dataMember, ref depth);
-                if (!deepestResult.Success)
+                if (IsDictionaryDuplicatedValue(dataMember.Name))
                 {
                     continue;
+                }
+
+                var deepestResult = IterateThroughExpressionsData(dataMember, depth);
+                if (deepestResult.currentDepth >= _maxObjectDepth)
+                {
+                    break;
                 }
 
                 expressionsData.Add(deepestResult.ExpressionData);
             }
 
-            return (new ExpressionData(expression.Type, expression.Value, expression.Name, expressionsData), true);
+            return (new ExpressionData(expression.Type, expression.Value, expression.Name, expressionsData), depth);
+        }
+
+        private bool IsDictionaryDuplicatedValue(string dataMemberType)
+        {
+            return dataMemberType == "type" || dataMemberType == "value";
         }
 
         private ExpressionData GetExpressionData(Expression expression)

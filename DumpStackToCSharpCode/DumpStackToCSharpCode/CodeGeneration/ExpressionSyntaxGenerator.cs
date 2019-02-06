@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -26,7 +27,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
                             Tab),
                         expressionData.Name,
                         TriviaList(
-                            Space))), GenerateSyntaxForPrimitiveExpression(expressionData));
+                            Space))), GenerateSyntaxForPrimitiveExpression(expressionData.Type, expressionData.Value));
         }
 
         public ExpressionSyntax GenerateAssignmentExpressionForComplexExpressionSyntax(ExpressionData expressionData, SeparatedSyntaxList<ExpressionSyntax> expressionsSyntax)
@@ -42,14 +43,14 @@ namespace RuntimeTestDataCollector.CodeGeneration
                             Space))), GenerateSyntaxForComplexExpression(expressionData, expressionsSyntax));
         }
 
-        public ExpressionSyntax GenerateSyntaxForPrimitiveExpression(ExpressionData expressionData)
+        public ExpressionSyntax GenerateSyntaxForPrimitiveExpression(string type, string value)
         {
-            if (expressionData.Value == NullValue)
+            if (value == NullValue)
             {
                 return LiteralExpression(SyntaxKind.NullLiteralExpression);
             }
 
-            switch (expressionData.Type)
+            switch (type)
             {
                 case "short":
                 case "ushort":
@@ -59,67 +60,67 @@ namespace RuntimeTestDataCollector.CodeGeneration
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(int.Parse(expressionData.Value)));
+                            Literal(int.Parse(value)));
                     }
                 case "float":
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(float.Parse(expressionData.Value)));
+                            Literal(float.Parse(value)));
                     }
                 case "double":
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(double.Parse(expressionData.Value)));
+                            Literal(double.Parse(value)));
                     }
                 case "decimal":
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(decimal.Parse(expressionData.Value)));
+                            Literal(decimal.Parse(value)));
                     }
                 case "uint":
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(uint.Parse(expressionData.Value)));
+                            Literal(uint.Parse(value)));
                     }
                 case "long":
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(long.Parse(expressionData.Value)));
+                            Literal(long.Parse(value)));
                     }
                 case "ulong":
                     {
                         return LiteralExpression(
                             SyntaxKind.NumericLiteralExpression,
-                            Literal(ulong.Parse(expressionData.Value)));
+                            Literal(ulong.Parse(value)));
                     }
                 case "char":
                     {
                         return LiteralExpression(
                             SyntaxKind.CharacterLiteralExpression,
-                            Literal(expressionData.Value));
+                            Literal(value));
                     }
                 case "string":
                     {
-                        if (expressionData.Value == NullValue)
+                        if (value == NullValue)
                         {
                             return LiteralExpression(SyntaxKind.NullLiteralExpression);
                         }
 
                         return LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            Literal(expressionData.Value.Replace("\"", string.Empty)));
+                            Literal(value.Replace("\"", string.Empty)));
                     }
                 case "bool":
-                    return LiteralExpression(expressionData.Value == TrueValue ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
+                    return LiteralExpression(value == TrueValue ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
 
                 default:
                     return ObjectCreationExpression(
-                               IdentifierName(GetConcreteType(expressionData.Type)))
+                               IdentifierName(ParseConcreteType(type)))
                            .WithNewKeyword(
                                Token(
                                    TriviaList(),
@@ -149,7 +150,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
         private ExpressionSyntax GenerateCreationExpressionForArray(ExpressionData expressionData, SeparatedSyntaxList<ExpressionSyntax> expressionsSyntax)
         {
             return ObjectCreationExpression(
-                       IdentifierName(GetConcreteType(expressionData.Type)))
+                       IdentifierName(ParseConcreteType(expressionData.Type)))
                    .WithNewKeyword(
                        Token(
                            TriviaList(),
@@ -169,7 +170,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
             }
 
             return ObjectCreationExpression(
-                       IdentifierName(GetConcreteType(expressionData.Type)))
+                       IdentifierName(ParseConcreteType(expressionData.Type)))
                    .WithNewKeyword(
                        Token(
                            TriviaList(),
@@ -187,7 +188,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
                            SyntaxKind.ObjectInitializerExpression, expressionsSyntax));
         }
 
-        public string GetConcreteType(string type)
+        public string ParseConcreteType(string type)
         {
             if (IsTypeInterface(type))
             {
@@ -199,6 +200,40 @@ namespace RuntimeTestDataCollector.CodeGeneration
             return type;
         }
 
+        public AssignmentExpressionSyntax GenerateAssignmentForDictionary(ExpressionData expression)
+        {
+            var dictionaryKey = expression.UnderlyingExpressionData.First(x => x.Name == "Key");
+            var dictionaryValue = expression.UnderlyingExpressionData.First(x => x.Name == "Value");
+
+            var keyValueExpression = GenerateSyntaxForPrimitiveExpression(dictionaryKey.Type, dictionaryKey.Value);
+            var valueValueExpression = GenerateSyntaxForPrimitiveExpression(dictionaryValue.Type, dictionaryValue.Value);
+
+            return AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+                                                ImplicitElementAccess()
+                                                .WithArgumentList(
+                                                    BracketedArgumentList(
+                                                        SingletonSeparatedList<ArgumentSyntax>(
+                                                            Argument(
+                                                                keyValueExpression)))
+                                                    .WithOpenBracketToken(
+                                                        Token(
+                                                            TriviaList(Tab),
+                                                            SyntaxKind.OpenBracketToken,
+                                                            TriviaList()))
+                                                    .WithCloseBracketToken(
+                                                        Token(
+                                                            TriviaList(),
+                                                            SyntaxKind.CloseBracketToken,
+                                                            TriviaList(
+                                                                Space)))),
+                                                valueValueExpression)
+                                            .WithOperatorToken(
+                                                Token(
+                                                    TriviaList(),
+                                                    SyntaxKind.EqualsToken,
+                                                    TriviaList(
+                                                        Space)));
+        }
         private static bool IsTypeInterface(string type)
         {
             return type[type.Length - 1] == '}';

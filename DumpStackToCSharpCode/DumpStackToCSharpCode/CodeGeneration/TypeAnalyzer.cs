@@ -7,6 +7,11 @@
             return type.StartsWith("System.Collections.Generic");
         }
 
+        public bool IsDictionaryKeyValuePair(string type)
+        {
+            return type.StartsWith("System.Collections.Generic.KeyValuePair");
+        }
+
         public bool IsArray(string type)
         {
             return type.Length > 2 && type[type.Length - 1] == ']' && type[type.Length - 2] == '[';

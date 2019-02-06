@@ -23,13 +23,13 @@ namespace RuntimeTestDataCollector.CodeGeneration
             {
                 if (_typeAnalyzer.IsPrimitiveType(expression.Type))
                 {
-                    var generatedPrimitiveExpression = _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression);
+                    var generatedPrimitiveExpression = _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
                     codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedPrimitiveExpression);
                     continue;
                 }
 
                 var generatedExpressionsData = IterateThroughUnderlyingExpressionsData(expression.UnderlyingExpressionData, expression.Type);
-                codeGenerator.AddOneExpression(_expressionSyntaxGenerator.GetConcreteType(expression.Type), expression.Name, generatedExpressionsData);
+                codeGenerator.AddOneExpression(_expressionSyntaxGenerator.ParseConcreteType(expression.Type), expression.Name, generatedExpressionsData);
             }
 
             return codeGenerator.GetStringDump();
@@ -48,11 +48,16 @@ namespace RuntimeTestDataCollector.CodeGeneration
 
         private ExpressionSyntax IterateThroughExpressionsData(ExpressionData expression, string parentType)
         {
+            if (_typeAnalyzer.IsDictionaryKeyValuePair(expression.Type))
+            {
+                return _expressionSyntaxGenerator.GenerateAssignmentForDictionary(expression);
+            }
+
             if (expression.UnderlyingExpressionData.Count == 0)
             {
                 if (_typeAnalyzer.IsCollection(parentType) || _typeAnalyzer.IsArray(parentType))
                 {
-                    return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression);
+                    return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
                 }
 
                 return _expressionSyntaxGenerator.GenerateAssignmentExpressionForPrimitiveType(expression);

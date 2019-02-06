@@ -52,6 +52,11 @@ namespace RuntimeTestDataCollector.Command
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
+            var test = new System.Collections.Generic.Dictionary<int, string>()
+            {
+                [10] = "test",
+                [11] = "test",
+            };
         }
 
         #region Package Members
