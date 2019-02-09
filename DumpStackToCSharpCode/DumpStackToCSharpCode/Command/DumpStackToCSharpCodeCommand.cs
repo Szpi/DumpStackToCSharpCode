@@ -1,11 +1,11 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
-using RuntimeTestDataCollector.CodeGeneration;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.ComponentModel.Design;
-using RuntimeTestDataCollector.CodeGeneration.Factory;
+using ObjectInitializationGeneration.CodeGeneration.Factory;
+using RuntimeTestDataCollector.FrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command

@@ -1,4 +1,4 @@
-﻿namespace RuntimeTestDataCollector.CodeGeneration
+﻿namespace ObjectInitializationGeneration.Type
 {
     public class TypeAnalyzer
     {

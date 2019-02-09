@@ -1,4 +1,6 @@
-﻿namespace RuntimeTestDataCollector.CodeGeneration.Factory
+﻿using ObjectInitializationGeneration.Type;
+
+namespace ObjectInitializationGeneration.CodeGeneration.Factory
 {
     public class CodeGeneratorManagerFactory
     {

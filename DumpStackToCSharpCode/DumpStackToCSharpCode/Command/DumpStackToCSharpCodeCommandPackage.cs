@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using RuntimeTestDataCollector.CodeGeneration;
-using RuntimeTestDataCollector.CodeGeneration.Factory;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using ObjectInitializationGeneration.CodeGeneration.Factory;
+using RuntimeTestDataCollector.FrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command

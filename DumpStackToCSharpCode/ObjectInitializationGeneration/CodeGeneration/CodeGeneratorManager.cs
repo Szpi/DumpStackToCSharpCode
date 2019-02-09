@@ -1,8 +1,10 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
+using ObjectInitializationGeneration.Type;
 
-namespace RuntimeTestDataCollector.CodeGeneration
+namespace ObjectInitializationGeneration.CodeGeneration
 {
     public class CodeGeneratorManager
     {
@@ -50,7 +52,12 @@ namespace RuntimeTestDataCollector.CodeGeneration
         {
             if (_typeAnalyzer.IsDictionaryKeyValuePair(expression.Type))
             {
-                return _expressionSyntaxGenerator.GenerateAssignmentForDictionary(expression);
+                var dictionaryKey = expression.UnderlyingExpressionData.First(x => x.Name == "Key");
+                var dictionaryValue = expression.UnderlyingExpressionData.First(x => x.Name == "Value");
+
+                var keyExpressionSyntax = GenerateExpressionForUnderlyingExpressions(dictionaryKey);
+                var valueExpressionSyntax = GenerateExpressionForUnderlyingExpressions(dictionaryValue);
+                return _expressionSyntaxGenerator.GenerateAssignmentForDictionary(keyExpressionSyntax, valueExpressionSyntax);
             }
 
             if (expression.UnderlyingExpressionData.Count == 0)
@@ -63,6 +70,11 @@ namespace RuntimeTestDataCollector.CodeGeneration
                 return _expressionSyntaxGenerator.GenerateAssignmentExpressionForPrimitiveType(expression);
             }
 
+            return GenerateAssignmentForUnderlyingExpressions(expression);
+        }
+
+        private ExpressionSyntax GenerateAssignmentForUnderlyingExpressions(ExpressionData expression)
+        {
             var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
             {
@@ -71,6 +83,23 @@ namespace RuntimeTestDataCollector.CodeGeneration
             }
 
             return _expressionSyntaxGenerator.GenerateAssignmentExpressionForComplexExpressionSyntax(expression, expressionsSyntax);
+        }
+
+        private ExpressionSyntax GenerateExpressionForUnderlyingExpressions(ExpressionData expression)
+        {
+            if (expression.UnderlyingExpressionData.Count == 0)
+            {
+                return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
+            }
+
+            var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
+            foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
+            {
+                var deepestExpression = IterateThroughExpressionsData(underlyingExpressionData, expression.Type);
+                expressionsSyntax = expressionsSyntax.Add(deepestExpression);
+            }
+
+            return _expressionSyntaxGenerator.GenerateSyntaxForComplexExpression(expression, expressionsSyntax);
         }
     }
 }

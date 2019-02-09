@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RuntimeTestDataCollector.CodeGeneration
+namespace ObjectInitializationGeneration.CodeGeneration
 {
     public class ExpressionData
     {

@@ -13,7 +13,7 @@ namespace RuntimeTestDataCollector.Window
     /// </summary>
     public partial class StackDataDumpControl : UserControl
     {
-        public const int DefaultMaxObjectDepth = 5;
+        public const int DefaultMaxObjectDepth = 10;
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>

@@ -1,8 +1,9 @@
-﻿using EnvDTE;
+﻿using System.Collections.Generic;
+using EnvDTE;
 using EnvDTE80;
-using System.Collections.Generic;
+using ObjectInitializationGeneration.CodeGeneration;
 
-namespace RuntimeTestDataCollector.CodeGeneration
+namespace RuntimeTestDataCollector.FrameAnalyzer
 {
     public class DebuggerStackFrameAnalyzer
     {
@@ -16,7 +17,7 @@ namespace RuntimeTestDataCollector.CodeGeneration
         public IReadOnlyList<ExpressionData> AnalyzeCurrentStack(DTE2 dte)
         {
             var currentStackExpressionsData = new List<ExpressionData>();
-            if (dte?.Debugger == null || dte.Debugger.CurrentStackFrame == null)
+            if (dte?.Debugger?.CurrentStackFrame == null)
             {
                 return currentStackExpressionsData;
             }
