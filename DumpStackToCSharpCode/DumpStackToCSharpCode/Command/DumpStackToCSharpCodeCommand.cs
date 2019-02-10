@@ -31,6 +31,7 @@ namespace RuntimeTestDataCollector.Command
         private readonly AsyncPackage package;
 
         private static DTE2 _dte;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -61,6 +62,7 @@ namespace RuntimeTestDataCollector.Command
         /// </summary>
         private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => this.package;
         private StackDataDumpControl _stackDataDumpControl;
+        private static DebuggerEvents _debuggerEvents;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -72,9 +74,26 @@ namespace RuntimeTestDataCollector.Command
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
             _dte = await package.GetServiceAsync(typeof(DTE)) as DTE2;
+            _debuggerEvents = _dte.Events.DebuggerEvents;
 
-            OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
+            var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
             Instance = new DumpStackToCSharpCodeCommand(package, commandService);
+        }
+
+
+        public void SubscribeForDebuggerContextChange()
+        {
+            _debuggerEvents.OnContextChanged += OnDebuggerContextChange;
+        }
+
+        public void UnSubscribeForDebuggerContextChange()
+        {
+            _debuggerEvents.OnContextChanged -= OnDebuggerContextChange;
+        }
+
+        private void OnDebuggerContextChange(Process newprocess, Program newprogram, Thread newthread, StackFrame newstackframe)
+        {
+            DumpStackToCSharpCode();
         }
 
         /// <summary>
@@ -90,25 +109,21 @@ namespace RuntimeTestDataCollector.Command
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (DumpStackToCSharpCode())
-            {
-                return;
-            }
-
-            package.JoinableTaskFactory.RunAsync(async () =>
-            {
-                var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
-                var stackDataDump = window as StackDataDump;
-                _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
-                DumpStackToCSharpCode();
-            });
+            DumpStackToCSharpCode();
         }
 
-        private bool DumpStackToCSharpCode()
+        private void DumpStackToCSharpCode()
         {
             if (_stackDataDumpControl == null)
             {
-                return false;
+                package.JoinableTaskFactory.RunAsync(async () =>
+                {
+                    var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
+                    var stackDataDump = window as StackDataDump;
+                    _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
+                    DumpStackToCSharpCode();
+                });
+                return;
             }
 
             var currentExpressionData = new DebuggerStackFrameAnalyzer(int.Parse(_stackDataDumpControl.MaxDepth.Text)).AnalyzeCurrentStack(_dte);
@@ -116,7 +131,7 @@ namespace RuntimeTestDataCollector.Command
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
             _stackDataDumpControl.StackDumpText.Text = codeGeneratorManager.GenerateStackDump(currentExpressionData);
 
-            return true;
+            return;
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Net.Mime;
-using System.Text.RegularExpressions;
-using System.Windows.Input;
+﻿using RuntimeTestDataCollector.Command;
 
 namespace RuntimeTestDataCollector.Window
 {
@@ -39,20 +37,15 @@ namespace RuntimeTestDataCollector.Window
         {
             Clipboard.SetText(StackDumpText.Text);
         }
-        private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
+
+        private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
         {
-            var regex = new Regex(@"^\d{1,2}$");
-            var maxObjectDepth = MaxDepth.Text + e.Text;
-            e.Handled = string.IsNullOrEmpty(maxObjectDepth) || !regex.IsMatch(maxObjectDepth);
+            DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange();
         }
 
-        private void MaxDepth_LostFocus(object sender, RoutedEventArgs e)
+        private void AutomaticallyRefresh_Unchecked(object sender, RoutedEventArgs e)
         {
-            var textBox = (TextBox) sender;
-            if (textBox.Text.Length < 1)
-            {
-                textBox.Text = DefaultMaxObjectDepth.ToString();
-            }
+            DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange();
         }
     }
 }
