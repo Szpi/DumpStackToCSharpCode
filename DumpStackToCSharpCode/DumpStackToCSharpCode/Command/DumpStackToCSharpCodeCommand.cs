@@ -4,8 +4,8 @@ using Microsoft.VisualStudio.Shell;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.ComponentModel.Design;
-using ObjectInitializationGeneration.CodeGeneration.Factory;
 using RuntimeTestDataCollector.FrameAnalyzer;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command

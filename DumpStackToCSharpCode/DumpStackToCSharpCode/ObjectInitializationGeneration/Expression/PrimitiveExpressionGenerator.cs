@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TypeCode = ObjectInitializationGeneration.Type.TypeCode;
+using TypeCode = RuntimeTestDataCollector.ObjectInitializationGeneration.Type.TypeCode;
 
-namespace ObjectInitializationGeneration.Expression
+namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
 {
     public class PrimitiveExpressionGenerator
     {

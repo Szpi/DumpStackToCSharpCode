@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ObjectInitializationGeneration.AssignmentExpression;
+using ObjectInitializationGeneration.Expression;
+using ObjectInitializationGeneration.Initialization;
 using ObjectInitializationGeneration.Type;
 
 namespace ObjectInitializationGeneration.CodeGeneration
@@ -20,86 +20,93 @@ namespace ObjectInitializationGeneration.CodeGeneration
         public string GenerateStackDump(IReadOnlyList<ExpressionData> expressionsData)
         {
             var codeGenerator = new CodeGenerator(_typeAnalyzer);
+            var initializationManager = new InitializationManager(new TypeAnalyzer(),
+                                                                  new PrimitiveExpressionGenerator(),
+                                                                  new DictionaryExpressionGenerator(),
+                                                                  new ComplexTypeInitializationGenerator(
+                                                                      new TypeAnalyzer()),
+                                                                  new ArrayInitializationGenerator(),
+                                                                  new AssignmentExpressionGenerator());
 
             foreach (var expression in expressionsData)
             {
-                if (_typeAnalyzer.IsPrimitiveType(expression.Type))
-                {
-                    var generatedPrimitiveExpression = _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
-                    codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedPrimitiveExpression);
-                    continue;
-                }
+                //if (_typeAnalyzer.IsPrimitiveType(expression.Type))
+                //{
+                //    var generatedPrimitiveExpression = _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
+                //    codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedPrimitiveExpression);
+                //    continue;
+                //}
 
-                var generatedExpressionsData = IterateThroughUnderlyingExpressionsData(expression.UnderlyingExpressionData, expression.Type);
-                codeGenerator.AddOneExpression(_expressionSyntaxGenerator.ParseConcreteType(expression.Type), expression.Name, generatedExpressionsData);
+                var generatedExpressionsData = initializationManager.Generate(expression);
+                codeGenerator.AddOneExpression(expression.Type, expression.Name, generatedExpressionsData);
             }
 
             return codeGenerator.GetStringDump();
         }
 
-        private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData, string parentType)
-        {
-            var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
-            foreach (var expressionData in expressionsData)
-            {
-                expressionsSyntax = expressionsSyntax.Add(IterateThroughExpressionsData(expressionData, parentType));
-            }
+        //private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData, string parentType)
+        //{
+        //    var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
+        //    foreach (var expressionData in expressionsData)
+        //    {
+        //        expressionsSyntax = expressionsSyntax.Add(IterateThroughExpressionsData(expressionData, parentType));
+        //    }
 
-            return expressionsSyntax;
-        }
+        //    return expressionsSyntax;
+        //}
 
-        private ExpressionSyntax IterateThroughExpressionsData(ExpressionData expression, string parentType)
-        {
-            if (_typeAnalyzer.IsDictionaryKeyValuePair(expression.Type))
-            {
-                var dictionaryKey = expression.UnderlyingExpressionData.First(x => x.Name == "Key");
-                var dictionaryValue = expression.UnderlyingExpressionData.First(x => x.Name == "Value");
+        //private ExpressionSyntax IterateThroughExpressionsData(ExpressionData expression, string parentType)
+        //{
+        //    if (_typeAnalyzer.IsDictionaryKeyValuePair(expression.Type))
+        //    {
+        //        var dictionaryKey = expression.UnderlyingExpressionData.First(x => x.Name == "Key");
+        //        var dictionaryValue = expression.UnderlyingExpressionData.First(x => x.Name == "Value");
 
-                var keyExpressionSyntax = GenerateExpressionForUnderlyingExpressions(dictionaryKey);
-                var valueExpressionSyntax = GenerateExpressionForUnderlyingExpressions(dictionaryValue);
-                return _expressionSyntaxGenerator.GenerateAssignmentForDictionary(keyExpressionSyntax, valueExpressionSyntax);
-            }
+        //        var keyExpressionSyntax = GenerateExpressionForUnderlyingExpressions(dictionaryKey);
+        //        var valueExpressionSyntax = GenerateExpressionForUnderlyingExpressions(dictionaryValue);
+        //        return _expressionSyntaxGenerator.GenerateAssignmentForDictionary(keyExpressionSyntax, valueExpressionSyntax);
+        //    }
 
-            if (expression.UnderlyingExpressionData.Count == 0)
-            {
-                if (_typeAnalyzer.IsCollection(parentType) || _typeAnalyzer.IsArray(parentType))
-                {
-                    return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
-                }
+        //    if (expression.UnderlyingExpressionData.Count == 0)
+        //    {
+        //        if (_typeAnalyzer.IsCollection(parentType) || _typeAnalyzer.IsArray(parentType))
+        //        {
+        //            return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
+        //        }
 
-                return _expressionSyntaxGenerator.GenerateAssignmentExpressionForPrimitiveType(expression);
-            }
+        //        return _expressionSyntaxGenerator.GenerateAssignmentExpressionForPrimitiveType(expression);
+        //    }
 
-            return GenerateAssignmentForUnderlyingExpressions(expression);
-        }
+        //    return GenerateAssignmentForUnderlyingExpressions(expression);
+        //}
 
-        private ExpressionSyntax GenerateAssignmentForUnderlyingExpressions(ExpressionData expression)
-        {
-            var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
-            foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
-            {
-                var deepestExpression = IterateThroughExpressionsData(underlyingExpressionData, expression.Type);
-                expressionsSyntax = expressionsSyntax.Add(deepestExpression);
-            }
+        //private ExpressionSyntax GenerateAssignmentForUnderlyingExpressions(ExpressionData expression)
+        //{
+        //    var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
+        //    foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
+        //    {
+        //        var deepestExpression = IterateThroughExpressionsData(underlyingExpressionData, expression.Type);
+        //        expressionsSyntax = expressionsSyntax.Add(deepestExpression);
+        //    }
 
-            return _expressionSyntaxGenerator.GenerateAssignmentExpressionForComplexExpressionSyntax(expression, expressionsSyntax);
-        }
+        //    return _expressionSyntaxGenerator.GenerateAssignmentExpressionForComplexExpressionSyntax(expression, expressionsSyntax);
+        //}
 
-        private ExpressionSyntax GenerateExpressionForUnderlyingExpressions(ExpressionData expression)
-        {
-            if (expression.UnderlyingExpressionData.Count == 0)
-            {
-                return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
-            }
+        //private ExpressionSyntax GenerateExpressionForUnderlyingExpressions(ExpressionData expression)
+        //{
+        //    if (expression.UnderlyingExpressionData.Count == 0)
+        //    {
+        //        return _expressionSyntaxGenerator.GenerateSyntaxForPrimitiveExpression(expression.Type, expression.Value);
+        //    }
 
-            var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
-            foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
-            {
-                var deepestExpression = IterateThroughExpressionsData(underlyingExpressionData, expression.Type);
-                expressionsSyntax = expressionsSyntax.Add(deepestExpression);
-            }
+        //    var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
+        //    foreach (var underlyingExpressionData in expression.UnderlyingExpressionData)
+        //    {
+        //        var deepestExpression = IterateThroughExpressionsData(underlyingExpressionData, expression.Type);
+        //        expressionsSyntax = expressionsSyntax.Add(deepestExpression);
+        //    }
 
-            return _expressionSyntaxGenerator.GenerateSyntaxForComplexExpression(expression, expressionsSyntax);
-        }
+        //    return _expressionSyntaxGenerator.GenerateSyntaxForComplexExpression(expression, expressionsSyntax);
+        //}
     }
 }

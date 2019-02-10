@@ -1,10 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using ObjectInitializationGeneration.CodeGeneration;
-using ObjectInitializationGeneration.Type;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 
-namespace ObjectInitializationGeneration.Initialization
+namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 {
     public class ComplexTypeInitializationGenerator
     {

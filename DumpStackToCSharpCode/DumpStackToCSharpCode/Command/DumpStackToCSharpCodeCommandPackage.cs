@@ -6,8 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using ObjectInitializationGeneration.CodeGeneration.Factory;
 using RuntimeTestDataCollector.FrameAnalyzer;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command

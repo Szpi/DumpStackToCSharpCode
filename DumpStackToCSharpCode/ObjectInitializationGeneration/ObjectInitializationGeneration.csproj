@@ -148,17 +148,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssignmentExpression\AssignmentExpressionGenerator.cs" />
     <Compile Include="CodeGeneration\CodeGenerator.cs" />
     <Compile Include="CodeGeneration\CodeGeneratorManager.cs" />
     <Compile Include="CodeGeneration\ExpressionData.cs" />
     <Compile Include="CodeGeneration\ExpressionSyntaxGenerator.cs" />
     <Compile Include="CodeGeneration\Factory\CodeGeneratorManagerFactory.cs" />
+    <Compile Include="Initialization\ArrayInitializationGenerator.cs" />
     <Compile Include="Initialization\ComplexTypeInitializationGenerator.cs" />
-    <Compile Include="Initialization\DictionaryInitializationGenerator.cs" />
-    <Compile Include="Initialization\ListInitializationGenerator.cs" />
-    <Compile Include="Initialization\PrimitiveInitializationGenerator.cs" />
-    <Compile Include="Type\TypeAnalyzer.cs" />
+    <Compile Include="Expression\DictionaryExpressionGenerator.cs" />
+    <Compile Include="Initialization\InitializationManager.cs" />
     <Compile Include="Expression\PrimitiveExpressionGenerator.cs" />
+    <Compile Include="Type\ConcreteTypeAnalyzer.cs" />
+    <Compile Include="Type\TypeAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Type\TypeCode.cs" />
   </ItemGroup>
@@ -170,9 +172,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="AssignmentExpression\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

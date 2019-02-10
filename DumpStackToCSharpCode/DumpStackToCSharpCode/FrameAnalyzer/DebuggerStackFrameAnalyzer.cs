@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using EnvDTE;
 using EnvDTE80;
-using ObjectInitializationGeneration.CodeGeneration;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 
 namespace RuntimeTestDataCollector.FrameAnalyzer
 {
