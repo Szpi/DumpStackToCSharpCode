@@ -1,11 +1,11 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using RuntimeTestDataCollector.StackFrameAnalyzer;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.ComponentModel.Design;
-using RuntimeTestDataCollector.FrameAnalyzer;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command
@@ -31,7 +31,9 @@ namespace RuntimeTestDataCollector.Command
         private readonly AsyncPackage package;
 
         private static DTE2 _dte;
-        
+        private static DebuggerEvents _debuggerEvents;
+        private static IVsUIShell5 _vsUiShell5;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -62,7 +64,6 @@ namespace RuntimeTestDataCollector.Command
         /// </summary>
         private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => this.package;
         private StackDataDumpControl _stackDataDumpControl;
-        private static DebuggerEvents _debuggerEvents;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -74,6 +75,7 @@ namespace RuntimeTestDataCollector.Command
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
             _dte = await package.GetServiceAsync(typeof(DTE)) as DTE2;
+            _vsUiShell5 = await package.GetServiceAsync(typeof(IVsUIShell5)) as IVsUIShell5;
             _debuggerEvents = _dte.Events.DebuggerEvents;
 
             var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
@@ -126,12 +128,10 @@ namespace RuntimeTestDataCollector.Command
                 return;
             }
 
-            var currentExpressionData = new DebuggerStackFrameAnalyzer(int.Parse(_stackDataDumpControl.MaxDepth.Text)).AnalyzeCurrentStack(_dte);
+            var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
+            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(_dte, int.Parse(_stackDataDumpControl.MaxDepth.Text));
 
-            var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
-            _stackDataDumpControl.StackDumpText.Text = codeGeneratorManager.GenerateStackDump(currentExpressionData);
-
-            return;
+            _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
         }
     }
 }

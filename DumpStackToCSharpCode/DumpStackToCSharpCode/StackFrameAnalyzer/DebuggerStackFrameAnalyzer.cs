@@ -3,7 +3,7 @@ using EnvDTE;
 using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 
-namespace RuntimeTestDataCollector.FrameAnalyzer
+namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackFrameAnalyzer
     {

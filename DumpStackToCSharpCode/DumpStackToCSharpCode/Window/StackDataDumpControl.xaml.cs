@@ -1,4 +1,5 @@
 ﻿using RuntimeTestDataCollector.Command;
+using System.Collections.Generic;
 
 namespace RuntimeTestDataCollector.Window
 {
@@ -16,14 +17,15 @@ namespace RuntimeTestDataCollector.Window
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>
         /// <param name="stackDataDumpText"></param>
-        public StackDataDumpControl(string stackDataDumpText)
+        public StackDataDumpControl(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
         {
             this.InitializeComponent();
-            this.StackDumpText.Text = stackDataDumpText;
             if (string.IsNullOrEmpty(MaxDepth.Text))
             {
                 MaxDepth.Text = DefaultMaxObjectDepth.ToString();
             }
+
+            CreateStackDumpControls(stackDataDump);
         }
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace RuntimeTestDataCollector.Window
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void CopyToClipBoard_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(StackDumpText.Text);
+            //Clipboard.SetText(StackDumpText.Text);
         }
 
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
@@ -46,6 +48,36 @@ namespace RuntimeTestDataCollector.Window
         private void AutomaticallyRefresh_Unchecked(object sender, RoutedEventArgs e)
         {
             DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange();
+        }
+
+        public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
+        {
+            DumpDataStack.Children.Clear();
+
+            foreach (var dumpedObjectToCsharpCode in stackDataDump)
+            {
+                var expander = CreateExpander(dumpedObjectToCsharpCode.Name, dumpedObjectToCsharpCode.CsharpCode);
+                DumpDataStack.Children.Add(expander);
+            }
+        }
+
+        private Expander CreateExpander(string headerText, string textBoxContent)
+        {
+            return new Expander()
+            {
+                Name = headerText,
+                Header = headerText,
+                Background = CopyToClipboard.Background,
+                FontFamily = CopyToClipboard.FontFamily,
+                Foreground = CopyToClipboard.Foreground,
+                Content = new TextBox()
+                {
+                    Text = textBoxContent,
+                    Background = CopyToClipboard.Background,
+                    FontFamily = CopyToClipboard.FontFamily,
+                    Foreground = CopyToClipboard.Foreground,
+                }
+            };
         }
     }
 }

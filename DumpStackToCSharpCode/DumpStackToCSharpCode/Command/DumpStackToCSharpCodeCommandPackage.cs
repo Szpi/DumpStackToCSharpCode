@@ -6,8 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using RuntimeTestDataCollector.FrameAnalyzer;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
+using RuntimeTestDataCollector.StackFrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command
@@ -87,10 +87,8 @@ namespace RuntimeTestDataCollector.Command
             // The object returned from this method is passed into the constructor of the SampleToolWindow 
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
 
-            var currentExpressionData = new DebuggerStackFrameAnalyzer(StackDataDumpControl.DefaultMaxObjectDepth).AnalyzeCurrentStack(dte);
-
-            var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
-            return codeGeneratorManager.GenerateStackDump(currentExpressionData);
+            var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
+            return debuggerStackToDumpedObject.DumpObjectOnStack(dte, StackDataDumpControl.DefaultMaxObjectDepth);
         }
         #endregion
     }

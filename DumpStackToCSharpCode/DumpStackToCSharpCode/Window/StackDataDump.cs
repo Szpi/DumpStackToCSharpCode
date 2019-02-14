@@ -1,4 +1,6 @@
-﻿namespace RuntimeTestDataCollector.Window
+﻿using System.Collections.Generic;
+
+namespace RuntimeTestDataCollector.Window
 {
     using System;
     using System.Runtime.InteropServices;
@@ -24,14 +26,14 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDump"/> class.
         /// </summary>
-        public StackDataDump(string stackDataDumpText) : base(null)
+        public StackDataDump(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump) : base(null)
         {
             this.Caption = Title;
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new StackDataDumpControl(stackDataDumpText);
+            this.Content = new StackDataDumpControl(stackDataDump);
         }
     }
 }

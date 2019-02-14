@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="Command\DumpStackToCSharpCodeCommand.cs" />
     <Compile Include="Command\DumpStackToCSharpCodeCommandPackage.cs" />
-    <Compile Include="FrameAnalyzer\DebuggerStackFrameAnalyzer.cs" />
+    <Compile Include="StackFrameAnalyzer\DebuggerStackFrameAnalyzer.cs" />
     <Compile Include="ObjectInitializationGeneration\AssignmentExpression\AssignmentExpressionGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\CodeGeneration\CodeGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\CodeGeneration\CodeGeneratorManager.cs" />
@@ -72,6 +72,9 @@
     <Compile Include="ObjectInitializationGeneration\Type\TypeAnalyzer.cs" />
     <Compile Include="ObjectInitializationGeneration\Type\TypeCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StackFrameAnalyzer\DebuggerStackToDumpedObject.cs" />
+    <Compile Include="ThemeColor\VsThemeColorExtension.cs" />
+    <Compile Include="Window\DumpedObjectToCsharpCode.cs" />
     <Compile Include="Window\StackDataDump.cs" />
     <Compile Include="Window\StackDataDumpControl.xaml.cs">
       <DependentUpon>StackDataDumpControl.xaml</DependentUpon>

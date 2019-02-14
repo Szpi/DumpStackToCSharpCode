@@ -71,15 +71,18 @@
                                     Checked="AutomaticallyRefresh_Checked"/>
             </Grid>
         </Grid>
-        <TextBox Grid.Row="2" TextWrapping="Wrap" Text="TextBox"  Name="StackDumpText" Margin="0,10,0,0"
+        <StackPanel Grid.Row="2" Name="DumpDataStack">
+
+        </StackPanel>
+        <!--<TextBox Grid.Row="2" TextWrapping="Wrap" Text="TextBox"  Name="StackDumpText" Margin="0,10,0,0"
                      Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                      FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                      Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
                      VerticalAlignment="Stretch"
-                     IsReadOnly="True"/>
-        <!--<Expander Header="Expander" HorizontalAlignment="Left" Height="100" Margin="42,51,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100">
+                     IsReadOnly="True"/>-->
+        <!--<Expander Header="Expander" HorizontalAlignment="Left" Height="100" Margin="42,51,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100" Name="sd">
             <Grid Background="#FFE5E5E5"/>
             
         </Expander>-->
