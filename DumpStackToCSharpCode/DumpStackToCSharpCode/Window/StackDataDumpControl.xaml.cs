@@ -1,5 +1,7 @@
 ﻿using RuntimeTestDataCollector.Command;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace RuntimeTestDataCollector.Window
 {
@@ -16,7 +18,7 @@ namespace RuntimeTestDataCollector.Window
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>
-        /// <param name="stackDataDumpText"></param>
+        /// <param name="stackDataDump"></param>
         public StackDataDumpControl(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
         {
             this.InitializeComponent();
@@ -35,9 +37,21 @@ namespace RuntimeTestDataCollector.Window
         /// <param name="e">The event args.</param>
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
-        private void CopyToClipBoard_Click(object sender, RoutedEventArgs e)
+        private void CopyEverythingToClipBoard_Click(object sender, RoutedEventArgs e)
         {
-            //Clipboard.SetText(StackDumpText.Text);
+            var buffer = new StringBuilder();
+            foreach (var child in DumpDataStack.Children)
+            {
+                var expander = child as Expander;
+
+                if (!(expander?.Content is TextBox textBox))
+                {
+                    continue;
+                }
+
+                buffer.AppendLine(textBox.Text + Environment.NewLine);
+            }
+            Clipboard.SetText(buffer.ToString());
         }
 
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
@@ -67,17 +81,54 @@ namespace RuntimeTestDataCollector.Window
             {
                 Name = headerText,
                 Header = headerText,
-                Background = CopyToClipboard.Background,
-                FontFamily = CopyToClipboard.FontFamily,
-                Foreground = CopyToClipboard.Foreground,
+                Background = CopyEverythingToClipboard.Background,
+                FontFamily = CopyEverythingToClipboard.FontFamily,
+                Foreground = CopyEverythingToClipboard.Foreground,
                 Content = new TextBox()
                 {
+                    IsReadOnly = true,
                     Text = textBoxContent,
-                    Background = CopyToClipboard.Background,
-                    FontFamily = CopyToClipboard.FontFamily,
-                    Foreground = CopyToClipboard.Foreground,
+                    Background = CopyEverythingToClipboard.Background,
+                    FontFamily = CopyEverythingToClipboard.FontFamily,
+                    Foreground = CopyEverythingToClipboard.Foreground,
                 }
             };
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is MenuItem menuItem))
+            {
+                return;
+            }
+
+            if (!(menuItem.CommandParameter is ContextMenu contextMenu))
+            {
+                return;
+            }
+
+            if (!(contextMenu.PlacementTarget is Expander expander))
+            {
+                return;
+            }
+
+            var menuItemHeader = menuItem.Header as string;
+
+            if (menuItemHeader == "Copy")
+            {
+                if (expander.Content is TextBox textBox)
+                {
+                    Clipboard.SetText(textBox.Text);
+                }
+
+                return;
+            }
+
+            foreach (Expander child in DumpDataStack.Children)
+            {
+                child.IsExpanded = !child.IsExpanded;
+                menuItem.Header = child.IsExpanded ? "Expand all" : "Collapse all";
+            }
         }
     }
 }

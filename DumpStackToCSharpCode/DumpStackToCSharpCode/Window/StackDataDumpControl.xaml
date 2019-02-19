@@ -25,13 +25,13 @@
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Click="CopyToClipBoard_Click" Width="80" Height="80" Name="CopyToClipboard" 
+            <Button Grid.Column="0" Click="CopyEverythingToClipBoard_Click" Width="80" Height="80" Name="CopyEverythingToClipboard" 
                     HorizontalAlignment="Center" Margin="10,0,0,0"
                     Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                     FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                     Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
 
-                <TextBlock Text="Copy to clipboard" TextWrapping="Wrap" TextAlignment="Center"/>
+                <TextBlock Text="Copy everything to clipboard" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions >
@@ -72,7 +72,7 @@
             </Grid>
         </Grid>
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <StackPanel  Name="DumpDataStack">
+            <StackPanel Name="DumpDataStack" Margin="0,10,0,0">
             </StackPanel>
         </ScrollViewer>
         <!--<TextBox Grid.Row="2" TextWrapping="Wrap" Text="TextBox"  Name="StackDumpText" Margin="0,10,0,0"
@@ -83,9 +83,35 @@
                      ScrollViewer.VerticalScrollBarVisibility="Visible"
                      VerticalAlignment="Stretch"
                      IsReadOnly="True"/>-->
-        <!--<Expander Header="Expander" HorizontalAlignment="Left" Height="100" Margin="42,51,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100" Name="sd">
-            <Grid Background="#FFE5E5E5"/>
-            
-        </Expander>-->
+      
+        <Grid.Resources>
+            <Style TargetType="Expander">
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu>
+                            <MenuItem Header="Copy"/>
+                            <MenuItem Header="Expand All"/>
+                            <ContextMenu.ItemContainerStyle>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
+                                    <EventSetter Event="Click" Handler="MenuItem_OnClick"/>
+                                </Style>
+                            </ContextMenu.ItemContainerStyle>
+                        </ContextMenu>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="TextBox">
+                <Setter Property="ContextMenu">
+                    <Setter.Value>
+                        <ContextMenu>
+                            <MenuItem Command="ApplicationCommands.Copy" />
+                            <MenuItem Command="ApplicationCommands.SelectAll" />
+                        </ContextMenu>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
     </Grid>
 </UserControl>
