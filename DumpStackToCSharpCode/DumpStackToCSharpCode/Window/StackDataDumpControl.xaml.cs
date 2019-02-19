@@ -114,6 +114,25 @@ namespace RuntimeTestDataCollector.Window
 
             var menuItemHeader = menuItem.Header as string;
 
+            if (ExecuteCopyContextItem(menuItemHeader, expander))
+            {
+                return;
+            }
+
+            ExecuteExpandCollapseContextItem(menuItem);
+        }
+
+        private void ExecuteExpandCollapseContextItem(MenuItem menuItem)
+        {
+            foreach (Expander child in DumpDataStack.Children)
+            {
+                child.IsExpanded = !child.IsExpanded;
+                menuItem.Header = child.IsExpanded ? "Expand all" : "Collapse all";
+            }
+        }
+
+        private static bool ExecuteCopyContextItem(string menuItemHeader, Expander expander)
+        {
             if (menuItemHeader == "Copy")
             {
                 if (expander.Content is TextBox textBox)
@@ -121,14 +140,10 @@ namespace RuntimeTestDataCollector.Window
                     Clipboard.SetText(textBox.Text);
                 }
 
-                return;
+                return true;
             }
 
-            foreach (Expander child in DumpDataStack.Children)
-            {
-                child.IsExpanded = !child.IsExpanded;
-                menuItem.Header = child.IsExpanded ? "Expand all" : "Collapse all";
-            }
+            return false;
         }
     }
 }
