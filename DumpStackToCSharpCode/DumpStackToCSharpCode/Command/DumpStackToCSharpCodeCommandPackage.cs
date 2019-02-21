@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
+using RuntimeTestDataCollector.Options;
 using RuntimeTestDataCollector.StackFrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
 
@@ -35,9 +36,10 @@ namespace RuntimeTestDataCollector.Command
     [Guid(DumpStackToCSharpCodeCommandPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(StackDataDump), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left)]
-
+    [ProvideOptionPage(typeof(DialogPageProvider.General), OptionsPage, "General", 0, 0, true)]
     public sealed class DumpStackToCSharpCodeCommandPackage : AsyncPackage
     {
+        private const string OptionsPage = "DumpStack to C# code";
         /// <summary>
         /// DumpStackToCSharpCodeCommandPackage GUID string.
         /// </summary>
@@ -88,7 +90,9 @@ namespace RuntimeTestDataCollector.Command
             var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            return debuggerStackToDumpedObject.DumpObjectOnStack(dte, StackDataDumpControl.DefaultMaxObjectDepth);
+            var generalOptions = await GeneralOptions.GetLiveInstanceAsync();
+
+            return debuggerStackToDumpedObject.DumpObjectOnStack(dte, generalOptions.MaxObjectDepth);
         }
         #endregion
     }

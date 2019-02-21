@@ -1,4 +1,5 @@
 ﻿using RuntimeTestDataCollector.Command;
+using RuntimeTestDataCollector.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,6 @@ namespace RuntimeTestDataCollector.Window
     /// </summary>
     public partial class StackDataDumpControl : UserControl
     {
-        public const int DefaultMaxObjectDepth = 10;
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>
@@ -24,8 +24,9 @@ namespace RuntimeTestDataCollector.Window
             this.InitializeComponent();
             if (string.IsNullOrEmpty(MaxDepth.Text))
             {
-                MaxDepth.Text = DefaultMaxObjectDepth.ToString();
+                MaxDepth.Text = GeneralOptions.Instance.MaxObjectDepth.ToString();
             }
+            AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
 
             CreateStackDumpControls(stackDataDump);
         }

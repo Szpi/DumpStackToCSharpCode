@@ -6,6 +6,7 @@ using RuntimeTestDataCollector.StackFrameAnalyzer;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.ComponentModel.Design;
+using RuntimeTestDataCollector.Options;
 using Task = System.Threading.Tasks.Task;
 
 namespace RuntimeTestDataCollector.Command
@@ -32,7 +33,6 @@ namespace RuntimeTestDataCollector.Command
 
         private static DTE2 _dte;
         private static DebuggerEvents _debuggerEvents;
-        private static IVsUIShell5 _vsUiShell5;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommand"/> class.
@@ -75,7 +75,6 @@ namespace RuntimeTestDataCollector.Command
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
             _dte = await package.GetServiceAsync(typeof(DTE)) as DTE2;
-            _vsUiShell5 = await package.GetServiceAsync(typeof(IVsUIShell5)) as IVsUIShell5;
             _debuggerEvents = _dte.Events.DebuggerEvents;
 
             var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
@@ -91,6 +90,20 @@ namespace RuntimeTestDataCollector.Command
         public void UnSubscribeForDebuggerContextChange()
         {
             _debuggerEvents.OnContextChanged -= OnDebuggerContextChange;
+        }
+
+        public async Task OnSettingsSave()
+        {
+            var generalOptions = await GeneralOptions.GetLiveInstanceAsync();
+            if (_stackDataDumpControl == null)
+            {
+                var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
+                var stackDataDump = window as StackDataDump;
+                _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
+            }
+
+            _stackDataDumpControl.MaxDepth.Text = generalOptions.MaxObjectDepth.ToString();
+            _stackDataDumpControl.AutomaticallyRefresh.IsChecked = generalOptions.AutomaticallyRefresh;
         }
 
         private void OnDebuggerContextChange(Process newprocess, Program newprogram, Thread newthread, StackFrame newstackframe)
