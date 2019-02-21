@@ -3,6 +3,7 @@ using RuntimeTestDataCollector.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Media;
 
 namespace RuntimeTestDataCollector.Window
 {
@@ -85,6 +86,9 @@ namespace RuntimeTestDataCollector.Window
                 Background = CopyEverythingToClipboard.Background,
                 FontFamily = CopyEverythingToClipboard.FontFamily,
                 Foreground = CopyEverythingToClipboard.Foreground,
+                IsExpanded = GeneralOptions.Instance.AutomaticallyExpand,
+                BorderBrush = Brushes.Gray,
+                Margin = new Thickness(0, 5, 0, 0),
                 Content = new TextBox()
                 {
                     IsReadOnly = true,
@@ -92,6 +96,7 @@ namespace RuntimeTestDataCollector.Window
                     Background = CopyEverythingToClipboard.Background,
                     FontFamily = CopyEverythingToClipboard.FontFamily,
                     Foreground = CopyEverythingToClipboard.Foreground,
+                    BorderBrush = null,
                 }
             };
         }
@@ -134,17 +139,17 @@ namespace RuntimeTestDataCollector.Window
 
         private static bool ExecuteCopyContextItem(string menuItemHeader, Expander expander)
         {
-            if (menuItemHeader == "Copy")
+            if (menuItemHeader != "Copy")
             {
-                if (expander.Content is TextBox textBox)
-                {
-                    Clipboard.SetText(textBox.Text);
-                }
-
-                return true;
+                return false;
             }
 
-            return false;
+            if (expander.Content is TextBox textBox)
+            {
+                Clipboard.SetText(textBox.Text);
+            }
+
+            return true;
         }
     }
 }

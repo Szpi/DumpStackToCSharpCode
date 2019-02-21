@@ -11,6 +11,12 @@ namespace RuntimeTestDataCollector.Options
         public bool AutomaticallyRefresh { get; set; } = false;
 
         [Category("General")]
+        [DisplayName("Automatically expand")]
+        [Description("Automatically expand objects with actual c# code dump")]
+        [DefaultValue(false)]
+        public bool AutomaticallyExpand { get; set; } = false;
+
+        [Category("General")]
         [DisplayName("Max object depth")]
         [Description("Max object depth to dump")]
         [DefaultValue(10)]
