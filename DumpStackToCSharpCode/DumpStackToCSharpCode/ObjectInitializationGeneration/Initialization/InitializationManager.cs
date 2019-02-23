@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 
@@ -17,13 +18,15 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private readonly ComplexTypeInitializationGenerator _complexTypeInitializationGenerator;
         private readonly ArrayInitializationGenerator _arrayInitializationGenerator;
         private readonly AssignmentExpressionGenerator _assignmentExpressionGenerator;
+        private readonly ArgumentListManager _argumentListManager;
 
         public InitializationManager(TypeAnalyzer typeAnalyzer,
                                      PrimitiveExpressionGenerator primitiveExpressionGenerator,
                                      DictionaryExpressionGenerator dictionaryExpressionGenerator,
                                      ComplexTypeInitializationGenerator complexTypeInitializationGenerator,
                                      ArrayInitializationGenerator arrayInitializationGenerator,
-                                     AssignmentExpressionGenerator assignmentExpressionGenerator)
+                                     AssignmentExpressionGenerator assignmentExpressionGenerator, 
+                                     ArgumentListManager argumentListManager)
         {
             _typeAnalyzer = typeAnalyzer;
             _primitiveExpressionGenerator = primitiveExpressionGenerator;
@@ -31,18 +34,24 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _complexTypeInitializationGenerator = complexTypeInitializationGenerator;
             _arrayInitializationGenerator = arrayInitializationGenerator;
             _assignmentExpressionGenerator = assignmentExpressionGenerator;
+            _argumentListManager = argumentListManager;
         }
 
-        public (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, bool IsPrimitiveType) Generate(ExpressionData expressionData)
+        public (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, bool IsPrimitiveType, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
         {
-            var codeGenerator = new CodeGenerator(_typeAnalyzer);
             var typeCode = _typeAnalyzer.GetTypeCode(expressionData.Type);
 
             if (_typeAnalyzer.IsPrimitiveType(expressionData.Type))
             {
                 var primitiveExpression = _primitiveExpressionGenerator.Generate(typeCode, expressionData.Value);
-                return (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), true);
+                return (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), true, null);
+            }
 
+            var argumentSyntaxList = _argumentListManager.GetArgumentList(expressionData, this);
+
+            if (argumentSyntaxList.Count > 0)
+            {
+                return (new SeparatedSyntaxList<ExpressionSyntax>(), false, argumentSyntaxList);
             }
 
             var generatedExpressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
@@ -51,7 +60,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 generatedExpressionsSyntax = generatedExpressionsSyntax.Add(GenerateInternal(expressionDataIterator, typeCode));
             }
 
-            return (generatedExpressionsSyntax, false);
+            return (generatedExpressionsSyntax, false, null);
         }
 
         public ExpressionSyntax GenerateInternal(ExpressionData expressionData, TypeCode parentTypeCode)

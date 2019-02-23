@@ -13,6 +13,7 @@
 
             return type;
         }
+
         private static bool IsTypeInterface(string type)
         {
             return type[type.Length - 1] == '}';

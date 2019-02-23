@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Command\DumpStackToCSharpCodeCommand.cs" />
     <Compile Include="Command\DumpStackToCSharpCodeCommandPackage.cs" />
+    <Compile Include="ObjectInitializationGeneration\Constructor\ArgumentListManager.cs" />
     <Compile Include="Options\BaseOptionModel.cs" />
     <Compile Include="Options\BaseOptionPage.cs">
       <SubType>Component</SubType>

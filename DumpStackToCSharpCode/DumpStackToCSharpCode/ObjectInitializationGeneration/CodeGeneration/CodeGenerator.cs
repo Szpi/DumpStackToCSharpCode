@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using System.Collections.Generic;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 {
@@ -15,11 +16,13 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
             _compilationUnitSyntax = SyntaxFactory.CompilationUnit();
         }
 
-        public void AddOneExpression(string type, string name, SeparatedSyntaxList<ExpressionSyntax> expressions)
+        public void AddOneExpression(string type, string name, SeparatedSyntaxList<ExpressionSyntax> expressions,
+                                     List<ExpressionSyntax> argumentSyntax)
         {
-           ArgumentListSyntax argumentList = null;
-      
-            if (!_typeAnalyzer.IsArray(type))
+            var argumentList = GenerateArgumentListSyntaxWithCommas(argumentSyntax);
+            InitializerExpressionSyntax initializerExpressionSyntax = null;
+
+            if (!_typeAnalyzer.IsArray(type) && argumentList.Arguments.Count == 0)
             {
                 argumentList =
                     SyntaxFactory.ArgumentList().WithCloseParenToken(
@@ -28,6 +31,12 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                             SyntaxKind.CloseParenToken,
                             SyntaxFactory.TriviaList(
                                 SyntaxFactory.LineFeed)));
+
+                initializerExpressionSyntax =
+                    SyntaxFactory.InitializerExpression(
+                        SyntaxKind
+                            .ObjectInitializerExpression,
+                        expressions);
             }
 
             _compilationUnitSyntax = _compilationUnitSyntax.AddMembers(SyntaxFactory.FieldDeclaration(
@@ -44,17 +53,28 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                        SyntaxFactory.IdentifierName(
                                                                            type))
                                                                    .WithArgumentList(argumentList)
-                                                                   .WithInitializer(
-                                                                       SyntaxFactory.InitializerExpression(
-                                                                           SyntaxKind
-                                                                               .ObjectInitializerExpression,
-                                                                           expressions)))))))
+                                                                   .WithInitializer(initializerExpressionSyntax))))))
                                                                            .WithSemicolonToken(
                                                                                SyntaxFactory.Token(
                                                                                    SyntaxFactory.TriviaList(),
                                                                                    SyntaxKind.SemicolonToken,
                                                                                    SyntaxFactory.TriviaList(
                                                                                        SyntaxFactory.LineFeed))));
+        }
+
+        private static ArgumentListSyntax GenerateArgumentListSyntaxWithCommas(List<ExpressionSyntax> argumentSyntax)
+        {
+            var argumentListSyntaxWithCommas = new List<SyntaxNodeOrToken>();
+            for (var i = 0; i < argumentSyntax?.Count; i++)
+            {
+                argumentListSyntaxWithCommas.Add(SyntaxFactory.Argument(argumentSyntax[i]));
+                if (i != argumentSyntax.Count - 1)
+                {
+                    argumentListSyntaxWithCommas.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
+                }
+            }
+
+            return SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(argumentListSyntaxWithCommas));
         }
 
         public void AddOnePrimitiveExpression(string name, ExpressionSyntax expression)

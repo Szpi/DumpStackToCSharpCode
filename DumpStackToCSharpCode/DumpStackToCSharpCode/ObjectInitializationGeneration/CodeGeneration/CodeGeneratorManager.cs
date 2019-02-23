@@ -21,13 +21,13 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 
             foreach (var expression in expressionsData)
             {
-                var generatedExpressionsData = _initializationManager.Generate(expression);
-                if (generatedExpressionsData.IsPrimitiveType)
+                var (generatedSyntax, isPrimitiveType, argumentSyntax) = _initializationManager.Generate(expression);
+                if (isPrimitiveType)
                 {
-                    codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedExpressionsData.generatedSyntax.FirstOrDefault());
+                    codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedSyntax.FirstOrDefault());
                     continue;
                 }
-                codeGenerator.AddOneExpression(expression.Type, expression.Name, generatedExpressionsData.generatedSyntax);
+                codeGenerator.AddOneExpression(expression.Type, expression.Name, generatedSyntax, argumentSyntax);
             }
 
             return codeGenerator.GetStringDump();
