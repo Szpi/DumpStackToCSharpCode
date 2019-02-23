@@ -142,7 +142,7 @@ namespace RuntimeTestDataCollector.Command
             }
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(_dte, int.Parse(_stackDataDumpControl.MaxDepth.Text));
+            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(_dte, int.Parse(_stackDataDumpControl.MaxDepth.Text), GeneralOptions.Instance.GenerateTypeWithNamespace);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
         }

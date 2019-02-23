@@ -6,15 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
 {
     public class ArgumentListManager
     {
+        private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
         private readonly IReadOnlyDictionary<string, IReadOnlyList<string>> _typeToArgumentNames;
-        public ArgumentListManager(IReadOnlyDictionary<string, IReadOnlyList<string>> typeToArgumentNames)
+        public ArgumentListManager(IReadOnlyDictionary<string, IReadOnlyList<string>> typeToArgumentNames, ConcreteTypeAnalyzer concreteTypeAnalyzer)
         {
             _typeToArgumentNames = typeToArgumentNames;
+            _concreteTypeAnalyzer = concreteTypeAnalyzer;
         }
 
         public List<ExpressionSyntax> GetArgumentList(ExpressionData expressionData, InitializationManager initializationManager)
@@ -57,7 +60,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
                 return true;
             }
 
-            var typeWithoutNamespace = expressionData.Type.Substring(expressionData.Type.LastIndexOf('.') + 1);
+            var typeWithoutNamespace = _concreteTypeAnalyzer.GetTypeWithoutNamespace(expressionData.Type);
             return _typeToArgumentNames.TryGetValue(typeWithoutNamespace, out argumentNames);
         }
     }

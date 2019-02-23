@@ -2,6 +2,7 @@
 using RuntimeTestDataCollector.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
@@ -16,10 +17,15 @@ namespace RuntimeTestDataCollector.Window
     /// </summary>
     public partial class StackDataDumpControl : UserControl
     {
+        private const string ExpandAll = "Expand all";
+        private const string CollapseAll = "Collapse all";
+
+        public string ExpandMenuItemHeader { get; set; } = CollapseAll;
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>
         /// <param name="stackDataDump"></param>
+
         public StackDataDumpControl(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
         {
             this.InitializeComponent();
@@ -28,7 +34,6 @@ namespace RuntimeTestDataCollector.Window
                 MaxDepth.Text = GeneralOptions.Instance.MaxObjectDepth.ToString();
             }
             AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
-
             CreateStackDumpControls(stackDataDump);
         }
 
@@ -133,7 +138,7 @@ namespace RuntimeTestDataCollector.Window
             foreach (Expander child in DumpDataStack.Children)
             {
                 child.IsExpanded = !child.IsExpanded;
-                menuItem.Header = child.IsExpanded ? "Expand all" : "Collapse all";
+                menuItem.Header = child.IsExpanded ? ExpandAll : CollapseAll;
             }
         }
 

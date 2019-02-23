@@ -2,16 +2,23 @@
 using EnvDTE;
 using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackFrameAnalyzer
     {
         private readonly int _maxObjectDepth;
+        private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
+        private readonly bool _generateTypeWithNamespace;
 
-        public DebuggerStackFrameAnalyzer(int maxObjectDepth)
+        public DebuggerStackFrameAnalyzer(int maxObjectDepth,
+                                          ConcreteTypeAnalyzer concreteTypeAnalyzer,
+                                          bool generateTypeWithNamespace)
         {
             _maxObjectDepth = maxObjectDepth;
+            _concreteTypeAnalyzer = concreteTypeAnalyzer;
+            _generateTypeWithNamespace = generateTypeWithNamespace;
         }
 
         public IReadOnlyList<ExpressionData> AnalyzeCurrentStack(DTE2 dte)
@@ -71,7 +78,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 expressionsData.Add(deepestResult.ExpressionData);
             }
 
-            return (new ExpressionData(expression.Type, expression.Value, expression.Name, expressionsData), depth);
+            return (new ExpressionData(GetTypeToGenerate(expression.Type), expression.Value, expression.Name, expressionsData), depth);
         }
 
         private bool IsDictionaryDuplicatedValue(string dataMemberType)
@@ -79,9 +86,14 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             return dataMemberType == "type" || dataMemberType == "value";
         }
 
+        private string GetTypeToGenerate(string type)
+        {
+            var concreteType = _concreteTypeAnalyzer.ParseConcreteType(type);
+            return _generateTypeWithNamespace ? concreteType : _concreteTypeAnalyzer.GetTypeWithoutNamespace(concreteType);
+        }
         private ExpressionData GetExpressionData(Expression expression)
         {
-            return new ExpressionData(expression.Type, expression.Value, expression.Name, new List<ExpressionData>());
+            return new ExpressionData(GetTypeToGenerate(expression.Type), expression.Value, expression.Name, new List<ExpressionData>());
         }
     }
 }

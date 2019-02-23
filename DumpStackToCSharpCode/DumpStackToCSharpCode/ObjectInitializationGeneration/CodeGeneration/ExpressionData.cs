@@ -5,7 +5,6 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 {
     public class ExpressionData
     {
-        private static readonly ConcreteTypeAnalyzer ConcreteTypeAnalyzer = new ConcreteTypeAnalyzer();
 
         public string Type { get; }
         public string Value { get; }
@@ -14,7 +13,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 
         public ExpressionData(string type, string value, string name, IReadOnlyList<ExpressionData> underlyingExpressionData)
         {
-            Type = ConcreteTypeAnalyzer.ParseConcreteType(type);
+            Type = type;
             Value = value;
             Name = name;
             UnderlyingExpressionData = underlyingExpressionData;

@@ -17,6 +17,12 @@ namespace RuntimeTestDataCollector.Options
         public bool AutomaticallyExpand { get; set; } = false;
 
         [Category("General")]
+        [DisplayName("Generate type with namespace")]
+        [Description("Generate type with namespace")]
+        [DefaultValue(false)]
+        public bool GenerateTypeWithNamespace { get; set; } = false;
+
+        [Category("General")]
         [DisplayName("Max object depth")]
         [Description("Max object depth to dump")]
         [DefaultValue(10)]

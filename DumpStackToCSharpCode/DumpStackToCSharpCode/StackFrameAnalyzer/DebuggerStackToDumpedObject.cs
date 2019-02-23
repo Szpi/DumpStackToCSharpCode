@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
 using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
-        public IReadOnlyList<DumpedObjectToCsharpCode> DumpObjectOnStack(DTE2 dte, int maxDepth)
+        public IReadOnlyList<DumpedObjectToCsharpCode> DumpObjectOnStack(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
         {
-            var currentExpressionData = new DebuggerStackFrameAnalyzer(maxDepth).AnalyzeCurrentStack(dte);
+            var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(), generateTypeWithNamespace);
+            var currentExpressionData = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(dte);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
 
