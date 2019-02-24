@@ -13,7 +13,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
         {
             var arguments = new Dictionary<string, IReadOnlyList<string>>
             {
-                ["DateTime"] = new List<string>() { "Year", "Month", "Day", "Hour", "Minutes" }
+                ["DateTimeaaaaaaaaaaaaaaaaaaaa"] = new List<string>() { "Year", "Month", "Day", "Hour", "Minutes" }
             };
             var argumentListManager = new ArgumentListManager(arguments, new ConcreteTypeAnalyzer());
 
@@ -23,8 +23,9 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new ComplexTypeInitializationGenerator(new TypeAnalyzer()),
                                                                   new ArrayInitializationGenerator(),
                                                                   new AssignmentExpressionGenerator(),
-                                                                  argumentListManager);
-            ;
+                                                                  argumentListManager,
+                                                                  new EnumExpressionGenerator());
+            
             return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager);
         }
     }

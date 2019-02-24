@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using EnvDTE;
+﻿using EnvDTE;
 using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using System.Collections.Generic;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
@@ -78,7 +78,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 expressionsData.Add(deepestResult.ExpressionData);
             }
 
-            return (new ExpressionData(GetTypeToGenerate(expression.Type), expression.Value, expression.Name, expressionsData), depth);
+            return (new ExpressionData(GetTypeToGenerate(expression.Type), expression.Value, expression.Name, expressionsData,expression.Type), depth );
         }
 
         private bool IsDictionaryDuplicatedValue(string dataMemberType)
@@ -93,7 +93,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         }
         private ExpressionData GetExpressionData(Expression expression)
         {
-            return new ExpressionData(GetTypeToGenerate(expression.Type), expression.Value, expression.Name, new List<ExpressionData>());
+            return new ExpressionData(GetTypeToGenerate(expression.Type), expression.Value, expression.Name, new List<ExpressionData>(), expression.Type);
         }
     }
 }
