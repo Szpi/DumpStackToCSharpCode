@@ -2,7 +2,6 @@
 using RuntimeTestDataCollector.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
@@ -34,7 +33,20 @@ namespace RuntimeTestDataCollector.Window
                 MaxDepth.Text = GeneralOptions.Instance.MaxObjectDepth.ToString();
             }
             AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
+            stackDataDump = new List<DumpedObjectToCsharpCode>()
+            {
+                new DumpedObjectToCsharpCode("test", "test")
+            };
             CreateStackDumpControls(stackDataDump);
+        }
+
+        private void ContextMenuLoaded(object sender, RoutedEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            var menuItem = contextMenu.Items[0] as MenuItem;
+            //var textBox = menuItem.Template.FindName("ExpandMenuItem", menuItem) as TextBox;
+
+            //textBox.Text = "Some text";
         }
 
         /// <summary>
@@ -84,7 +96,7 @@ namespace RuntimeTestDataCollector.Window
 
         private Expander CreateExpander(string headerText, string textBoxContent)
         {
-            return new Expander()
+            var expander = new Expander()
             {
                 Name = headerText,
                 Header = headerText,
@@ -104,28 +116,63 @@ namespace RuntimeTestDataCollector.Window
                     BorderBrush = null,
                 }
             };
+
+            CreateExpanderContextMenu(expander);
+            return expander;
         }
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void CreateExpanderContextMenu(Expander expander)
+        {
+            var copyMenuItem = new MenuItem()
+            {
+                Header = "Copy",
+                CommandParameter = expander
+            };
+            copyMenuItem.Click += CopyMenuItem_OnClick;
+
+            var expandMenuItem = new MenuItem()
+            {
+                Header = GeneralOptions.Instance.AutomaticallyExpand ? CollapseAll : ExpandAll,
+                CommandParameter = expander
+            };
+            expandMenuItem.Click += ExpandMenuItem_OnClick;
+
+            expander.ContextMenu = new ContextMenu()
+            {
+                Items =
+                {
+                    copyMenuItem,
+                    expandMenuItem
+                }
+            };
+        }
+
+        private void CopyMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             if (!(sender is MenuItem menuItem))
             {
                 return;
             }
 
-            if (!(menuItem.CommandParameter is ContextMenu contextMenu))
+            if (!(menuItem.CommandParameter is Expander expander))
             {
                 return;
             }
 
-            if (!(contextMenu.PlacementTarget is Expander expander))
+            if (expander.Content is TextBox textBox)
+            {
+                Clipboard.SetText(textBox.Text);
+            }
+        }
+
+        private void ExpandMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is MenuItem menuItem))
             {
                 return;
             }
 
-            var menuItemHeader = menuItem.Header as string;
-
-            if (ExecuteCopyContextItem(menuItemHeader, expander))
+            if (!(menuItem.CommandParameter is Expander expander))
             {
                 return;
             }
@@ -138,23 +185,8 @@ namespace RuntimeTestDataCollector.Window
             foreach (Expander child in DumpDataStack.Children)
             {
                 child.IsExpanded = !child.IsExpanded;
-                menuItem.Header = child.IsExpanded ? ExpandAll : CollapseAll;
+                menuItem.Header = child.IsExpanded ? CollapseAll : ExpandAll;
             }
-        }
-
-        private static bool ExecuteCopyContextItem(string menuItemHeader, Expander expander)
-        {
-            if (menuItemHeader != "Copy")
-            {
-                return false;
-            }
-
-            if (expander.Content is TextBox textBox)
-            {
-                Clipboard.SetText(textBox.Text);
-            }
-
-            return true;
         }
     }
 }

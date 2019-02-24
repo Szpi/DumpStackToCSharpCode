@@ -10,7 +10,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
-    <Grid >
+    <Grid>
         <Grid.RowDefinitions >
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -77,23 +77,6 @@
         </ScrollViewer>
 
         <Grid.Resources>
-            <Style TargetType="Expander">
-                <Setter Property="ContextMenu">
-                    <Setter.Value>
-                        <ContextMenu>
-                            <MenuItem Header="Copy"/>
-                            <MenuItem Header="Expand all" Name="ExpandMenuItem"/>
-                            <ContextMenu.ItemContainerStyle>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="CommandParameter" Value="{Binding RelativeSource={RelativeSource Self}, Path=Parent}"/>
-                                    <EventSetter Event="Click" Handler="MenuItem_OnClick"/>
-                                </Style>
-                            </ContextMenu.ItemContainerStyle>
-                        </ContextMenu>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style TargetType="TextBox">
                 <Setter Property="ContextMenu">
                     <Setter.Value>
