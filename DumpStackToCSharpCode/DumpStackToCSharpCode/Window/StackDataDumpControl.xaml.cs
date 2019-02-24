@@ -19,7 +19,6 @@ namespace RuntimeTestDataCollector.Window
         private const string ExpandAll = "Expand all";
         private const string CollapseAll = "Collapse all";
 
-        public string ExpandMenuItemHeader { get; set; } = CollapseAll;
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>
@@ -33,22 +32,10 @@ namespace RuntimeTestDataCollector.Window
                 MaxDepth.Text = GeneralOptions.Instance.MaxObjectDepth.ToString();
             }
             AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
-            stackDataDump = new List<DumpedObjectToCsharpCode>()
-            {
-                new DumpedObjectToCsharpCode("test", "test")
-            };
+
             CreateStackDumpControls(stackDataDump);
         }
-
-        private void ContextMenuLoaded(object sender, RoutedEventArgs e)
-        {
-            var contextMenu = sender as ContextMenu;
-            var menuItem = contextMenu.Items[0] as MenuItem;
-            //var textBox = menuItem.Template.FindName("ExpandMenuItem", menuItem) as TextBox;
-
-            //textBox.Text = "Some text";
-        }
-
+        
         /// <summary>
         /// Handles click on the button by displaying a message box.
         /// </summary>

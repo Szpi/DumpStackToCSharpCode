@@ -80,10 +80,11 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
                         SyntaxFactory.Literal(value.Replace("\"", string.Empty)));
                 }
                 case TypeCode.Boolean:
+                {
                     return SyntaxFactory.LiteralExpression(value == TrueValue
                                                                ? SyntaxKind.TrueLiteralExpression
                                                                : SyntaxKind.FalseLiteralExpression);
-
+                }
                 default:
                     throw new NotImplementedException();
             }

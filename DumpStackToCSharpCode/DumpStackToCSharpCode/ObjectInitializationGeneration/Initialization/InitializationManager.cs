@@ -47,10 +47,15 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 return (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), true, null);
             }
 
-            var argumentSyntaxList = _argumentListManager.GetArgumentList(expressionData, this);
+            var immutableArgumentsList = _argumentListManager.GetArgumentList(expressionData);
 
-            if (argumentSyntaxList.Count > 0)
+            if (immutableArgumentsList != null)
             {
+                var argumentSyntaxList = immutableArgumentsList
+                                         .UnderlyingExpressionData
+                                         .Select(x => Generate(x).generatedSyntax.FirstOrDefault())
+                                         .ToList();
+
                 return (new SeparatedSyntaxList<ExpressionSyntax>(), false, argumentSyntaxList);
             }
 
@@ -74,24 +79,27 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 
             var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
 
-            if (typeCode == TypeCode.DictionaryKeyValuePair)
+            switch (typeCode)
             {
+                case TypeCode.DictionaryKeyValuePair:
+                {
+                    var dictionaryKey = GetExpressionDataForDictionary(expressionData, "Key");
+                    var dictionaryValue = GetExpressionDataForDictionary(expressionData, "Value");
 
-                var dictionaryKey = GetExpressionDataForDictionary(expressionData, "Key");
-                var dictionaryValue = GetExpressionDataForDictionary(expressionData, "Value");
+                    var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode);
+                    var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode);
 
-                var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode);
-                var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode);
-
-                return _dictionaryExpressionGenerator.Generate(expressionData, keyExpressionSyntax, valueExpressionSyntax);
+                    return _dictionaryExpressionGenerator.Generate(expressionData, keyExpressionSyntax, valueExpressionSyntax);
+                }
+                case TypeCode.Array:
+                {
+                    return _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData);
+                }
+                default:
+                {
+                    return _assignmentExpressionGenerator.GenerateAssignmentExpressionForPrimitiveType(expressionData.Name, _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData));
+                }
             }
-
-            if (typeCode == TypeCode.Array)
-            {
-                return _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData);
-            }
-
-            return _assignmentExpressionGenerator.GenerateAssignmentExpressionForPrimitiveType(expressionData.Name, _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData));
         }
 
         private static ExpressionData GetExpressionDataForDictionary(ExpressionData expressionData, string keyOrValueName)

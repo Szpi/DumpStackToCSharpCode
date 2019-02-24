@@ -1,12 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
+﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.CodeAnalysis.CSharp;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
 {
@@ -20,37 +16,20 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
             _concreteTypeAnalyzer = concreteTypeAnalyzer;
         }
 
-        public List<ExpressionSyntax> GetArgumentList(ExpressionData expressionData, InitializationManager initializationManager)
+        public ExpressionData GetArgumentList(ExpressionData expressionData)
         {
             if (!GetArgumentNames(expressionData, out var argumentNames))
             {
-                return new List<ExpressionSyntax>();
+                return null;
             }
 
-            var argumentList = new List<ExpressionSyntax>();
+            var matchedArgumentList = expressionData
+                       .UnderlyingExpressionData
+                       .Where(x => argumentNames
+                                  .Any(argumentName =>string.Compare(x.Name,argumentName,StringComparison.OrdinalIgnoreCase) ==0))
+                       .ToList();
 
-            foreach (var argumentName in argumentNames)
-            {
-                var argument = expressionData.UnderlyingExpressionData.FirstOrDefault(x => string.Compare(x.Name, argumentName, StringComparison.OrdinalIgnoreCase) == 0);
-
-                if (argument == null)
-                {
-                    continue;
-                }
-
-                var (generatedSyntax, _, _) = initializationManager.Generate(argument);
-
-                var first = generatedSyntax.FirstOrDefault();
-                if (first is AssignmentExpressionSyntax assignmentExpression)
-                {
-                    argumentList.Add(assignmentExpression.Right);
-                    continue;
-                }
-
-                argumentList.Add(first);
-            }
-
-            return argumentList;
+            return new ExpressionData(string.Empty, string.Empty, string.Empty, matchedArgumentList);
         }
 
         private bool GetArgumentNames(ExpressionData expressionData, out IReadOnlyList<string> argumentNames)
