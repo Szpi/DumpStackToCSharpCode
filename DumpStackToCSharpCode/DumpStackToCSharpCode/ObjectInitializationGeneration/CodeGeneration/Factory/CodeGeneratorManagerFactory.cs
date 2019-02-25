@@ -15,13 +15,13 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
             {
                 ["DateTimeaaaaaaaaaaaaaaaaaaaa"] = new List<string>() { "Year", "Month", "Day", "Hour", "Minutes" }
             };
-            var argumentListManager = new ArgumentListManager(arguments, new ConcreteTypeAnalyzer());
+            var argumentListManager = new ArgumentListManager(arguments, new ConcreteTypeAnalyzer(new TypeAnalyzer()));
 
             var initializationManager = new InitializationManager(new TypeAnalyzer(),
                                                                   new PrimitiveExpressionGenerator(),
                                                                   new DictionaryExpressionGenerator(),
                                                                   new ComplexTypeInitializationGenerator(new TypeAnalyzer()),
-                                                                  new ArrayInitializationGenerator(),
+                                                                  new ArrayInitializationGenerator(new TypeAnalyzer()),
                                                                   new AssignmentExpressionGenerator(),
                                                                   argumentListManager,
                                                                   new EnumExpressionGenerator());

@@ -6,7 +6,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpr
     public class AssignmentExpressionGenerator
     {
 
-        public ExpressionSyntax GenerateAssignmentExpressionForPrimitiveType(string name, ExpressionSyntax expressionSyntax)
+        public ExpressionSyntax GenerateAssignmentExpression(string name, ExpressionSyntax expressionSyntax)
         {
             return SyntaxFactory.AssignmentExpression(
                 SyntaxKind.SimpleAssignmentExpression,

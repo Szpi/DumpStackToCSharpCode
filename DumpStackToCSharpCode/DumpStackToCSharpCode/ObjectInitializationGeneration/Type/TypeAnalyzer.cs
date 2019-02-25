@@ -1,4 +1,7 @@
-﻿namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
+﻿using Newtonsoft.Json;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
+
+namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
 {
     public class TypeAnalyzer
     {
@@ -24,24 +27,38 @@
 
         public bool IsCollectionOfPrimitiveType(string type)
         {
+            var (success, genericType) = GetGenericType(type);
+
+            return success && IsPrimitiveType(genericType, string.Empty);
+        }
+
+        public (bool success, string genericType) GetGenericType(string type)
+        {
             if (type.Length < 3)
             {
-                return false;
+                return (false, null);
             }
 
             var indexOfBracket = type.IndexOf('<');
             if (indexOfBracket < 0)
             {
-                return false;
+                return (false, null);
             }
 
             var indexOfClosingBracket = type.IndexOf('>');
             var startIndex = indexOfBracket + 1;
-            return IsPrimitiveType(type.Substring(startIndex, indexOfClosingBracket - startIndex));
+            var genericType = type.Substring(startIndex, indexOfClosingBracket - startIndex);
+
+            return (true, genericType);
         }
 
-        public TypeCode GetTypeCode(string type)
+        public TypeCode GetTypeCode(string type, string value)
         {
+            if (value == PrimitiveExpressionGenerator.NullValue)
+            {
+                return TypeCode.NullValue;
+            }
+
             switch (type)
             {
                 case "bool":
@@ -100,9 +117,14 @@
             }
         }
 
-        public bool IsPrimitiveType(string type)
+        public bool IsPrimitiveType(string type, string value)
         {
-            var typeCode = GetTypeCode(type);
+            var typeCode = GetTypeCode(type, value);
+            return IsPrimitiveType(typeCode);
+        }
+
+        public bool IsPrimitiveType(TypeCode typeCode)
+        {
             switch (typeCode)
             {
                 case TypeCode.Boolean:
@@ -120,6 +142,7 @@
                 case TypeCode.Short:
                 case TypeCode.UShort:
                 case TypeCode.String:
+                case TypeCode.NullValue:
                     return true;
                 default:
                     return false;

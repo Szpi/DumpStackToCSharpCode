@@ -10,7 +10,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
     {
         public IReadOnlyList<DumpedObjectToCsharpCode> DumpObjectOnStack(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
         {
-            var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(), generateTypeWithNamespace);
+            var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(new TypeAnalyzer()), generateTypeWithNamespace);
             var currentExpressionData = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(dte);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();

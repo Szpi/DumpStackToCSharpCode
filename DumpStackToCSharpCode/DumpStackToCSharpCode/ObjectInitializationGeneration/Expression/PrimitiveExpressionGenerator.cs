@@ -9,7 +9,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
 {
     public class PrimitiveExpressionGenerator
     {
-        private const string NullValue = "null";
+        public const string NullValue = "null";
         private const string TrueValue = "true";
 
         public ExpressionSyntax Generate(TypeCode type, string value)
