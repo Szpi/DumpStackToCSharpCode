@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpStackToCSharpCode", "DumpStackToCSharpCode\DumpStackToCSharpCode.csproj", "{4F500551-7672-439A-B8DF-3B97BC263188}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DumpStackToCSharpCodeTests", "DumpStackToCSharpCodeTests\DumpStackToCSharpCodeTests.csproj", "{23C9F17F-6916-4341-B308-B5D5B0133B71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4F500551-7672-439A-B8DF-3B97BC263188}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F500551-7672-439A-B8DF-3B97BC263188}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F500551-7672-439A-B8DF-3B97BC263188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23C9F17F-6916-4341-B308-B5D5B0133B71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23C9F17F-6916-4341-B308-B5D5B0133B71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23C9F17F-6916-4341-B308-B5D5B0133B71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23C9F17F-6916-4341-B308-B5D5B0133B71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
