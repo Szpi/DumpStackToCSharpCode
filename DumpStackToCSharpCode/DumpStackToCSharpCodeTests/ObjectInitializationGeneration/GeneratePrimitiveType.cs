@@ -6,6 +6,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Fac
 
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
+    [TestFixture]
     public class GeneratePrimitiveType
     {
         private CodeGeneratorManager _codeGeneratorManager;
@@ -28,6 +29,19 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
             generated.Should().Be("var testInt = 10;\n");
+        }
+
+        [Test]
+        public void ShouldGenerate_BuiltInEnumAssignment()
+        {
+            var stackObject = new List<ExpressionData>()
+            {
+                new ExpressionData("DateTimeKind", "Utc", "testBuildInEnum", new ExpressionData[] { }, "System.DateTimeKind")
+            };
+
+            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
+
+            generated.Should().Be("var testBuildInEnum = DateTimeKind.Utc;\n");
         }
 
         [Test]
