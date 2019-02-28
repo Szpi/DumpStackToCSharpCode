@@ -32,6 +32,19 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         }
 
         [Test]
+        public void ShouldGenerate_SimpleBoolAssignment()
+        {
+            var stackObject = new List<ExpressionData>()
+            {
+                new ExpressionData("bool", "true", "testBool", new ExpressionData[] { }, "bool")
+            };
+
+            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
+
+            generated.Should().Be("var testBool = true;\n");
+        }
+
+        [Test]
         public void ShouldGenerate_BuiltInEnumAssignment()
         {
             var stackObject = new List<ExpressionData>()

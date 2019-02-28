@@ -57,5 +57,29 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 
             generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[]\r\n    {\r\n        \"test1\",\r\n        \"test2\"\r\n    }\r\n};\n");
         }
+
+        [Test]
+        public void ShouldGenerate_ComplexObjectAssignment_WithInterface()
+        {
+            var firstElement = new ExpressionData("string", "test1", "[0]", new ExpressionData[] { }, "string");
+            var secondElement = new ExpressionData("string", "test2", "[1]", new ExpressionData[] { }, "string");
+            var array = new ExpressionData("string[]",
+                                           "{string[2]}",
+                                           "testStringArray",
+                                           new[]
+                                           {
+                                               firstElement,
+                                               secondElement
+                                           },
+                                           "string[]");
+
+            var stackObject = new List<ExpressionData>()
+            {
+                new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test")
+            };
+            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
+
+            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[]\r\n    {\r\n        \"test1\",\r\n        \"test2\"\r\n    }\r\n};\n");
+        }
     }
 }
