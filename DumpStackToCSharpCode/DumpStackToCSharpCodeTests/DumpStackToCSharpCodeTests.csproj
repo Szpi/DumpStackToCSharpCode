@@ -157,11 +157,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObjectInitializationGeneration\GenerateArrayType.cs" />
-    <Compile Include="ObjectInitializationGeneration\GenerateComplexObjectType.cs" />
-    <Compile Include="ObjectInitializationGeneration\GenerateGenericCollections.cs" />
-    <Compile Include="ObjectInitializationGeneration\GenerateImmutableType.cs" />
-    <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveType.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateArrayTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateComplexObjectTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateGenericCollectionsTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateImmutableTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveTypeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

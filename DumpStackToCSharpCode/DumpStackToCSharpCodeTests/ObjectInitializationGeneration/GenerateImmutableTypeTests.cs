@@ -8,7 +8,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Fac
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
     [TestFixture]
-    public class GenerateImmutableType
+    public class GenerateImmutableTypeTests
     {
         private CodeGeneratorManager _codeGeneratorManager;
 
@@ -46,7 +46,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var Date = new DateTime(10, 10, 10, 10, 10, 10, 0, DateTimeKind.Unspecified);");
+            generated.Should().Be("var Date = new DateTime(10, 10, 10, 10, 10, 10, 0, DateTimeKind.Unspecified);\n");
         }
     }
 }

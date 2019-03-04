@@ -7,7 +7,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Fac
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
     [TestFixture]
-    public class GenerateComplexObjectType
+    public class GenerateComplexObjectTypeTests
     {
         private CodeGeneratorManager _codeGeneratorManager;
 
