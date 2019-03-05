@@ -40,13 +40,13 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _enumExpressionGenerator = enumExpressionGenerator;
         }
 
-        public (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, bool IsPrimitiveType, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
+        public (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, TypeCode mainTypeCode, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
         {
             var (success, typeCode, valueTuple) = GenerateForMainExpression(expressionData);
 
             if (success)
             {
-                return valueTuple;
+                return (valueTuple.generatedSyntax, typeCode, valueTuple.argumentSyntax);
             }
 
             var generatedExpressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
@@ -55,21 +55,22 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 generatedExpressionsSyntax = generatedExpressionsSyntax.Add(GenerateInternal(expressionDataIterator, typeCode));
             }
 
-            return (generatedExpressionsSyntax, false, null);
+            return (generatedExpressionsSyntax, typeCode, null);
         }
 
 
         private ExpressionSyntax GenerateInternal(ExpressionData expressionData, TypeCode parentTypeCode)
         {
-            var (success, typeCode, (generatedSyntax, _, argumentList)) = GenerateForMainExpression(expressionData);
+            var (success, typeCode, (generatedSyntax, argumentList)) = GenerateForMainExpression(expressionData);
             if (success)
             {
                 var generated = generatedSyntax.FirstOrDefault();
                 if (generated != null)
                 {
-                    return parentTypeCode == TypeCode.ComplexObject
+                    return  parentTypeCode == TypeCode.ComplexObject
                         ? _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, generated)
                         : generated;
+
                 }
                 return argumentList.First();
             }
@@ -100,7 +101,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                     }
             }
         }
-        private (bool success, TypeCode typeCode, (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, bool IsPrimitiveType, List<ExpressionSyntax> argumentSyntax) valueTuple)
+        private (bool success, TypeCode typeCode, (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax) valueTuple)
             GenerateForMainExpression(ExpressionData expressionData)
         {
             var typeCode = _typeAnalyzer.GetTypeCode(expressionData.TypeWithNamespace, expressionData.Value);
@@ -115,7 +116,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             {
                 var primitiveExpression = _primitiveExpressionGenerator.Generate(typeCode, expressionData.Value);
                 {
-                    return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), true, null));
+                    return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), null));
                 }
             }
 
@@ -128,31 +129,31 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                          .Select(x => Generate(x).generatedSyntax.First())
                                          .ToList();
 
-                return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>(), false, argumentSyntaxList));
+                return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>(), argumentSyntaxList));
             }
 
-            return (false, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>(), false, null));
+            return (false, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>(), null));
         }
 
         private (bool success,
-                (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, bool IsPrimitiveType, List<ExpressionSyntax> argumentSyntax) valueTuple,
+                (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax) valueTuple,
                 System.Type type)
                 TryGenerateForBuiltInEnum(ExpressionData expressionData, TypeCode typeCode)
         {
             if (typeCode != TypeCode.ComplexObject)
             {
-                return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), false, null), null);
+                return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), null), null);
             }
 
             var type = System.Type.GetType(expressionData.TypeWithNamespace);
             if (type == null || !type.IsEnum)
             {
-                return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), false, null), type);
+                return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), null), type);
             }
 
             var enumExpression = _enumExpressionGenerator.Generate(expressionData);
 
-            return (true, (new SeparatedSyntaxList<ExpressionSyntax>().Add(enumExpression), true, null), type);
+            return (true, (new SeparatedSyntaxList<ExpressionSyntax>().Add(enumExpression), null), type);
         }
 
         private static ExpressionData GetExpressionDataForDictionary(ExpressionData expressionData, string keyOrValueName)

@@ -22,6 +22,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
             foreach (var expression in expressionsData)
             {
                 var (generatedSyntax, isPrimitiveType, argumentSyntax) = _initializationManager.Generate(expression);
+                
                 if (isPrimitiveType)
                 {
                     codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedSyntax.FirstOrDefault());
