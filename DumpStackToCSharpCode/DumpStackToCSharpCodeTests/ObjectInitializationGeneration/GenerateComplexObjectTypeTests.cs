@@ -70,5 +70,29 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 
            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    TestTestTest = new test()\r\n    {\r\n    }\r\n};\n");
         }
+
+        [Test]
+        public void ShouldGenerate_ComplexObjectAssignment_WithList()
+        {
+            var intFirst = new ExpressionData("int", "10", "[0]", new ExpressionData[]
+            {
+                //new ExpressionData("int", "10", "TestInt", new ExpressionData[] { }, "int")
+            }, "int");
+            var intSecond = new ExpressionData("int", "20", "[1]", new ExpressionData[] { }, "int");
+
+            var listElement = new ExpressionData("List<int>",
+                                                 "Count = 2",
+                                                 "testListOfInt",
+                                                 new[]
+                                                 {
+                                                     intFirst,
+                                                     intSecond
+                                                 },
+                                                 "System.Collections.Generic.List<int>");
+            var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new[] { listElement }, "Test");
+            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
+
+            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testListOfInt = new List<int>() { 10, 20 }\r\n};\n");
+        }
     }
 }

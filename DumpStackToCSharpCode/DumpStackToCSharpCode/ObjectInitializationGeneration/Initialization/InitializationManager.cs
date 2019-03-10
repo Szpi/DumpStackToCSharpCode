@@ -98,11 +98,11 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                         return _dictionaryExpressionGenerator.Generate(expressionData, keyExpressionSyntax, valueExpressionSyntax);
                     }
                 case TypeCode.Array:
-                case TypeCode.Collection:
                     {
                         var arraySyntax =  _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
                         return _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, arraySyntax);
                     }
+                case TypeCode.Collection:
                 default:
                     {
                         var complexTypeExpression = _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData);
