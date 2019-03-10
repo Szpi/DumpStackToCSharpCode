@@ -20,23 +20,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
         {
             if (!GetArgumentNames(expressionData, out var argumentNames))
             {
-                if (type == null)
-                {
-                    return null;
-                }
-
-                var constructors = type.GetConstructors();
-
-                if (!constructors.Any())
-                {
-                    return null;
-                }
-
-                Array.Sort(constructors, (info, constructorInfo) => info.GetParameters().Length - constructorInfo.GetParameters().Length);
-
-                _typeToArgumentNames[expressionData.Type] = constructors.Last().GetParameters().Select(x => x.Name).ToList();
-
-                return GetArgumentList(expressionData, type);
+                return TryAddConstructorArguments(expressionData, type) ? null : GetArgumentList(expressionData, type);
             }
             
             var matchedArgumentList = argumentNames
@@ -47,6 +31,27 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
                 .ToList();
 
             return new ExpressionData(string.Empty, string.Empty, string.Empty, matchedArgumentList, string.Empty);
+        }
+
+        private bool TryAddConstructorArguments(ExpressionData expressionData, System.Type type)
+        {
+            if (type == null)
+            {
+                return true;
+            }
+
+            var constructors = type.GetConstructors();
+
+            if (!constructors.Any())
+            {
+                return true;
+            }
+
+            Array.Sort(constructors,
+                       (info, constructorInfo) => info.GetParameters().Length - constructorInfo.GetParameters().Length);
+
+            _typeToArgumentNames[expressionData.Type] = constructors.Last().GetParameters().Select(x => x.Name).ToList();
+            return false;
         }
 
         private bool GetArgumentNames(ExpressionData expressionData, out IReadOnlyList<string> argumentNames)

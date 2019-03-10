@@ -24,7 +24,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new ArrayInitializationGenerator(new TypeAnalyzer()),
                                                                   new AssignmentExpressionGenerator(),
                                                                   argumentListManager,
-                                                                  new EnumExpressionGenerator());
+                                                                  new EnumExpressionGenerator(),
+                                                                  new ImmutableInitializationGenerator());
             
             return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager);
         }

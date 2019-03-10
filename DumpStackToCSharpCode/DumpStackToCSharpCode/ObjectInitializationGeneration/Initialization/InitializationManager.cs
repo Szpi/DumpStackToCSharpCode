@@ -20,6 +20,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private readonly AssignmentExpressionGenerator _assignmentExpressionGenerator;
         private readonly ArgumentListManager _argumentListManager;
         private readonly EnumExpressionGenerator _enumExpressionGenerator;
+        private readonly ImmutableInitializationGenerator _immutableInitializationGenerator;
 
         public InitializationManager(TypeAnalyzer typeAnalyzer,
                                      PrimitiveExpressionGenerator primitiveExpressionGenerator,
@@ -28,7 +29,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                      ArrayInitializationGenerator arrayInitializationGenerator,
                                      AssignmentExpressionGenerator assignmentExpressionGenerator,
                                      ArgumentListManager argumentListManager,
-                                     EnumExpressionGenerator enumExpressionGenerator)
+                                     EnumExpressionGenerator enumExpressionGenerator, 
+                                     ImmutableInitializationGenerator immutableInitializationGenerator)
         {
             _typeAnalyzer = typeAnalyzer;
             _primitiveExpressionGenerator = primitiveExpressionGenerator;
@@ -38,6 +40,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _assignmentExpressionGenerator = assignmentExpressionGenerator;
             _argumentListManager = argumentListManager;
             _enumExpressionGenerator = enumExpressionGenerator;
+            _immutableInitializationGenerator = immutableInitializationGenerator;
         }
 
         public (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, TypeCode mainTypeCode, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
@@ -65,14 +68,19 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             if (success)
             {
                 var generated = generatedSyntax.FirstOrDefault();
-                if (generated != null)
+                if (IsNotImmutableType(generated))
                 {
-                    return  parentTypeCode == TypeCode.ComplexObject
-                        ? _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, generated)
-                        : generated;
-
+                    return GenerateExpressionSyntax(expressionData, parentTypeCode, generated);
                 }
-                return argumentList.First();
+
+                if (_typeAnalyzer.IsPrimitiveType(parentTypeCode))
+                {
+                    return argumentList.First();
+                }
+
+                var objectCreationSyntax = _immutableInitializationGenerator.Generate(expressionData, argumentList);
+
+                return GenerateExpressionSyntax(expressionData, parentTypeCode, objectCreationSyntax);
             }
 
             var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
@@ -102,6 +110,19 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                     }
             }
         }
+
+        private ExpressionSyntax GenerateExpressionSyntax(ExpressionData expressionData, TypeCode parentTypeCode, ExpressionSyntax objectCreationSyntax)
+        {
+            return parentTypeCode == TypeCode.ComplexObject
+                ? _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, objectCreationSyntax)
+                : objectCreationSyntax;
+        }
+
+        private static bool IsNotImmutableType(ExpressionSyntax generated)
+        {
+            return generated != null;
+        }
+
         private (bool success, TypeCode typeCode, (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax) valueTuple)
             GenerateForMainExpression(ExpressionData expressionData)
         {
