@@ -29,7 +29,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                      ArrayInitializationGenerator arrayInitializationGenerator,
                                      AssignmentExpressionGenerator assignmentExpressionGenerator,
                                      ArgumentListManager argumentListManager,
-                                     EnumExpressionGenerator enumExpressionGenerator, 
+                                     EnumExpressionGenerator enumExpressionGenerator,
                                      ImmutableInitializationGenerator immutableInitializationGenerator)
         {
             _typeAnalyzer = typeAnalyzer;
@@ -55,7 +55,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             var generatedExpressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var expressionDataIterator in expressionData.UnderlyingExpressionData)
             {
-                generatedExpressionsSyntax = generatedExpressionsSyntax.Add(GenerateInternal(expressionDataIterator, typeCode));
+                var generatedUnderlyingExpression = GenerateInternal(expressionDataIterator, typeCode);
+                generatedExpressionsSyntax = generatedExpressionsSyntax.Add(generatedUnderlyingExpression);
             }
 
             return (generatedExpressionsSyntax, typeCode, null);
@@ -99,14 +100,14 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                     }
                 case TypeCode.Array:
                     {
-                        var arraySyntax =  _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
+                        var arraySyntax = _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
                         return _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, arraySyntax);
                     }
                 case TypeCode.Collection:
                 default:
                     {
                         var complexTypeExpression = _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData);
-                        return _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, complexTypeExpression);
+                        return GenerateExpressionSyntax(expressionData, parentTypeCode, complexTypeExpression);
                     }
             }
         }
@@ -192,7 +193,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var expressionData in expressionsData)
             {
-                expressionsSyntax = expressionsSyntax.Add(GenerateInternal(expressionData, parentType));
+                var generatedUnderlyingExpression = GenerateInternal(expressionData, parentType);
+                expressionsSyntax = expressionsSyntax.Add(generatedUnderlyingExpression);
             }
 
             return expressionsSyntax;

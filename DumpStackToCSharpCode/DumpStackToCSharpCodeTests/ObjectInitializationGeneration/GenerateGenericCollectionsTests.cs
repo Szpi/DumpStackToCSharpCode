@@ -51,5 +51,60 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 
             generated.Should().Be("var testListOfDatetime = new List<DateTime>()\n{\r\n    new DateTime(10, 10, 10, 10, 10, 10, 0, DateTimeKind.Unspecified)\r\n};\n");
         }
+
+        [Test]
+        public void ShouldGenerate_ListOfComplexType()
+        {
+            var firstElement = new ExpressionData("string", "test1", "TestString", new ExpressionData[] { }, "string");
+            var secondElement = new ExpressionData("int", "10", "TestInt", new ExpressionData[] { }, "int");
+            var firstComplexType = new ExpressionData("Test",
+                                                 "Test",
+                                                 "testComplexObject",
+                                                 new[]
+                                                 {
+                                                     firstElement,
+                                                     secondElement
+                                                 },
+                                                 "Test");
+
+            var firstElementOfSecondComplexObject = new ExpressionData("string",
+                                                                       "test2",
+                                                                       "TestString",
+                                                                       new ExpressionData[]
+                                                                       {
+                                                                       },
+                                                                       "string");
+            var secondElementOfSecondComplexObject = new ExpressionData("int",
+                                                                        "11",
+                                                                        "TestInt",
+                                                                        new ExpressionData[]
+                                                                        {
+                                                                        },
+                                                                        "int");
+
+            var secondComplexType = new ExpressionData("Test",
+                                                      "Test",
+                                                      "testComplexObject",
+                                                      new[]
+                                                      {
+                                                          firstElementOfSecondComplexObject,
+                                                          secondElementOfSecondComplexObject
+                                                      },
+                                                      "Test");
+
+            var stackObject = new ExpressionData("List<Test>",
+                                                 "Count = 2",
+                                                 "testComplexType",
+                                                 new[]
+                                                 {
+                                                     firstComplexType,
+                                                     secondComplexType
+                                                 },
+                                                 "System.Collections.Generic.List<ConsoleApp1.Test>");
+
+            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
+            
+            generated.Should().Be("var testComplexType = new List<Test>()\n{\r\n    new Test()\r\n    {\r\n        TestString = \"test1\",\r\n        TestInt = 10\r\n    },\r\n    new Test()\r\n    {\r\n        TestString = \"test2\",\r\n        TestInt = 11\r\n    }\r\n};\n");
+        }
     }
 }

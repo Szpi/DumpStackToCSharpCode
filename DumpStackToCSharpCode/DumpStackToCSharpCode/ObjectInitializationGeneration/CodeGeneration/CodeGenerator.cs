@@ -9,7 +9,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
     public class CodeGenerator
     {
         private CompilationUnitSyntax _compilationUnitSyntax;
-        private TypeAnalyzer _typeAnalyzer;
+        private readonly TypeAnalyzer _typeAnalyzer;
         public CodeGenerator(TypeAnalyzer typeAnalyzer)
         {
             _typeAnalyzer = typeAnalyzer;
