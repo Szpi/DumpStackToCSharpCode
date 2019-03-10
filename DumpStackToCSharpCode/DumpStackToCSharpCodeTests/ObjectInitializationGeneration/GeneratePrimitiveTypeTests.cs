@@ -21,10 +21,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         [Test]
         public void ShouldGenerate_SimpleIntAssignment()
         {
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("int", "10", "testInt", new ExpressionData[] { }, "int")
-            };
+            var stackObject = new ExpressionData("int", "10", "testInt", new ExpressionData[] { }, "int");
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
@@ -34,10 +31,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         [Test]
         public void ShouldGenerate_SimpleBoolAssignment()
         {
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("bool", "true", "testBool", new ExpressionData[] { }, "bool")
-            };
+            var stackObject = new ExpressionData("bool", "true", "testBool", new ExpressionData[] { }, "bool");
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
@@ -47,10 +41,13 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         [Test]
         public void ShouldGenerate_BuiltInEnumAssignment()
         {
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("DateTimeKind", "Utc", "testBuildInEnum", new ExpressionData[] { }, "System.DateTimeKind")
-            };
+            var stackObject = new ExpressionData("DateTimeKind",
+                                                 "Utc",
+                                                 "testBuildInEnum",
+                                                 new ExpressionData[]
+                                                 {
+                                                 },
+                                                 "System.DateTimeKind");
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
@@ -60,10 +57,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         [Test]
         public void ShouldGenerate_SimpleStringAssignment()
         {
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("string", "10", "testString", new ExpressionData[] { }, "string")
-            };
+            var stackObject = new ExpressionData("string", "10", "testString", new ExpressionData[] { }, "string");
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 

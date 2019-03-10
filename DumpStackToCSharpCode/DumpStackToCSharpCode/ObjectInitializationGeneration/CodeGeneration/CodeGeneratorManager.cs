@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 
@@ -9,27 +9,33 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
         private readonly TypeAnalyzer _typeAnalyzer;
         private readonly InitializationManager _initializationManager;
 
-        public CodeGeneratorManager( TypeAnalyzer typeAnalyzer, InitializationManager initializationManager)
+        public CodeGeneratorManager(TypeAnalyzer typeAnalyzer, InitializationManager initializationManager)
         {
             _typeAnalyzer = typeAnalyzer;
             _initializationManager = initializationManager;
         }
 
-        public string GenerateStackDump(IReadOnlyList<ExpressionData> expressionsData)
+        public string GenerateStackDump(ExpressionData expressionsData)
         {
             var codeGenerator = new CodeGenerator(_typeAnalyzer);
 
-            foreach (var expression in expressionsData)
+            var (generatedSyntax, expressionTypeCode, argumentSyntax) = _initializationManager.Generate(expressionsData);
+
+            if (_typeAnalyzer.IsPrimitiveType(expressionTypeCode))
             {
-                var (generatedSyntax, isPrimitiveType, argumentSyntax) = _initializationManager.Generate(expression);
-                
-                if (isPrimitiveType)
-                {
-                    codeGenerator.AddOnePrimitiveExpression(expression.Name, generatedSyntax.FirstOrDefault());
-                    continue;
-                }
-                codeGenerator.AddOneExpression(expression.Type, expression.Name, generatedSyntax, argumentSyntax);
+                codeGenerator.AddOnePrimitiveExpression(expressionsData.Name, generatedSyntax.FirstOrDefault());
+                return codeGenerator.GetStringDump();
             }
+
+            if (expressionTypeCode == TypeCode.Array)
+            {
+                var arrayInitializationGenerator = new ArrayCodeGenerator();
+
+                var memberSyntax = arrayInitializationGenerator.Generate(expressionsData.Type, expressionsData.Name, generatedSyntax);
+                return codeGenerator.GetStringDump(expressionsData.Name, memberSyntax);
+            }
+
+            codeGenerator.AddOneExpression(expressionsData.Type, expressionsData.Name, generatedSyntax, argumentSyntax);
 
             return codeGenerator.GetStringDump();
         }

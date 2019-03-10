@@ -78,7 +78,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                     argumentListSyntaxWithCommas.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
                 }
             }
-            
+
             return SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(argumentListSyntaxWithCommas));
         }
 
@@ -119,6 +119,16 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
         {
             var workspace = new AdhocWorkspace();
             var formattedSyntax = Microsoft.CodeAnalysis.Formatting.Formatter.Format(_compilationUnitSyntax, workspace);
+            return formattedSyntax.ToFullString();
+        }
+
+        public string GetStringDump(string name, MemberDeclarationSyntax memberDeclarationSyntax)
+        {
+            var compilationUnitSyntax = SyntaxFactory.CompilationUnit();
+            compilationUnitSyntax = compilationUnitSyntax.AddMembers(memberDeclarationSyntax);
+
+            var workspace = new AdhocWorkspace();
+            var formattedSyntax = Microsoft.CodeAnalysis.Formatting.Formatter.Format(compilationUnitSyntax, workspace);
             return formattedSyntax.ToFullString();
         }
     }

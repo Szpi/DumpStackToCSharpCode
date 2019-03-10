@@ -109,7 +109,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 
             if (success)
             {
-                return (true, typeCode, generatedValueTuple);
+                return (true, TypeCode.Enum, generatedValueTuple);
             }
 
             if (_typeAnalyzer.IsPrimitiveType(expressionData.TypeWithNamespace, expressionData.Value))

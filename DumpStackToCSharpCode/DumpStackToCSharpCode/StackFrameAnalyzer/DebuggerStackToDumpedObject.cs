@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using EnvDTE80;
+﻿using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
+using System.Collections.Generic;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
@@ -18,7 +18,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             var dumpedObjectsToCsharpCode = new List<DumpedObjectToCsharpCode>();
             foreach (var expressionData in currentExpressionData)
             {
-                var currentExpressionDataInCSharpCode = codeGeneratorManager.GenerateStackDump(new[] { expressionData });
+                var currentExpressionDataInCSharpCode = codeGeneratorManager.GenerateStackDump(expressionData);
                 dumpedObjectsToCsharpCode.Add(new DumpedObjectToCsharpCode(expressionData.Name, currentExpressionDataInCSharpCode));
             }
 

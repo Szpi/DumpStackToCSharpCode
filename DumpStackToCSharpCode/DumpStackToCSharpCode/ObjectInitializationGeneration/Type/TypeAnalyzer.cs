@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
+﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
 {
@@ -92,28 +91,28 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                 case "string":
                     return TypeCode.String;
                 default:
-                {
-                    if (IsArray(type))
                     {
-                        return TypeCode.Array;
-                    }
-                    if (IsDictionary(type))
-                    {
-                        return TypeCode.Dictionary;
-                    }
+                        if (IsArray(type))
+                        {
+                            return TypeCode.Array;
+                        }
+                        if (IsDictionary(type))
+                        {
+                            return TypeCode.Dictionary;
+                        }
 
-                    if (IsDictionaryKeyValuePair(type))
-                    {
-                        return TypeCode.DictionaryKeyValuePair;
-                    }
+                        if (IsDictionaryKeyValuePair(type))
+                        {
+                            return TypeCode.DictionaryKeyValuePair;
+                        }
 
-                    if (IsCollection(type))
-                    {
-                        return TypeCode.Collection;
-                    }
+                        if (IsCollection(type))
+                        {
+                            return TypeCode.Collection;
+                        }
 
-                    return TypeCode.ComplexObject;
-                }
+                        return TypeCode.ComplexObject;
+                    }
             }
         }
 
@@ -143,6 +142,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                 case TypeCode.UShort:
                 case TypeCode.String:
                 case TypeCode.NullValue:
+                case TypeCode.Enum:
                     return true;
                 default:
                     return false;

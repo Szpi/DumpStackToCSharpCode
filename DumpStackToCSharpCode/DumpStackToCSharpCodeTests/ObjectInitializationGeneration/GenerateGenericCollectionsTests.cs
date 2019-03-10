@@ -38,10 +38,14 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
                 new ExpressionData("long", "3083982100000000", "Ticks", new ExpressionData[] { }, "long"),
             }, "System.DateTime");
 
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("List<DateTime>", "Count = 1", "testListOfDatetime", new[] {dateTimeFirst }, "System.Collections.Generic.List<System.DateTime>")
-            };
+            var stackObject = new ExpressionData("List<DateTime>",
+                                                 "Count = 1",
+                                                 "testListOfDatetime",
+                                                 new[]
+                                                 {
+                                                     dateTimeFirst
+                                                 },
+                                                 "System.Collections.Generic.List<System.DateTime>");
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 

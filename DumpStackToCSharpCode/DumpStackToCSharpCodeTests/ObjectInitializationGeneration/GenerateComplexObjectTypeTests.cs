@@ -23,10 +23,15 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         {
             var firstElement = new ExpressionData("string", "test1", "TestString", new ExpressionData[] { }, "string");
             var secondElement = new ExpressionData("int", "10", "TestInt", new ExpressionData[] { }, "int");
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("Test", "Test", "testComplexObject", new [] { firstElement, secondElement }, "Test")
-            };
+            var stackObject = new ExpressionData("Test",
+                                                 "Test",
+                                                 "testComplexObject",
+                                                 new[]
+                                                 {
+                                                     firstElement,
+                                                     secondElement
+                                                 },
+                                                 "Test");
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
@@ -49,10 +54,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
                                    },
                                    "string[]");
 
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test")
-            };
+            var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test");
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
             generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[]\r\n    {\r\n        \"test1\",\r\n        \"test2\"\r\n    }\r\n};\n");
@@ -73,10 +75,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
                                            },
                                            "string[]");
 
-            var stackObject = new List<ExpressionData>()
-            {
-                new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test")
-            };
+            var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test");
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
             generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[]\r\n    {\r\n        \"test1\",\r\n        \"test2\"\r\n    }\r\n};\n");
