@@ -57,7 +57,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
             var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test");
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[]\r\n    {\r\n        \"test1\",\r\n        \"test2\"\r\n    }\r\n};\n");
+            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[] { \"test1\", \"test2\" }\r\n};\n");
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
             var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test");
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[]\r\n    {\r\n        \"test1\",\r\n        \"test2\"\r\n    }\r\n};\n");
+            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[] { \"test1\", \"test2\" }\r\n};\n");
         }
     }
 }

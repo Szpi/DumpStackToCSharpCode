@@ -77,7 +77,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 
             var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
 
-            switch (parentTypeCode)
+            switch (typeCode)
             {
                 case TypeCode.DictionaryKeyValuePair:
                     {
@@ -92,7 +92,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 case TypeCode.Array:
                 case TypeCode.Collection:
                     {
-                        return _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
+                        var arraySyntax =  _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
+                        return _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, arraySyntax);
                     }
                 default:
                     {
