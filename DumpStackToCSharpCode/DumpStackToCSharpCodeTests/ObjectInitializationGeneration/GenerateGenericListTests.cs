@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
     [TestFixture]
-    public class GenerateGenericCollectionsTests
+    public class GenerateGenericListTests
     {
         private CodeGeneratorManager _codeGeneratorManager;
 
