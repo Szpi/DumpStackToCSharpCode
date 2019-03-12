@@ -1,14 +1,12 @@
-﻿namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
+﻿using System;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
 {
     public class ConcreteTypeAnalyzer
     {
-        private readonly TypeAnalyzer _typeAnalyzer;
-
-        public ConcreteTypeAnalyzer(TypeAnalyzer typeAnalyzer)
-        {
-            _typeAnalyzer = typeAnalyzer;
-        }
-
         public string ParseConcreteType(string type)
         {
             if (!IsTypeInterface(type))
@@ -23,30 +21,28 @@
 
         public string GetTypeWithoutNamespace(string type)
         {
-            if (_typeAnalyzer.IsCollection(type))
+            var tokens = Regex.Split(type, @"(?<=[<,>])").Where(x => !string.IsNullOrEmpty(x));
+            var buffer = new StringBuilder();
+            foreach (var token in tokens)
             {
-                return ParseConcreteType(GetForGenericType(type));
+                var tokenType = ParseConcreteType(RemoveNamespace(token));
+                buffer.Append(tokenType);
             }
 
-            var dotIndex = type.LastIndexOf('.');
-
-            return dotIndex < 0 ? type : ParseConcreteType(type.Substring(dotIndex + 1));
+            return buffer.ToString();
         }
 
-        private string GetForGenericType(string type)
+        private string RemoveNamespace(string stringToRemoveNamespace)
         {
-            var mainType = type.Substring(0, type.IndexOf('<'));
-            var dotIndex = mainType.LastIndexOf('.');
-            var (success, genericType) = _typeAnalyzer.GetGenericType(type);
-            if (!success)
+            var dotIndex = stringToRemoveNamespace.LastIndexOf('.');
+            if (dotIndex <= 0)
             {
-                return string.Empty;
+                return stringToRemoveNamespace;
             }
 
-            var genericTypeWithoutNameSpace = GetTypeWithoutNamespace(genericType);
-            return dotIndex < 0 ? type : mainType.Substring(dotIndex + 1) + "<" + genericTypeWithoutNameSpace + ">";
+            return stringToRemoveNamespace.Substring(dotIndex + 1);
         }
-
+       
         private static bool IsTypeInterface(string type)
         {
             return type[type.Length - 1] == '}';

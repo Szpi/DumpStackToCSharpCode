@@ -162,6 +162,7 @@
     <Compile Include="ObjectInitializationGeneration\GenerateGenericCollectionsTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateImmutableTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\Type\ConcreteTypeAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

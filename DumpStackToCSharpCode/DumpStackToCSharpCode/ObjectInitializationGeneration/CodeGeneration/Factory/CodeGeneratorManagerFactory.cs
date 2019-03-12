@@ -15,7 +15,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
             {
                 ["DateTimeaaaaaaaaaaaaaaaaaaaa"] = new List<string>() { "Year", "Month", "Day", "Hour", "Minutes" }
             };
-            var argumentListManager = new ArgumentListManager(arguments, new ConcreteTypeAnalyzer(new TypeAnalyzer()));
+            var argumentListManager = new ArgumentListManager(arguments, new ConcreteTypeAnalyzer());
 
             var initializationManager = new InitializationManager(new TypeAnalyzer(),
                                                                   new PrimitiveExpressionGenerator(),

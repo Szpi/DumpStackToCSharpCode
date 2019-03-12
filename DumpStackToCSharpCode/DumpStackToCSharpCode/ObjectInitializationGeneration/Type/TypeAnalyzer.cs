@@ -44,7 +44,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                 return (false, null);
             }
 
-            var indexOfClosingBracket = type.IndexOf('>');
+            var indexOfClosingBracket = type.LastIndexOf('>');
             var startIndex = indexOfBracket + 1;
             var genericType = type.Substring(startIndex, indexOfClosingBracket - startIndex);
 
