@@ -76,7 +76,6 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         {
             var intFirst = new ExpressionData("int", "10", "[0]", new ExpressionData[]
             {
-                //new ExpressionData("int", "10", "TestInt", new ExpressionData[] { }, "int")
             }, "int");
             var intSecond = new ExpressionData("int", "20", "[1]", new ExpressionData[] { }, "int");
 

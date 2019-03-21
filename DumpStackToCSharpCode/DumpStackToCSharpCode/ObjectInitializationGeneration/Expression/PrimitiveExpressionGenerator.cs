@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -71,7 +72,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
                 {
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.CharacterLiteralExpression,
-                        SyntaxFactory.Literal(value));
+                        SyntaxFactory.Literal(value.FirstOrDefault()));
                 }
                 case TypeCode.String:
                 {
