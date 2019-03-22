@@ -72,13 +72,13 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
                 {
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.CharacterLiteralExpression,
-                        SyntaxFactory.Literal(value.FirstOrDefault()));
+                        SyntaxFactory.Literal(value.Trim('\"'),'\''));
                 }
                 case TypeCode.String:
                 {
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.StringLiteralExpression,
-                        SyntaxFactory.Literal(value.Replace("\"", string.Empty)));
+                        SyntaxFactory.Literal(value.Trim('\"')));
                 }
                 case TypeCode.Boolean:
                 {

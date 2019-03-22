@@ -79,6 +79,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 {
                     continue;
                 }
+
                 Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds}");
                 if (HasExceedMaxGenerationTime(generationTime))
                 {
@@ -97,7 +98,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             var value = CorrectCharValue(expression.Type, expression.Value);
-            return (new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name, expressionsData, expression.Type), depth);
+            return (
+                new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name, expressionsData,
+                                   expression.Type), depth);
         }
 
         private bool IsDictionaryDuplicatedValue(string dataMemberType)
@@ -108,13 +111,16 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         private string GetTypeToGenerate(string type)
         {
             var concreteType = _concreteTypeAnalyzer.ParseConcreteType(type);
-            return _generateTypeWithNamespace ? concreteType : _concreteTypeAnalyzer.GetTypeWithoutNamespace(concreteType);
+            return _generateTypeWithNamespace
+                ? concreteType
+                : _concreteTypeAnalyzer.GetTypeWithoutNamespace(concreteType);
         }
 
         private ExpressionData GetExpressionData(Expression expression)
         {
             var value = CorrectCharValue(expression.Type, expression.Value);
-            return new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name, new List<ExpressionData>(), expression.Type);
+            return new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name,
+                                      new List<ExpressionData>(), expression.Type);
         }
 
         private bool HasExceedMaxGenerationTime(Stopwatch generationTime)
@@ -129,15 +135,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 return value;
             }
 
-            var charStartIndex = value.IndexOf("\'") + 1;
-            var charEndIndex = value.LastIndexOf("\'");
+            var charStartIndex = value.IndexOf("\'");
 
-            if (charEndIndex <= 0 || charStartIndex <= 0)
-            {
-                return value;
-            }
-
-            return value.Substring(charStartIndex , charEndIndex - charStartIndex).Replace("\\","");
+            return value.Substring(charStartIndex);
         }
     }
 }
