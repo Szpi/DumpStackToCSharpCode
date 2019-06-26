@@ -74,7 +74,9 @@ namespace RuntimeTestDataCollector.Command
             // Switch to the main thread - the call to AddCommand in DumpStackToCSharpCodeCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-            _dte = await package.GetServiceAsync(typeof(DTE)) as DTE2;
+            var dte = await package.GetServiceAsync(typeof(DTE)) ?? throw new Exception("GetServiceAsync returned DTE null");
+
+            _dte = dte as DTE2;
             _debuggerEvents = _dte.Events.DebuggerEvents;
 
             var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
@@ -92,7 +94,7 @@ namespace RuntimeTestDataCollector.Command
             _debuggerEvents.OnContextChanged -= OnDebuggerContextChange;
         }
 
-        public async Task OnSettingsSave()
+        public async Task OnSettingsSaveAsync()
         {
             var generalOptions = await GeneralOptions.GetLiveInstanceAsync();
             if (_stackDataDumpControl == null)
