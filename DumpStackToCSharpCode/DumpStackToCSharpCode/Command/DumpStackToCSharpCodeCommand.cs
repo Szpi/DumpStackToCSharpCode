@@ -136,6 +136,9 @@ namespace RuntimeTestDataCollector.Command
                 package.JoinableTaskFactory.RunAsync(async () =>
                 {
                     var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
+                    var windowFrame = (IVsWindowFrame)window.Frame;
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+
                     var stackDataDump = window as StackDataDump;
                     _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
                     DumpStackToCSharpCode();
