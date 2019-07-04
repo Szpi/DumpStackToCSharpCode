@@ -6,6 +6,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
@@ -167,7 +168,18 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             {
                 return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), null), null);
             }
+            try
+            {
+                return TryGetBuiltInDotNetType(expressionData);
+            }
+            catch (FileLoadException)
+            {
+                return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), null), null);
+            }
+        }
 
+        private (bool success, (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax) valueTuple, System.Type type) TryGetBuiltInDotNetType(ExpressionData expressionData)
+        {
             var type = System.Type.GetType(expressionData.TypeWithNamespace);
             if (type == null || !type.IsEnum)
             {

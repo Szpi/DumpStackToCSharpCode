@@ -108,9 +108,15 @@ namespace RuntimeTestDataCollector.Command
             _stackDataDumpControl.AutomaticallyRefresh.IsChecked = generalOptions.AutomaticallyRefresh;
         }
 
-        private void OnDebuggerContextChange(Process newprocess, Program newprogram, Thread newthread, StackFrame newstackframe)
+        private async void OnDebuggerContextChange(Process newprocess, Program newprogram, Thread newthread, StackFrame newstackframe)
         {
-            DumpStackToCSharpCode();
+            try
+            {
+                await DumpStackToCSharpCodeAsync();
+            }
+            catch (Exception)
+            {
+            }               
         }
 
         /// <summary>
@@ -122,32 +128,32 @@ namespace RuntimeTestDataCollector.Command
         /// <param name="e">Event args.</param>
 
 
-        private void Execute(object sender, EventArgs e)
+        private async void Execute(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            DumpStackToCSharpCode();
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await DumpStackToCSharpCodeAsync();
         }
 
-        private void DumpStackToCSharpCode()
+        private async Task DumpStackToCSharpCodeAsync()
         {
             if (_stackDataDumpControl == null)
             {
-                package.JoinableTaskFactory.RunAsync(async () =>
+                await package.JoinableTaskFactory.RunAsync(async () =>
                 {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
                     var windowFrame = (IVsWindowFrame)window.Frame;
                     Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
 
                     var stackDataDump = window as StackDataDump;
                     _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
-                    DumpStackToCSharpCode();
+                    await DumpStackToCSharpCodeAsync();
                 });
                 return;
             }
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(_dte, int.Parse(_stackDataDumpControl.MaxDepth.Text), GeneralOptions.Instance.GenerateTypeWithNamespace);
+            var dumpedObjectsToCsharpCode = await debuggerStackToDumpedObject.DumpObjectOnStackAsync(_dte, int.Parse(_stackDataDumpControl.MaxDepth.Text), GeneralOptions.Instance.GenerateTypeWithNamespace);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
         }

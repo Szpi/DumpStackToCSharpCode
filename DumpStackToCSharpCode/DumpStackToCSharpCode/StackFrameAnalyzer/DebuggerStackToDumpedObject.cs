@@ -3,12 +3,18 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Fac
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
-        public IReadOnlyList<DumpedObjectToCsharpCode> DumpObjectOnStack(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
+        public Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
+        {
+            return Task.Run(() => DumpObjectOnStack(dte, maxDepth, generateTypeWithNamespace));
+        }
+
+        private IReadOnlyList<DumpedObjectToCsharpCode> DumpObjectOnStack(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
         {
             var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(), generateTypeWithNamespace);
             var currentExpressionData = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(dte);
