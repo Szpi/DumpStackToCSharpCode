@@ -6,7 +6,6 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
@@ -172,7 +171,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             {
                 return TryGetBuiltInDotNetType(expressionData);
             }
-            catch (FileLoadException)
+            catch (System.Exception)
             {
                 return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), null), null);
             }
@@ -203,7 +202,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData, TypeCode parentType)
         {
             var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
-            foreach (var expressionData in expressionsData)
+            foreach (var expressionData in expressionsData.Where(x => x != null))
             {
                 var generatedUnderlyingExpression = GenerateInternal(expressionData, parentType);
                 expressionsSyntax = expressionsSyntax.Add(generatedUnderlyingExpression);

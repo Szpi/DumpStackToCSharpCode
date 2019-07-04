@@ -87,19 +87,13 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
 
                 Trace.WriteLine($">>>>>>>>>>>> datamember {dataMember.Name} {dataMember.Type} {dataMember.Value}");
-                var deepestResult = IterateThroughExpressionsData(dataMember, depth, generationTime);
-                if (deepestResult.currentDepth >= _maxObjectDepth)
-                {
-                    Trace.WriteLine($">>>>>>>>>>>> depth {depth} break");
-                    break;
-                }
-
+                var deepestResult = IterateThroughExpressionsData(dataMember, depth, Stopwatch.StartNew());
+                
                 expressionsData.Add(deepestResult.ExpressionData);
             }
 
             var value = CorrectCharValue(expression.Type, expression.Value);
-            return (
-                new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name, expressionsData,
+            return ( new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name, expressionsData,
                                    expression.Type), depth);
         }
 

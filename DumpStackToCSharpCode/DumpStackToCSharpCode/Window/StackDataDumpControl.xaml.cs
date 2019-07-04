@@ -70,10 +70,15 @@ namespace RuntimeTestDataCollector.Window
             DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange();
         }
 
-        public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
+        public void ClearControls()
         {
             DumpDataStack.Children.Clear();
+            BusyLabel.Visibility = Visibility.Visible;
+        }
 
+        public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
+        {
+            BusyLabel.Visibility = Visibility.Hidden;
             foreach (var dumpedObjectToCsharpCode in stackDataDump)
             {
                 var expander = CreateExpander(dumpedObjectToCsharpCode.Name, dumpedObjectToCsharpCode.CsharpCode);
