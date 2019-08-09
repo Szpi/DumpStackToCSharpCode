@@ -24,8 +24,8 @@
     <ProjectGuid>{4F500551-7672-439A-B8DF-3B97BC263188}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RuntimeTestDataCollector</RootNamespace>
-    <AssemblyName>RuntimeTestDataCollector</AssemblyName>
+    <RootNamespace>DumpStackToCSharpCode</RootNamespace>
+    <AssemblyName>DumpStackToCSharpCode</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>

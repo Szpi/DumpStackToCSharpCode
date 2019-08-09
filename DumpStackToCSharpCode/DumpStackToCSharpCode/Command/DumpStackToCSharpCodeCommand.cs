@@ -130,15 +130,14 @@ namespace RuntimeTestDataCollector.Command
 
         private async void Execute(object sender, EventArgs e)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            await DumpStackToCSharpCodeAsync();
+           await DumpStackToCSharpCodeAsync();
         }
 
         private async Task DumpStackToCSharpCodeAsync()
         {
             if (_stackDataDumpControl == null)
             {
-                await package.JoinableTaskFactory.RunAsync(async () =>
+                 await package.JoinableTaskFactory.RunAsync(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);

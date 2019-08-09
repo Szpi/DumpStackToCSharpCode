@@ -5,6 +5,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
@@ -24,8 +25,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             _generateTypeWithNamespace = generateTypeWithNamespace;
         }
 
-        public IReadOnlyList<ExpressionData> AnalyzeCurrentStack(DTE2 dte)
+        public async Task<IReadOnlyList<ExpressionData>> AnalyzeCurrentStackAsync(DTE2 dte)
         {
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var currentStackExpressionsData = new List<ExpressionData>();
             if (dte?.Debugger?.CurrentStackFrame == null)
             {
@@ -34,7 +36,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 
             var generationTime = Stopwatch.StartNew();
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
+            //for (int i = 0; i < dte.Debugger.CurrentStackFrame.Locals.Count; i++)            
             {
+                //var expression = dte.Debugger.CurrentStackFrame.Locals.Item(i);
                 var (expressionData, depth) = IterateThroughExpressionsData(expression, 0, generationTime);
                 if (depth >= _maxObjectDepth)
                 {
@@ -42,12 +46,14 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
 
                 currentStackExpressionsData.Add(expressionData);
-                if (HasExceedMaxGenerationTime(generationTime))
-                {
-                    break;
-                }
+                //if (HasExceedMaxGenerationTime(generationTime))
+                //{
+                //    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking !!");
+                //    break;
+                //}
             }
 
+            Trace.WriteLine($">>>>>>>>>>>> |||||||||||||||| total time seconds {generationTime.Elapsed.TotalSeconds}");
             return currentStackExpressionsData;
         }
 
@@ -81,14 +87,21 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
 
                 Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds}");
-                if (HasExceedMaxGenerationTime(generationTime))
-                {
-                    break;
-                }
+                //if (HasExceedMaxGenerationTime(generationTime))
+                //{
+                //    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
+                //    break;
+                //}
 
                 Trace.WriteLine($">>>>>>>>>>>> datamember {dataMember.Name} {dataMember.Type} {dataMember.Value}");
                 var deepestResult = IterateThroughExpressionsData(dataMember, depth, Stopwatch.StartNew());
-                
+
+                if (deepestResult.ExpressionData == null)
+                {
+                    Trace.WriteLine($">>>>>>>>>>>> depth {depth} continue");
+                    continue;
+                }
+
                 expressionsData.Add(deepestResult.ExpressionData);
             }
 

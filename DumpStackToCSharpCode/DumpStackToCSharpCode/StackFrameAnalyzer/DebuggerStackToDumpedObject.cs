@@ -9,15 +9,10 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
-        public Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
-        {
-            return Task.Run(() => DumpObjectOnStack(dte, maxDepth, generateTypeWithNamespace));
-        }
-
-        private IReadOnlyList<DumpedObjectToCsharpCode> DumpObjectOnStack(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
+        public async Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
         {
             var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(), generateTypeWithNamespace);
-            var currentExpressionData = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(dte);
+            var currentExpressionData = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
 
