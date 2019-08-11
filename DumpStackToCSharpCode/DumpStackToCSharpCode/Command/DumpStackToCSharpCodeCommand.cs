@@ -62,7 +62,6 @@ namespace RuntimeTestDataCollector.Command
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => this.package;
         private StackDataDumpControl _stackDataDumpControl;
 
         /// <summary>
@@ -116,7 +115,7 @@ namespace RuntimeTestDataCollector.Command
             }
             catch (Exception)
             {
-            }               
+            }
         }
 
         /// <summary>
@@ -130,14 +129,15 @@ namespace RuntimeTestDataCollector.Command
 
         private async void Execute(object sender, EventArgs e)
         {
-           await DumpStackToCSharpCodeAsync();
+            await DumpStackToCSharpCodeAsync();
         }
 
         private async Task DumpStackToCSharpCodeAsync()
         {
+
             if (_stackDataDumpControl == null)
             {
-                 await package.JoinableTaskFactory.RunAsync(async () =>
+                await package.JoinableTaskFactory.RunAsync(async () =>
                 {
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
@@ -150,12 +150,28 @@ namespace RuntimeTestDataCollector.Command
                 });
                 return;
             }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             _stackDataDumpControl.ClearControls();
+            await RefreshUI();
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            var dumpedObjectsToCsharpCode = await debuggerStackToDumpedObject.DumpObjectOnStackAsync(_dte, int.Parse(_stackDataDumpControl.MaxDepth.Text), GeneralOptions.Instance.GenerateTypeWithNamespace);
+            var dumpedObjectsToCsharpCode = await debuggerStackToDumpedObject.DumpObjectOnStackAsync(_dte,
+                                                                                                     int.Parse(_stackDataDumpControl.MaxDepth.Text),
+                                                                                                     GeneralOptions.Instance.GenerateTypeWithNamespace,
+                                                                                                     package.DisposalToken);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
+        }
+
+        private async Task RefreshUI()
+        {
+            var vsUiShell = (IVsUIShell)await package.GetServiceAsync(typeof(IVsUIShell));
+            if (vsUiShell != null)
+            {
+                int hr = vsUiShell.UpdateCommandUI(0);
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
+            }
         }
     }
 }

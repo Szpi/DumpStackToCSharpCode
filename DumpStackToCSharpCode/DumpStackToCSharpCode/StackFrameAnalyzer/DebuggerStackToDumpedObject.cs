@@ -3,16 +3,20 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Fac
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
-        public async Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte, int maxDepth, bool generateTypeWithNamespace)
+        public async Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte,
+                                                                                          int maxDepth,
+                                                                                          bool generateTypeWithNamespace,
+                                                                                          CancellationToken token)
         {
             var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(), generateTypeWithNamespace);
-            var currentExpressionData = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte);
+            var currentExpressionData = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
 

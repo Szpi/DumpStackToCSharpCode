@@ -92,7 +92,10 @@ namespace RuntimeTestDataCollector.Command
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
             var generalOptions = await GeneralOptions.GetLiveInstanceAsync();
 
-            return await debuggerStackToDumpedObject.DumpObjectOnStackAsync(dte, generalOptions.MaxObjectDepth, generalOptions.GenerateTypeWithNamespace);
+            return await debuggerStackToDumpedObject.DumpObjectOnStackAsync(dte,
+                                                                            generalOptions.MaxObjectDepth,
+                                                                            generalOptions.GenerateTypeWithNamespace,
+                                                                            DisposalToken);
         }
         #endregion
     }

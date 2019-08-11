@@ -5,6 +5,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
@@ -25,9 +26,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             _generateTypeWithNamespace = generateTypeWithNamespace;
         }
 
-        public async Task<IReadOnlyList<ExpressionData>> AnalyzeCurrentStackAsync(DTE2 dte)
+        public async Task<IReadOnlyList<ExpressionData>> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
         {
-            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(token);
             var currentStackExpressionsData = new List<ExpressionData>();
             if (dte?.Debugger?.CurrentStackFrame == null)
             {
