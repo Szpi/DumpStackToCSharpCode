@@ -27,5 +27,11 @@ namespace RuntimeTestDataCollector.Options
         [Description("Max object depth to dump")]
         [DefaultValue(10)]
         public int MaxObjectDepth { get; set; } = 10;
+
+        [Category("General")]
+        [DisplayName("Max objects to analyze")]
+        [Description("Max objects to analyze on stack (equivalent to iteration count)")]
+        [DefaultValue(400)]
+        public int MaxObjectsToAnalyze { get; set; } = 400;
     }
 }

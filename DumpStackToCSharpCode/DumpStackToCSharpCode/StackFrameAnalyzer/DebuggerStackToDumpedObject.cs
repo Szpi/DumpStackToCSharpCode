@@ -13,9 +13,15 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         public async Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte,
                                                                                           int maxDepth,
                                                                                           bool generateTypeWithNamespace,
-                                                                                          CancellationToken token)
+                                                                                          CancellationToken token,
+                                                                                          int maxObjectsToAnalyze)
         {
-            var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(maxDepth, new ConcreteTypeAnalyzer(), generateTypeWithNamespace);
+            var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(
+                                                    maxDepth,
+                                                    new ConcreteTypeAnalyzer(),
+                                                    generateTypeWithNamespace,
+                                                    maxObjectsToAnalyze);
+
             var currentExpressionData = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();

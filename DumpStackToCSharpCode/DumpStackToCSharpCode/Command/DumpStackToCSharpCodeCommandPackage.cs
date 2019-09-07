@@ -95,7 +95,8 @@ namespace RuntimeTestDataCollector.Command
             return await debuggerStackToDumpedObject.DumpObjectOnStackAsync(dte,
                                                                             generalOptions.MaxObjectDepth,
                                                                             generalOptions.GenerateTypeWithNamespace,
-                                                                            DisposalToken);
+                                                                            DisposalToken,
+                                                                            generalOptions.MaxObjectsToAnalyze);
         }
         #endregion
     }

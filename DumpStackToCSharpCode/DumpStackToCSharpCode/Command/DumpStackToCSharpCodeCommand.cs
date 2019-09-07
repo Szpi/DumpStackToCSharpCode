@@ -159,7 +159,8 @@ namespace RuntimeTestDataCollector.Command
             var dumpedObjectsToCsharpCode = await debuggerStackToDumpedObject.DumpObjectOnStackAsync(_dte,
                                                                                                      int.Parse(_stackDataDumpControl.MaxDepth.Text),
                                                                                                      GeneralOptions.Instance.GenerateTypeWithNamespace,
-                                                                                                     package.DisposalToken);
+                                                                                                     package.DisposalToken,
+                                                                                                     GeneralOptions.Instance.MaxObjectsToAnalyze);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
         }

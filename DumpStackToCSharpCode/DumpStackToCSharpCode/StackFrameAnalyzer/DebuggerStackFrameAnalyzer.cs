@@ -12,6 +12,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackFrameAnalyzer
     {
+        private readonly int _maxObjectsToAnalyze;
         private readonly int _maxObjectDepth;
         private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
         private readonly bool _generateTypeWithNamespace;
@@ -19,11 +20,13 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 
         public DebuggerStackFrameAnalyzer(int maxObjectDepth,
                                           ConcreteTypeAnalyzer concreteTypeAnalyzer,
-                                          bool generateTypeWithNamespace)
+                                          bool generateTypeWithNamespace,
+                                          int maxObjectsToAnalyze)
         {
             _maxObjectDepth = maxObjectDepth;
             _concreteTypeAnalyzer = concreteTypeAnalyzer;
             _generateTypeWithNamespace = generateTypeWithNamespace;
+            _maxObjectsToAnalyze = maxObjectsToAnalyze;
         }
 
         public async Task<IReadOnlyList<ExpressionData>> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
@@ -36,11 +39,19 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             var generationTime = Stopwatch.StartNew();
+            int currentAnalyzedObject = 0;
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
             //for (int i = 0; i < dte.Debugger.CurrentStackFrame.Locals.Count; i++)            
             {
-                //var expression = dte.Debugger.CurrentStackFrame.Locals.Item(i);
-                var (expressionData, depth) = IterateThroughExpressionsData(expression, 0, generationTime);
+                //var expression = dte.Debugger.CurrentStackFrame.Locals.Item(i
+               
+                if (currentAnalyzedObject > _maxObjectsToAnalyze)
+                {
+                    continue;
+                }
+
+                var (expressionData, depth) = IterateThroughExpressionsData(expression, 0, generationTime, ref currentAnalyzedObject);
+
                 if (depth >= _maxObjectDepth)
                 {
                     continue;
@@ -59,8 +70,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         }
 
         private (ExpressionData ExpressionData, int currentDepth) IterateThroughExpressionsData(
-            Expression expression, int depth, Stopwatch generationTime)
+            Expression expression, int depth, Stopwatch generationTime, ref int currentAnalyzedObjects)
         {
+
             Trace.WriteLine($">>>>>>>>>>>> depth {depth}");
             if (expression == null || depth == _maxObjectDepth)
             {
@@ -74,9 +86,16 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 return (GetExpressionData(expression), depth);
             }
 
+            if (currentAnalyzedObjects > _maxObjectsToAnalyze)
+            {
+                return (null, depth);
+            }
+
             var expressionsData = new List<ExpressionData>();
             foreach (Expression dataMember in expression.DataMembers)
             {
+                currentAnalyzedObjects++;
+
                 if (dataMember == null || string.IsNullOrEmpty(dataMember.Type))
                 {
                     continue;
@@ -94,15 +113,15 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 //    break;
                 //}
 
-                Trace.WriteLine($">>>>>>>>>>>> datamember {dataMember.Name} {dataMember.Type} {dataMember.Value}");
-                var deepestResult = IterateThroughExpressionsData(dataMember, depth, Stopwatch.StartNew());
+                Trace.WriteLine($">>>>>>>>>>>> datamember {dataMember.Name} {dataMember.Type} {dataMember.Value} objects{currentAnalyzedObjects}");
+                var deepestResult = IterateThroughExpressionsData(dataMember, depth, Stopwatch.StartNew(), ref currentAnalyzedObjects);
 
                 if (deepestResult.ExpressionData == null)
                 {
                     Trace.WriteLine($">>>>>>>>>>>> depth {depth} continue");
                     continue;
                 }
-
+                
                 expressionsData.Add(deepestResult.ExpressionData);
             }
 
