@@ -1,10 +1,12 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using FluentAssertions;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,21 +43,18 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             var generationTime = Stopwatch.StartNew();
             int currentAnalyzedObject = 0;
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
-            //for (int i = 0; i < dte.Debugger.CurrentStackFrame.Locals.Count; i++)            
             {
-                //var expression = dte.Debugger.CurrentStackFrame.Locals.Item(i
-               
                 if (currentAnalyzedObject > _maxObjectsToAnalyze)
                 {
                     continue;
                 }
 
-                var (expressionData, depth) = IterateThroughExpressionsData(expression, 0, generationTime, ref currentAnalyzedObject);
-
-                if (depth >= _maxObjectDepth)
+                if (expression.Name.ToLower() == "fixture")
                 {
                     continue;
                 }
+
+                var expressionData = IterateThroughExpressionsData(expression, ref currentAnalyzedObject);
 
                 currentStackExpressionsData.Add(expressionData);
                 //if (HasExceedMaxGenerationTime(generationTime))
@@ -69,31 +68,22 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             return currentStackExpressionsData;
         }
 
-        private (ExpressionData ExpressionData, int currentDepth) IterateThroughExpressionsData(
-            Expression expression, int depth, Stopwatch generationTime, ref int currentAnalyzedObjects)
+        private ExpressionData IterateThroughExpressionsData(Expression expression, ref int currentAnalyzedObjects)
         {
-
-            Trace.WriteLine($">>>>>>>>>>>> depth {depth}");
-            if (expression == null || depth == _maxObjectDepth)
+            if (expression == null)
             {
-                return (null, depth);
+                return null;
             }
+            var queue = new Queue<(Expression expression, ExpressionData parentExpressionData)>(_maxObjectsToAnalyze * 2);
 
-            depth++;
-            Trace.WriteLine($">>>>>>>>>>>> count {expression.DataMembers.Count}");
-            if (expression.DataMembers.Count == 0)
+            queue.Enqueue((expression, null));
+            ExpressionData mainObject = null;
+            var currentObjectDepth = 0;
+            while (queue.Any())
             {
-                return (GetExpressionData(expression), depth);
-            }
+                var stackObject = queue.Dequeue();
+                var dataMember = stackObject.expression;
 
-            if (currentAnalyzedObjects > _maxObjectsToAnalyze)
-            {
-                return (null, depth);
-            }
-
-            var expressionsData = new List<ExpressionData>();
-            foreach (Expression dataMember in expression.DataMembers)
-            {
                 currentAnalyzedObjects++;
 
                 if (dataMember == null || string.IsNullOrEmpty(dataMember.Type))
@@ -106,28 +96,49 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                     continue;
                 }
 
-                Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds}");
                 //if (HasExceedMaxGenerationTime(generationTime))
                 //{
                 //    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
                 //    break;
                 //}
 
-                Trace.WriteLine($">>>>>>>>>>>> datamember {dataMember.Name} {dataMember.Type} {dataMember.Value} objects{currentAnalyzedObjects}");
-                var deepestResult = IterateThroughExpressionsData(dataMember, depth, Stopwatch.StartNew(), ref currentAnalyzedObjects);
-
-                if (deepestResult.ExpressionData == null)
+                if (currentAnalyzedObjects > _maxObjectsToAnalyze)
                 {
-                    Trace.WriteLine($">>>>>>>>>>>> depth {depth} continue");
-                    continue;
+                    return mainObject;
                 }
-                
-                expressionsData.Add(deepestResult.ExpressionData);
+
+                if (currentObjectDepth >= _maxObjectDepth)
+                {
+                    return mainObject;
+                }
+               
+                var expressionData = GetExpressionData(dataMember, new List<ExpressionData>());
+                if (HasParentExpressionData(stackObject))
+                {
+                    stackObject.parentExpressionData.UnderlyingExpressionData.Add(expressionData);
+                }
+                else
+                {
+                    mainObject = expressionData;
+                }
+
+                foreach (Expression child in dataMember.DataMembers)
+                {
+                    queue.Enqueue((child, expressionData));
+                }
+                               
+                if (stackObject.parentExpressionData.)
+                {
+                    currentObjectDepth++;
+                }
             }
 
-            var value = CorrectCharValue(expression.Type, expression.Value);
-            return ( new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name, expressionsData,
-                                   expression.Type), depth);
+            return mainObject;            
+        }
+
+        private static bool HasParentExpressionData((Expression expression, ExpressionData parentExpressionData) stackObject)
+        {
+            return stackObject.parentExpressionData != null;
         }
 
         private bool IsDictionaryDuplicatedValue(string dataMemberType)
@@ -143,11 +154,11 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 : _concreteTypeAnalyzer.GetTypeWithoutNamespace(concreteType);
         }
 
-        private ExpressionData GetExpressionData(Expression expression)
+        private ExpressionData GetExpressionData(Expression expression, List<ExpressionData> expressionData)
         {
             var value = CorrectCharValue(expression.Type, expression.Value);
             return new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name,
-                                      new List<ExpressionData>(), expression.Type);
+                                      expressionData, expression.Type);
         }
 
         private bool HasExceedMaxGenerationTime(Stopwatch generationTime)
