@@ -46,29 +46,24 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             {
                 if (currentAnalyzedObject > _maxObjectsToAnalyze)
                 {
-                    continue;
+                    break;
                 }
 
-                if (expression.Name.ToLower() == "fixture")
-                {
-                    continue;
-                }
-
-                var expressionData = IterateThroughExpressionsData(expression, ref currentAnalyzedObject);
+                var expressionData = GenerateExpressionData(expression, ref currentAnalyzedObject, generationTime);
 
                 currentStackExpressionsData.Add(expressionData);
-                //if (HasExceedMaxGenerationTime(generationTime))
-                //{
-                //    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking !!");
-                //    break;
-                //}
+                if (HasExceedMaxGenerationTime(generationTime))
+                {
+                    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking !!");
+                    break;
+                }
             }
 
             Trace.WriteLine($">>>>>>>>>>>> |||||||||||||||| total time seconds {generationTime.Elapsed.TotalSeconds}");
             return currentStackExpressionsData;
         }
 
-        private ExpressionData IterateThroughExpressionsData(Expression expression, ref int currentAnalyzedObjects)
+        private ExpressionData GenerateExpressionData(Expression expression, ref int currentAnalyzedObjects, Stopwatch generationTime)
         {
             if (expression == null)
             {
@@ -78,7 +73,11 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 
             queue.Enqueue((expression, null));
             ExpressionData mainObject = null;
-            var currentObjectDepth = 0;
+            var currentObjectDepth = 1;
+
+            var nextDepthAfterAnalyzedObjects = 1;
+            var depthEndsAfterAnalyzingObjects = expression.DataMembers.Count;
+
             while (queue.Any())
             {
                 var stackObject = queue.Dequeue();
@@ -96,22 +95,22 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                     continue;
                 }
 
-                //if (HasExceedMaxGenerationTime(generationTime))
-                //{
-                //    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
-                //    break;
-                //}
+                if (HasExceedMaxGenerationTime(generationTime))
+                {
+                    Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
+                    return mainObject;
+                }
 
                 if (currentAnalyzedObjects > _maxObjectsToAnalyze)
                 {
                     return mainObject;
                 }
 
-                if (currentObjectDepth >= _maxObjectDepth)
+                if (currentObjectDepth > _maxObjectDepth)
                 {
                     return mainObject;
                 }
-               
+
                 var expressionData = GetExpressionData(dataMember, new List<ExpressionData>());
                 if (HasParentExpressionData(stackObject))
                 {
@@ -124,16 +123,23 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 
                 foreach (Expression child in dataMember.DataMembers)
                 {
+                    nextDepthAfterAnalyzedObjects += dataMember.DataMembers.Count;
                     queue.Enqueue((child, expressionData));
                 }
-                               
-                if (stackObject.parentExpressionData.)
+
+                if (WasCurrentDepthReached(currentAnalyzedObjects, depthEndsAfterAnalyzingObjects))
                 {
+                    depthEndsAfterAnalyzingObjects = nextDepthAfterAnalyzedObjects;
                     currentObjectDepth++;
                 }
             }
 
             return mainObject;            
+        }
+
+        private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)
+        {
+            return currentAnalyzedObjects == depthEndsAfterAnalyzingObjects;
         }
 
         private static bool HasParentExpressionData((Expression expression, ExpressionData parentExpressionData) stackObject)
