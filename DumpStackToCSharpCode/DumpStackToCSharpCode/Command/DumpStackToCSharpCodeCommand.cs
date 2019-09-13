@@ -160,7 +160,8 @@ namespace RuntimeTestDataCollector.Command
                                                                                                      int.Parse(_stackDataDumpControl.MaxDepth.Text),
                                                                                                      GeneralOptions.Instance.GenerateTypeWithNamespace,
                                                                                                      package.DisposalToken,
-                                                                                                     GeneralOptions.Instance.MaxObjectsToAnalyze);
+                                                                                                     GeneralOptions.Instance.MaxObjectsToAnalyze,
+                                                                                                     GeneralOptions.Instance.MaxGenerationTime);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
         }

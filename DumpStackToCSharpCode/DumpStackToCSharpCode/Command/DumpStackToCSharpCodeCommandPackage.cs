@@ -96,7 +96,8 @@ namespace RuntimeTestDataCollector.Command
                                                                             generalOptions.MaxObjectDepth,
                                                                             generalOptions.GenerateTypeWithNamespace,
                                                                             DisposalToken,
-                                                                            generalOptions.MaxObjectsToAnalyze);
+                                                                            generalOptions.MaxObjectsToAnalyze,
+                                                                            generalOptions.MaxGenerationTime);
         }
         #endregion
     }

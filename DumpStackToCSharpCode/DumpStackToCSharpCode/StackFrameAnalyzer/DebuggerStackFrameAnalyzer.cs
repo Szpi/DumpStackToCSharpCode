@@ -17,17 +17,19 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         private readonly int _maxObjectDepth;
         private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
         private readonly bool _generateTypeWithNamespace;
-        private readonly TimeSpan _maxGenerationTime = TimeSpan.FromSeconds(5);
+        private readonly TimeSpan _maxGenerationTime;
 
         public DebuggerStackFrameAnalyzer(int maxObjectDepth,
                                           ConcreteTypeAnalyzer concreteTypeAnalyzer,
                                           bool generateTypeWithNamespace,
-                                          int maxObjectsToAnalyze)
+                                          int maxObjectsToAnalyze,
+                                          TimeSpan maxGenerationTime)
         {
             _maxObjectDepth = maxObjectDepth;
             _concreteTypeAnalyzer = concreteTypeAnalyzer;
             _generateTypeWithNamespace = generateTypeWithNamespace;
             _maxObjectsToAnalyze = maxObjectsToAnalyze;
+            _maxGenerationTime = maxGenerationTime;
         }
 
         public async Task<IReadOnlyList<ExpressionData>> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
@@ -68,7 +70,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             {
                 return null;
             }
-            var queue = new Queue<(Expression expression, ExpressionData parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
+            var queue = new Queue<(Expression expression, List<ExpressionData> parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
 
             queue.Enqueue((expression, null));
             ExpressionData mainObject = null;
@@ -109,11 +111,15 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 {
                     return mainObject;
                 }
+                var underlyingExpressionData = new List<ExpressionData>();
 
-                var expressionData = GetExpressionData(dataMember, new List<ExpressionData>());
+                var value = CorrectCharValue(dataMember.Type, dataMember.Value);
+                var type = GetTypeToGenerate(dataMember.Type);
+                var expressionData = new ExpressionData(type, value, dataMember.Name, underlyingExpressionData, dataMember.Type);
+
                 if (HasParentExpressionData(stackObject))
                 {
-                    stackObject.parentExpressionData.UnderlyingExpressionData.Add(expressionData);
+                    stackObject.parentExpressionData.Add(expressionData);
                 }
                 else
                 {
@@ -123,7 +129,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 foreach (Expression child in dataMember.DataMembers)
                 {
                     nextDepthAfterAnalyzedObjects += dataMember.DataMembers.Count;
-                    queue.Enqueue((child, expressionData));
+                    queue.Enqueue((child, underlyingExpressionData));
                 }
 
                 if (WasCurrentDepthReached(currentAnalyzedObjects, depthEndsAfterAnalyzingObjects))
@@ -133,7 +139,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
             }
 
-            return mainObject;            
+            return mainObject;
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)
@@ -141,7 +147,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             return currentAnalyzedObjects == depthEndsAfterAnalyzingObjects;
         }
 
-        private static bool HasParentExpressionData((Expression expression, ExpressionData parentExpressionData) stackObject)
+        private static bool HasParentExpressionData((Expression expression, List<ExpressionData> parentExpressionData) stackObject)
         {
             return stackObject.parentExpressionData != null;
         }
@@ -157,13 +163,6 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             return _generateTypeWithNamespace
                 ? concreteType
                 : _concreteTypeAnalyzer.GetTypeWithoutNamespace(concreteType);
-        }
-
-        private ExpressionData GetExpressionData(Expression expression, List<ExpressionData> expressionData)
-        {
-            var value = CorrectCharValue(expression.Type, expression.Value);
-            return new ExpressionData(GetTypeToGenerate(expression.Type), value, expression.Name,
-                                      expressionData, expression.Type);
         }
 
         private bool HasExceedMaxGenerationTime(Stopwatch generationTime)

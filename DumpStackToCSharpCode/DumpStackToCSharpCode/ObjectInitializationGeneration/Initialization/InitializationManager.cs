@@ -177,7 +177,10 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             }
         }
 
-        private (bool success, (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax) valueTuple, System.Type type) TryGetBuiltInDotNetType(ExpressionData expressionData)
+        private (bool success,
+                (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax)
+                valueTuple,
+                System.Type type) TryGetBuiltInDotNetType(ExpressionData expressionData)
         {
             var type = System.Type.GetType(expressionData.TypeWithNamespace);
             if (type == null || !type.IsEnum)

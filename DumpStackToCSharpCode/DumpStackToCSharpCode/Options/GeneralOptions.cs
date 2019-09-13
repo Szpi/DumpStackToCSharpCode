@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace RuntimeTestDataCollector.Options
 {
@@ -33,5 +34,11 @@ namespace RuntimeTestDataCollector.Options
         [Description("Max objects to analyze on stack (equivalent to iteration count)")]
         [DefaultValue(400)]
         public int MaxObjectsToAnalyze { get; set; } = 400;
+
+        [Category("General")]
+        [DisplayName("Max generation time")]
+        [Description("After this timespan generation will be stopped")]
+        [DefaultValue(400)]
+        public TimeSpan MaxGenerationTime { get; set; } = TimeSpan.FromSeconds(10);
     }
 }

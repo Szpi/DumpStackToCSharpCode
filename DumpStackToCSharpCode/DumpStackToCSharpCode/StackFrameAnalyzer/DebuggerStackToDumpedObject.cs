@@ -2,6 +2,7 @@
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,13 +15,15 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                                                           int maxDepth,
                                                                                           bool generateTypeWithNamespace,
                                                                                           CancellationToken token,
-                                                                                          int maxObjectsToAnalyze)
+                                                                                          int maxObjectsToAnalyze,
+                                                                                          TimeSpan maxGenerationTime)
         {
             var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(
                                                     maxDepth,
                                                     new ConcreteTypeAnalyzer(),
                                                     generateTypeWithNamespace,
-                                                    maxObjectsToAnalyze);
+                                                    maxObjectsToAnalyze,
+                                                    maxGenerationTime);
 
             var currentExpressionData = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
 
