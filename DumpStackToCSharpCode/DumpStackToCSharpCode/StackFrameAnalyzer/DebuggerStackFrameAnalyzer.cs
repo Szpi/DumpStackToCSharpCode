@@ -1,6 +1,5 @@
 ﻿using EnvDTE;
 using EnvDTE80;
-using FluentAssertions;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
@@ -69,7 +68,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             {
                 return null;
             }
-            var queue = new Queue<(Expression expression, ExpressionData parentExpressionData)>(_maxObjectsToAnalyze * 2);
+            var queue = new Queue<(Expression expression, ExpressionData parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
 
             queue.Enqueue((expression, null));
             ExpressionData mainObject = null;
