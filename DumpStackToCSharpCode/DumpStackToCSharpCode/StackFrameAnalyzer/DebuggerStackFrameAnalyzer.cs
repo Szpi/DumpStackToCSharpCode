@@ -79,7 +79,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             var nextDepthAfterAnalyzedObjects = 1;
             var depthEndsAfterAnalyzingObjects = expression.DataMembers.Count;
 
-            while (queue.Any())
+            while (queue.Count > 0)
             {
                 var stackObject = queue.Dequeue();
                 var dataMember = stackObject.expression;

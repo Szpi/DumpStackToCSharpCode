@@ -61,55 +61,218 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 
             return (generatedExpressionsSyntax, typeCode, null);
         }
-
+        class test
+        {
+            public ExpressionSyntax ExpressionSyntax { get; set; }
+            public TypeCode ParentTypeCode { get; set; }
+        }
 
         private ExpressionSyntax GenerateInternal(ExpressionData expressionData, TypeCode parentTypeCode)
         {
-            var (success, typeCode, (generatedSyntax, argumentList)) = GenerateForMainExpression(expressionData);
-            if (success)
+            //var queue = new Queue<(ExpressionData expressionData, ExpressionSyntax parentExpressionSyntax)>((int)(400 * 1.2f));
+            var queue = new Queue<(ExpressionData expressionData, test parentExpressionSyntax)>((int)(400 * 1.2f));
+
+            queue.Enqueue((expressionData, null));
+            test mainExpressionSyntax = null;
+
+            bool mainExpression = true;
+            while (queue.Count > 0)
             {
-                var generated = generatedSyntax.FirstOrDefault();
-                if (IsNotImmutableType(generated))
+                var currentItem = queue.Dequeue();
+                var currentExpressionData = currentItem.expressionData;
+                ExpressionSyntax currentGeneratedSyntax = null;
+                var (success, typeCode, (generatedSyntax, argumentList)) = GenerateForMainExpression(currentExpressionData);
+                if (success)
                 {
-                    return GenerateExpressionSyntax(expressionData, parentTypeCode, generated);
+                    currentGeneratedSyntax = GenerateTest(parentTypeCode, currentExpressionData, generatedSyntax, argumentList);
                 }
 
-                if (_typeAnalyzer.IsPrimitiveType(parentTypeCode))
+
+                //var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
+                //var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
+                //foreach (var expressionData in expressionsData.Where(x => x != null))
+                //{
+                //    var generatedUnderlyingExpression = GenerateInternal(expressionData, parentType);
+                //    expressionsSyntax = expressionsSyntax.Add(generatedUnderlyingExpression);
+                //}
+
+                //return expressionsSyntax;
+                //var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
+
+                switch (typeCode)
                 {
-                    return argumentList.First();
+                    case TypeCode.DictionaryKeyValuePair:
+                        {
+                            var dictionaryKey = GetExpressionDataForDictionary(currentExpressionData, "Key");
+                            var dictionaryValue = GetExpressionDataForDictionary(currentExpressionData, "Value");
+
+                            var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode);
+                            var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode);
+
+                            //return _dictionaryExpressionGenerator.Generate(currentExpressionData, keyExpressionSyntax, valueExpressionSyntax);
+                            var generated = _dictionaryExpressionGenerator.Generate(currentExpressionData, keyExpressionSyntax, valueExpressionSyntax);
+                            //currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.Add(generated);
+                            currentGeneratedSyntax = generated;
+                            //currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.Add(generated);
+                            var test = currentItem.parentExpressionSyntax?.ExpressionSyntax as ObjectCreationExpressionSyntax;
+                            if (test == null)
+                            {
+                                var test1 = currentItem.parentExpressionSyntax?.ExpressionSyntax as AssignmentExpressionSyntax;
+                                test = test1?.Right as ObjectCreationExpressionSyntax;
+                                if (test == null)
+                                {
+                                    break;
+                                }
+
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test1.WithRight(test.WithInitializer(testInitializer));
+
+                                break;
+                            }
+
+                            if (test != null)
+                            {
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test.WithInitializer(testInitializer);
+                            }
+                            break;
+                        }
+                    case TypeCode.Array:
+                        {
+                            //var arraySyntax = _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
+                            var arraySyntax = _arrayInitializationGenerator.Generate(currentExpressionData, new SeparatedSyntaxList<ExpressionSyntax>(), typeCode);
+                            //return _assignmentExpressionGenerator.GenerateAssignmentExpression(currentExpressionData.Name, arraySyntax);
+                            var generated = _assignmentExpressionGenerator.GenerateAssignmentExpression(currentExpressionData.Name, arraySyntax);
+                            //currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.Add(generated);
+                            currentGeneratedSyntax = generated;
+                            //currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.Add(generated);
+                            var test = currentItem.parentExpressionSyntax?.ExpressionSyntax as ObjectCreationExpressionSyntax;
+                            if (test == null)
+                            {
+                                var test1 = currentItem.parentExpressionSyntax?.ExpressionSyntax as AssignmentExpressionSyntax;
+                                test = test1?.Right as ObjectCreationExpressionSyntax;
+                                if (test == null)
+                                {
+                                    break;
+                                }
+
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test1.WithRight(test.WithInitializer(testInitializer));
+
+                                break;
+                            }
+
+                            if (test != null)
+                            {
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test.WithInitializer(testInitializer);
+                            }
+                            break;
+                        }
+                    case TypeCode.Collection:
+                    case TypeCode.ComplexObject:
+                    
+                        {
+                            //var complexTypeExpression = _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData);
+                            var complexTypeExpression = _complexTypeInitializationGenerator.Generate(currentExpressionData, new SeparatedSyntaxList<ExpressionSyntax>());
+                            //return GenerateExpressionSyntax(currentExpressionData, parentTypeCode, complexTypeExpression);
+                            var generated = GenerateExpressionSyntax(currentExpressionData, currentItem.parentExpressionSyntax?.ParentTypeCode ?? parentTypeCode, complexTypeExpression);
+                            currentGeneratedSyntax = generated;
+                            //currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.Add(generated);
+                            var test = currentItem.parentExpressionSyntax?.ExpressionSyntax as ObjectCreationExpressionSyntax;
+                            if (test == null)
+                            {
+                                var test1 = currentItem.parentExpressionSyntax?.ExpressionSyntax as AssignmentExpressionSyntax;
+                                test = test1?.Right as ObjectCreationExpressionSyntax;
+                                if (test == null)
+                                {
+                                    break;
+                                }
+
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test1.WithRight(test.WithInitializer(testInitializer));
+
+                                break;
+                            }
+
+                            if (test != null)
+                            {
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test.WithInitializer(testInitializer);                                
+                            }
+
+                            break;
+                        }
+                    default:
+                        {
+                            //return GenerateExpressionSyntax(currentExpressionData, parentTypeCode, complexTypeExpression);
+                            var generated = GenerateExpressionSyntax(currentExpressionData, currentItem.parentExpressionSyntax?.ParentTypeCode ?? parentTypeCode, currentGeneratedSyntax);
+                            currentGeneratedSyntax = generated;
+                            //currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.Add(generated);
+                            var test = currentItem.parentExpressionSyntax?.ExpressionSyntax as ObjectCreationExpressionSyntax;
+                            if (test == null)
+                            {
+                                var test1 = currentItem.parentExpressionSyntax?.ExpressionSyntax as AssignmentExpressionSyntax;
+                                test = test1?.Right as ObjectCreationExpressionSyntax;
+                                if (test == null)
+                                {
+                                    break;
+                                }
+
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test1.WithRight(test.WithInitializer(testInitializer));
+
+                                break;
+                            }
+
+                            if (test != null)
+                            {
+                                var testInitializer = test.Initializer.AddExpressions(currentGeneratedSyntax);
+                                currentItem.parentExpressionSyntax.ExpressionSyntax = test.WithInitializer(testInitializer);
+                            }
+                            break;
+                        }
                 }
 
-                var objectCreationSyntax = _immutableInitializationGenerator.Generate(expressionData, argumentList);
+                test parent = null;
+                if (mainExpression)
+                {
+                    mainExpression = false;
+                    mainExpressionSyntax = new test { ExpressionSyntax = currentGeneratedSyntax , ParentTypeCode = typeCode } ;
+                    parent = mainExpressionSyntax;
+                }
+                else
+                {
+                    ///currentItem.parentExpressionSyntax = currentItem.parentExpressionSyntax.(generatedSyntax);
+                }
+                parent = parent == null ? new test { ExpressionSyntax = currentGeneratedSyntax, ParentTypeCode = typeCode } : parent ;
 
-                return GenerateExpressionSyntax(expressionData, parentTypeCode, objectCreationSyntax);
+                foreach (var child in currentExpressionData.UnderlyingExpressionData)
+                {
+                    queue.Enqueue((child, parent));
+                }
             }
 
-            var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
+            return mainExpressionSyntax.ExpressionSyntax;
+        }
 
-            switch (typeCode)
+        private ExpressionSyntax GenerateTest(TypeCode parentTypeCode, ExpressionData currentExpressionData, SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentList)
+        {
+            var generated = generatedSyntax.FirstOrDefault();
+            if (IsNotImmutableType(generated))
             {
-                case TypeCode.DictionaryKeyValuePair:
-                    {
-                        var dictionaryKey = GetExpressionDataForDictionary(expressionData, "Key");
-                        var dictionaryValue = GetExpressionDataForDictionary(expressionData, "Value");
-
-                        var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode);
-                        var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode);
-
-                        return _dictionaryExpressionGenerator.Generate(expressionData, keyExpressionSyntax, valueExpressionSyntax);
-                    }
-                case TypeCode.Array:
-                    {
-                        var arraySyntax = _arrayInitializationGenerator.Generate(expressionData, underlyingExpressionData, typeCode);
-                        return _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, arraySyntax);
-                    }
-                case TypeCode.Collection:
-                default:
-                    {
-                        var complexTypeExpression = _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData);
-                        return GenerateExpressionSyntax(expressionData, parentTypeCode, complexTypeExpression);
-                    }
+                return generated;
             }
+
+            if (_typeAnalyzer.IsPrimitiveType(parentTypeCode))
+            {
+                return argumentList.First();
+            }
+
+            return _immutableInitializationGenerator.Generate(currentExpressionData, argumentList);
+            var objectCreationSyntax = _immutableInitializationGenerator.Generate(currentExpressionData, argumentList);
+
+            return GenerateExpressionSyntax(currentExpressionData, parentTypeCode, objectCreationSyntax);
         }
 
         private ExpressionSyntax GenerateExpressionSyntax(ExpressionData expressionData, TypeCode parentTypeCode, ExpressionSyntax objectCreationSyntax)
