@@ -137,7 +137,6 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                 case TypeCode.UInt:
                 case TypeCode.Long:
                 case TypeCode.ULong:
-                case TypeCode.Object:
                 case TypeCode.Short:
                 case TypeCode.UShort:
                 case TypeCode.String:
