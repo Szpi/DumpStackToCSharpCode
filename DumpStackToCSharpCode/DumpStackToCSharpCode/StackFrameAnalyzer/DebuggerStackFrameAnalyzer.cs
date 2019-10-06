@@ -3,6 +3,7 @@ using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -64,32 +65,30 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             return currentStackExpressionsData;
         }
 
-        private ExpressionData GenerateExpressionData(Expression expression, ref int currentAnalyzedObjects, Stopwatch generationTime)
+        private ExpressionData GenerateExpressionData(Expression expression, ref int analyzedObjects, Stopwatch generationTime)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (expression == null)
             {
                 return null;
             }
-            var queue = new Queue<(Expression expression, List<ExpressionData> parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
 
+            var queue = new Queue<(Expression expression, List<ExpressionData> parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
+            
             queue.Enqueue((expression, null));
             ExpressionData mainObject = null;
             var currentObjectDepth = 1;
 
-            var nextDepthAfterAnalyzedObjects = 1;
-            var depthEndsAfterAnalyzingObjects = expression.DataMembers.Count;
+            var depthEndsAfterAnalyzingObjects = 1;
+            var nextDepthAfterAnalyzedObjects = depthEndsAfterAnalyzingObjects;
+            var currentAnalyzedObjects = 0;
 
-            while (queue.Any())
+            while (queue.Count > 0)
             {
                 var stackObject = queue.Dequeue();
                 var dataMember = stackObject.expression;
 
                 currentAnalyzedObjects++;
-
-                if (dataMember == null || string.IsNullOrEmpty(dataMember.Type))
-                {
-                    continue;
-                }
 
                 if (IsDictionaryDuplicatedValue(dataMember.Name))
                 {
@@ -125,12 +124,27 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 {
                     mainObject = expressionData;
                 }
+                var remainingObjectToAnalyze = _maxObjectsToAnalyze - currentAnalyzedObjects;
 
-                foreach (Expression child in dataMember.DataMembers)
+                if (remainingObjectToAnalyze <= 0)
                 {
-                    nextDepthAfterAnalyzedObjects += dataMember.DataMembers.Count;
-                    queue.Enqueue((child, underlyingExpressionData));
+                    continue;
                 }
+
+                var validChildren = dataMember.DataMembers.Cast<Expression>().Where(x => !string.IsNullOrEmpty(x?.Type)).ToList();
+                int iteration = 0;
+
+                foreach (var child in validChildren)
+                {
+                    if (iteration > remainingObjectToAnalyze)
+                    {
+                        break;
+                    }
+                    iteration++;
+                    queue.Enqueue((child, underlyingExpressionData));                    
+                }
+
+                nextDepthAfterAnalyzedObjects += iteration;
 
                 if (WasCurrentDepthReached(currentAnalyzedObjects, depthEndsAfterAnalyzingObjects))
                 {
@@ -139,6 +153,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
             }
 
+            analyzedObjects += currentAnalyzedObjects;
             return mainObject;
         }
 

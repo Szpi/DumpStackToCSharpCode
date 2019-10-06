@@ -4,6 +4,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,13 +30,14 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
 
+            var generationTime = Stopwatch.StartNew();
             var dumpedObjectsToCsharpCode = new List<DumpedObjectToCsharpCode>();
             foreach (var expressionData in currentExpressionData)
             {
                 var currentExpressionDataInCSharpCode = codeGeneratorManager.GenerateStackDump(expressionData);
                 dumpedObjectsToCsharpCode.Add(new DumpedObjectToCsharpCode(expressionData.Name, currentExpressionDataInCSharpCode));
             }
-
+            Trace.WriteLine($">>>>>>>>>>>> ^^^^^^ total time seconds {generationTime.Elapsed.TotalSeconds}");
             return dumpedObjectsToCsharpCode;
         }
     }

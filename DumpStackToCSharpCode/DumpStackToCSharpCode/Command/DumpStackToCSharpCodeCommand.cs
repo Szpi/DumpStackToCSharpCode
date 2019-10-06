@@ -129,7 +129,14 @@ namespace RuntimeTestDataCollector.Command
 
         private async void Execute(object sender, EventArgs e)
         {
-            await DumpStackToCSharpCodeAsync();
+            try
+            {
+                await DumpStackToCSharpCodeAsync();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private async Task DumpStackToCSharpCodeAsync()
