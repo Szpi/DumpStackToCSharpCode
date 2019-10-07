@@ -24,7 +24,7 @@ namespace RuntimeTestDataCollector.Window
         /// </summary>
         /// <param name="stackDataDump"></param>
 
-        public StackDataDumpControl(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
+        public StackDataDumpControl((IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectToCsharpCodes, string errorMessage) stackDataDump)
         {
             this.InitializeComponent();
             if (string.IsNullOrEmpty(MaxDepth.Text))
@@ -33,7 +33,7 @@ namespace RuntimeTestDataCollector.Window
             }
             AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
 
-            CreateStackDumpControls(stackDataDump);
+            CreateStackDumpControls(stackDataDump.dumpedObjectToCsharpCodes, stackDataDump.errorMessage);
         }
         
         /// <summary>
@@ -74,12 +74,19 @@ namespace RuntimeTestDataCollector.Window
         {
             DumpDataStack.Children.Clear();
             BusyLabel.Visibility = Visibility.Visible;
+            ErrorMessageGrid.Visibility = Visibility.Hidden;
         }
 
-        public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump)
+        public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectsToCsharpCode, string errorMessage)
         {
             BusyLabel.Visibility = Visibility.Hidden;
-            foreach (var dumpedObjectToCsharpCode in stackDataDump)
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                ErrorMessage.Content = "Error: " + errorMessage;
+                ErrorMessageGrid.Visibility = Visibility.Visible;
+            }
+            
+            foreach (var dumpedObjectToCsharpCode in dumpedObjectsToCsharpCode)
             {
                 var expander = CreateExpander(dumpedObjectToCsharpCode.Name, dumpedObjectToCsharpCode.CsharpCode);
                 DumpDataStack.Children.Add(expander);
