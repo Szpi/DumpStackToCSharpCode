@@ -108,9 +108,7 @@
   <ItemGroup>
     <Content Include="Command\Resources\DumpStackToCSharpCommand.ico" />
     <Content Include="Command\Resources\DumpStackToCSharpCommand.png" />
-    <Content Include="Window\Resources\error.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Resources\error.png" />
     <Content Include="Window\Resources\StackDataDumpCommand.png" />
     <VSCTCompile Include="Command\GenerateTestDataCommandPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>

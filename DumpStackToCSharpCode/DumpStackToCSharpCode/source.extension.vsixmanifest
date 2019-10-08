@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="DumpStackToCSharpCode.502ac7ab-7ca5-4df9-8c35-cfa5a91e3ac0" Version="1.2" Language="en-US" Publisher="Piotr Szkudlarski" />
         <DisplayName>DumpStackToCSharpCode</DisplayName>
-        <Description xml:space="preserve">Extension dumps stack objects to c# code.</Description>
+        <Description xml:space="preserve">Extension that dumps stack objects to c# code.</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)" />

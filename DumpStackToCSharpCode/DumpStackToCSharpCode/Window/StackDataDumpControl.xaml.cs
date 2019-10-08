@@ -74,7 +74,7 @@ namespace RuntimeTestDataCollector.Window
         {
             DumpDataStack.Children.Clear();
             BusyLabel.Visibility = Visibility.Visible;
-            ErrorMessageGrid.Visibility = Visibility.Hidden;
+            ErrorMessageRow.Height = new GridLength(0);
         }
 
         public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectsToCsharpCode, string errorMessage)
@@ -82,8 +82,8 @@ namespace RuntimeTestDataCollector.Window
             BusyLabel.Visibility = Visibility.Hidden;
             if (!string.IsNullOrEmpty(errorMessage))
             {
-                ErrorMessage.Content = "Error: " + errorMessage;
-                ErrorMessageGrid.Visibility = Visibility.Visible;
+                ErrorMessage.Text = "Error: " + errorMessage;
+                ErrorMessageRow.Height = new GridLength(1, GridUnitType.Auto);
             }
             
             foreach (var dumpedObjectToCsharpCode in dumpedObjectsToCsharpCode)

@@ -166,7 +166,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
             }
 
-            return (mainObject, "testoooo");
+            return (mainObject, null);
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)
