@@ -12,7 +12,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
-        public async Task<IReadOnlyList<DumpedObjectToCsharpCode>> DumpObjectOnStackAsync(DTE2 dte,
+        public async Task<(IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectToCsharpCode, string errorMessage)> DumpObjectOnStackAsync(DTE2 dte,
                                                                                           int maxDepth,
                                                                                           bool generateTypeWithNamespace,
                                                                                           CancellationToken token,
@@ -26,7 +26,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                     maxObjectsToAnalyze,
                                                     maxGenerationTime);
 
-            var currentExpressionData = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
+            var (currentExpressionData, errorMessage) = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
 
@@ -37,8 +37,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 var currentExpressionDataInCSharpCode = codeGeneratorManager.GenerateStackDump(expressionData);
                 dumpedObjectsToCsharpCode.Add(new DumpedObjectToCsharpCode(expressionData.Name, currentExpressionDataInCSharpCode));
             }
+
             Trace.WriteLine($">>>>>>>>>>>> ^^^^^^ total time seconds {generationTime.Elapsed.TotalSeconds}");
-            return dumpedObjectsToCsharpCode;
+            return (dumpedObjectsToCsharpCode, errorMessage);
         }
     }
 }

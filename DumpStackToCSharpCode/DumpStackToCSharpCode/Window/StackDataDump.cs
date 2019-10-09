@@ -26,7 +26,7 @@ namespace RuntimeTestDataCollector.Window
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDump"/> class.
         /// </summary>
-        public StackDataDump(IReadOnlyList<DumpedObjectToCsharpCode> stackDataDump) : base(null)
+        public StackDataDump((IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectToCsharpCodes, string errorMessage) stackDataDump) : base(null)
         {
             this.Caption = Title;
 

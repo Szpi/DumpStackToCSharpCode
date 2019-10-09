@@ -170,7 +170,7 @@ namespace RuntimeTestDataCollector.Command
                                                                                                      GeneralOptions.Instance.MaxObjectsToAnalyze,
                                                                                                      GeneralOptions.Instance.MaxGenerationTime);
 
-            _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode);
+            _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode.dumpedObjectToCsharpCode, dumpedObjectsToCsharpCode.errorMessage);
         }
 
         private async Task RefreshUI()

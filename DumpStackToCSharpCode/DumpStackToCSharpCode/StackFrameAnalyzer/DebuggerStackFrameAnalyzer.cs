@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,17 +34,18 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             _maxGenerationTime = maxGenerationTime;
         }
 
-        public async Task<IReadOnlyList<ExpressionData>> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
+        public async Task<(IReadOnlyList<ExpressionData> expressionDatas, string errorMessage)> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
         {
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(token);
             var currentStackExpressionsData = new List<ExpressionData>();
             if (dte?.Debugger?.CurrentStackFrame == null)
             {
-                return currentStackExpressionsData;
+                return (currentStackExpressionsData, DumpStackToCSharpCode.Resources.ErrorMessages.GeneralError);
             }
 
             var generationTime = Stopwatch.StartNew();
             int currentAnalyzedObject = 0;
+            string errorMessageToShow = null;
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
             {
                 if (currentAnalyzedObject > _maxObjectsToAnalyze)
@@ -51,7 +53,17 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                     break;
                 }
 
-                var expressionData = GenerateExpressionData(expression, ref currentAnalyzedObject, generationTime);
+                var (expressionData, errorMessage) = GenerateExpressionData(expression, ref currentAnalyzedObject, generationTime);
+
+                if (expressionData == null)
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    errorMessageToShow = errorMessage;
+                }
 
                 currentStackExpressionsData.Add(expressionData);
                 if (HasExceedMaxGenerationTime(generationTime))
@@ -62,15 +74,15 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             Trace.WriteLine($">>>>>>>>>>>> |||||||||||||||| total time seconds {generationTime.Elapsed.TotalSeconds}");
-            return currentStackExpressionsData;
+            return (currentStackExpressionsData, errorMessageToShow);
         }
 
-        private ExpressionData GenerateExpressionData(Expression expression, ref int analyzedObjects, Stopwatch generationTime)
+        private (ExpressionData expressionData, string errorString) GenerateExpressionData(Expression expression, ref int overallAnalyzedObjects, Stopwatch generationTime)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (expression == null)
             {
-                return null;
+                return (null, null);
             }
 
             var queue = new Queue<(Expression expression, List<ExpressionData> parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
@@ -89,6 +101,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 var dataMember = stackObject.expression;
 
                 currentAnalyzedObjects++;
+                overallAnalyzedObjects++;
 
                 if (IsDictionaryDuplicatedValue(dataMember.Name))
                 {
@@ -98,17 +111,17 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 if (HasExceedMaxGenerationTime(generationTime))
                 {
                     Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
-                    return mainObject;
+                    return (mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.GenerationTimeExceeded);
                 }
 
                 if (currentAnalyzedObjects > _maxObjectsToAnalyze)
                 {
-                    return mainObject;
+                    return (mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectToAnalyzeExceeded);
                 }
 
                 if (currentObjectDepth > _maxObjectDepth)
                 {
-                    return mainObject;
+                    return (mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectDepthExceeded);
                 }
                 var underlyingExpressionData = new List<ExpressionData>();
 
@@ -153,8 +166,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
             }
 
-            analyzedObjects += currentAnalyzedObjects;
-            return mainObject;
+            return (mainObject, null);
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)
