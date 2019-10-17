@@ -1,5 +1,5 @@
 ﻿$PersonalAccessToken = $args[0]
-$VsixPath = "$PSScriptRoot\..\DumpStackToCSharpCode\DumpStackToCSharpCode\DumpStackToCSharpCode\bin\Release\DumpStackToCSharpCode.vsix"
+$VsixPath = "$PSScriptRoot\..\DumpStackToCSharpCode\DumpStackToCSharpCode\bin\Release\DumpStackToCSharpCode.vsix"
 $ManifestPath = "$PSScriptRoot\extension-manifest.json"
 
 $Installation = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -prerelease -format json | ConvertFrom-Json
