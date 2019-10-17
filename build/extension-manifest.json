@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json.schemastore.org/vsix-publish",
+    "categories": [
+        "Coding"
+    ],
+    "identity": {
+        "internalName": "DumpStackToCSharpCode",
+        "tags": [
+            "dump",
+            "stack",
+            "test data"
+        ]
+    },
+    "overview": "../README.md",
+    "priceCategory": "free",
+    "publisher": "Piotr Szkudlarski",
+    "private": false,
+    "qna": true,
+    "repo": "https://github.com/Szpi/DumpStackToCSharpCode"
+}
