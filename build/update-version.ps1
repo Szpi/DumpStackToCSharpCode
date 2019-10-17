@@ -7,13 +7,6 @@ if (!$version) {
 
 Write-Host "Version: $version"
 
-# Update NuGet package version
-$FullPath = Resolve-Path $PSScriptRoot\..\DumpStackToCSharpCode\DumpStackToCSharpCode\DumpStackToCSharpCode.csproj
-Write-Host $FullPath
-[xml]$content = Get-Content $FullPath
-$content.Project.PropertyGroup.PackageVersion = $version
-$content.Save($FullPath)
-
 # Update VSIX version
 $FullPath = Resolve-Path $PSScriptRoot\..\DumpStackToCSharpCode\DumpStackToCSharpCode\source.extension.vsixmanifest
 Write-Host $FullPath
