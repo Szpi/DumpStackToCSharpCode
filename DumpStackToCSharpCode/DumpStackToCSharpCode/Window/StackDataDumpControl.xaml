@@ -58,7 +58,7 @@
                                         Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
                                         MaxLength="2"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Automatically refresh" 
+                <Label Grid.Row="1" Grid.Column="0" Content="Refresh automatically" 
                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
