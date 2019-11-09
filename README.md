@@ -3,13 +3,13 @@ DumpStackToCSharpCode provides functionality to dump stack to c# code directly f
 You can do it from context menu invoked in Autos or Locals windows.
 
 ## Demo 1 
-![](.\demo\demo.gif)
+![](https://github.com/Szpi/DumpStackToCSharpCode/blob/master/demo/demo.gif)
 
 ## Demo 2
-![](.\demo\demo1.gif)
+![](https://github.com/Szpi/DumpStackToCSharpCode/blob/master/demo/demo1.gif)
 
 ## Demo 3
-![](.\demo\demo2.gif)
+![](https://github.com/Szpi/DumpStackToCSharpCode/blob/master/demo/demo2.gif)
 
 ## Configuration
-![](.\demo\demo3_Configuration.gif)
+![](./demo/demo3_Configuration.gif)
