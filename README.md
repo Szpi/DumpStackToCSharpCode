@@ -17,3 +17,6 @@ Refresh automatically during debugging.
 ## Configuration
 Basic configuration.
 ![](./demo/demo3_Configuration.gif)
+
+## Build Status
+[![Build Status](https://dev.azure.com/szpi/DumpStackToCSharpCode/_apis/build/status/Szpi.DumpStackToCSharpCode.Master-CI?branchName=master)](https://dev.azure.com/szpi/DumpStackToCSharpCode/_build/latest?definitionId=1&branchName=master)
