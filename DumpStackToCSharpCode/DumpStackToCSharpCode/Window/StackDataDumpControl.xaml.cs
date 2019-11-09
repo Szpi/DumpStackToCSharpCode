@@ -55,7 +55,7 @@ namespace RuntimeTestDataCollector.Window
                     continue;
                 }
 
-                buffer.AppendLine(textBox.Text + Environment.NewLine);
+                buffer.AppendLine(textBox.Text);
             }
             Clipboard.SetText(buffer.ToString());
         }
@@ -129,6 +129,13 @@ namespace RuntimeTestDataCollector.Window
             };
             copyMenuItem.Click += CopyMenuItem_OnClick;
 
+            var copyAllMenuItem = new MenuItem()
+            {
+                Header = "Copy all",
+                CommandParameter = expander
+            };
+            copyAllMenuItem.Click += CopyEverythingToClipBoard_Click;
+
             var expandMenuItem = new MenuItem()
             {
                 Header = GeneralOptions.Instance.AutomaticallyExpand ? CollapseAll : ExpandAll,
@@ -136,14 +143,37 @@ namespace RuntimeTestDataCollector.Window
             };
             expandMenuItem.Click += ExpandMenuItem_OnClick;
 
+            var clearAllMenuItem = new MenuItem()
+            {
+                Header = "Clear all",
+                CommandParameter = expander
+            };
+            clearAllMenuItem.Click += ClearAllItem_OnClick;
+
             expander.ContextMenu = new ContextMenu()
             {
                 Items =
                 {
                     copyMenuItem,
-                    expandMenuItem
+                    copyAllMenuItem,
+                    expandMenuItem,
+                    clearAllMenuItem
                 }
             };
+        }
+
+        private void ClearAllItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is MenuItem menuItem))
+            {
+                return;
+            }
+
+            if (!(menuItem.CommandParameter is Expander expander))
+            {
+                return;
+            }
+            DumpDataStack.Children.Clear();
         }
 
         private void CopyMenuItem_OnClick(object sender, RoutedEventArgs e)
