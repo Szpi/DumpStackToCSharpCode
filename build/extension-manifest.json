@@ -8,7 +8,9 @@
         "tags": [
             "dump",
             "stack",
-            "test data"
+            "test data",
+            "debug",
+            "stack trace"
         ]
     },
     "overview": "../README.md",

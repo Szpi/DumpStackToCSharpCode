@@ -4,6 +4,12 @@
         <Identity Id="DumpStackToCSharpCode.502ac7ab-7ca5-4df9-8c35-cfa5a91e3ac0" Version="1.2" Language="en-US" Publisher="Piotr Szkudlarski" />
         <DisplayName>DumpStackToCSharpCode</DisplayName>
         <Description xml:space="preserve">Extension that dumps stack objects to c# code.</Description>
+        <MoreInfo>https://github.com/Szpi/DumpStackToCSharpCode</MoreInfo>
+        <License>https://raw.githubusercontent.com/Szpi/DumpStackToCSharpCode/master/LICENSE</License>
+        <GettingStartedGuide>https://github.com/Szpi/DumpStackToCSharpCode</GettingStartedGuide>
+        <Icon>logo\Logo.PNG</Icon>
+        <PreviewImage>logo\Logo.PNG</PreviewImage>
+        <Tags>dump, stack, stack trace, debug, test data</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)" />

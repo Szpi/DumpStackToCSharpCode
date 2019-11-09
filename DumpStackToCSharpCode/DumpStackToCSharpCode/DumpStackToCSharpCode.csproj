@@ -109,6 +109,10 @@
     <Content Include="Command\Resources\DumpStackToCSharpCommand.ico" />
     <Content Include="Command\Resources\DumpStackToCSharpCommand.png" />
     <Resource Include="Resources\error.png" />
+    <Content Include="Logo.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Window\Resources\StackDataDumpCommand.png" />
     <VSCTCompile Include="Command\GenerateTestDataCommandPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
