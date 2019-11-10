@@ -24,7 +24,7 @@ namespace RuntimeTestDataCollector.Window
         /// </summary>
         /// <param name="stackDataDump"></param>
 
-        public StackDataDumpControl((IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectToCsharpCodes, string errorMessage) stackDataDump)
+        public StackDataDumpControl()
         {
             this.InitializeComponent();
             if (string.IsNullOrEmpty(MaxDepth.Text))
@@ -32,8 +32,8 @@ namespace RuntimeTestDataCollector.Window
                 MaxDepth.Text = GeneralOptions.Instance.MaxObjectDepth.ToString();
             }
             AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
-
-            CreateStackDumpControls(stackDataDump.dumpedObjectToCsharpCodes, stackDataDump.errorMessage);
+            BusyLabel.Visibility = Visibility.Hidden;
+            ErrorMessageRow.Height = new GridLength(0);
         }
         
         /// <summary>

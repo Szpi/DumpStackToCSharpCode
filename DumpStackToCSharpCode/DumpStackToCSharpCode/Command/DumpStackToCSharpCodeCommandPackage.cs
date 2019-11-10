@@ -84,20 +84,8 @@ namespace RuntimeTestDataCollector.Command
         }
 
         protected override async Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
-        {
-            // Perform as much work as possible in this method which is being run on a background thread.
-            // The object returned from this method is passed into the constructor of the SampleToolWindow 
-            var dte = await GetServiceAsync(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-
-            var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            var generalOptions = await GeneralOptions.GetLiveInstanceAsync();
-
-            return await debuggerStackToDumpedObject.DumpObjectOnStackAsync(dte,
-                                                                            generalOptions.MaxObjectDepth,
-                                                                            generalOptions.GenerateTypeWithNamespace,
-                                                                            DisposalToken,
-                                                                            generalOptions.MaxObjectsToAnalyze,
-                                                                            generalOptions.MaxGenerationTime);
+        {            
+            return null;
         }
         #endregion
     }

@@ -124,9 +124,9 @@
     <value>Max generation time was exceeded.</value>
   </data>
   <data name="MaxObjectDepthExceeded" xml:space="preserve">
-    <value>Max object's depth was exceeded.</value>
+    <value>Max object's depth was exceeded. </value>
   </data>
   <data name="MaxObjectToAnalyzeExceeded" xml:space="preserve">
-    <value>Max object to analyze was exceeded.</value>
+    <value>Max objects to analyze was exceeded.</value>
   </data>
 </root>

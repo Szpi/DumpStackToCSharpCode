@@ -79,7 +79,7 @@ namespace DumpStackToCSharpCode.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max object&apos;s depth was exceeded..
+        ///   Looks up a localized string similar to Max object&apos;s depth was exceeded. .
         /// </summary>
         internal static string MaxObjectDepthExceeded {
             get {
@@ -88,7 +88,7 @@ namespace DumpStackToCSharpCode.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max object to analyze was exceeded..
+        ///   Looks up a localized string similar to Max objects to analyze was exceeded..
         /// </summary>
         internal static string MaxObjectToAnalyzeExceeded {
             get {

@@ -141,7 +141,6 @@ namespace RuntimeTestDataCollector.Command
 
         private async Task DumpStackToCSharpCodeAsync()
         {
-
             if (_stackDataDumpControl == null)
             {
                 await package.JoinableTaskFactory.RunAsync(async () =>
