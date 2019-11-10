@@ -34,6 +34,11 @@ namespace RuntimeTestDataCollector.Window
             AutomaticallyRefresh.IsChecked = GeneralOptions.Instance.AutomaticallyRefresh;
             BusyLabel.Visibility = Visibility.Hidden;
             ErrorMessageRow.Height = new GridLength(0);
+
+            if (GeneralOptions.Instance.ClearControlsOnStart)
+            {
+                DumpDataStack.Children.Clear();
+            }
         }
         
         /// <summary>

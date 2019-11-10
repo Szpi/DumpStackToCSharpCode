@@ -40,5 +40,11 @@ namespace RuntimeTestDataCollector.Options
         [Description("After this timespan generation will be stopped")]
         [DefaultValue(400)]
         public TimeSpan MaxGenerationTime { get; set; } = TimeSpan.FromSeconds(10);
+
+        [Category("General")]
+        [DisplayName("Clear dump on start")]
+        [Description("Dump from previous session will be cleared on start")]
+        [DefaultValue(false)]
+        public bool ClearControlsOnStart { get; set; } = false;
     }
 }
