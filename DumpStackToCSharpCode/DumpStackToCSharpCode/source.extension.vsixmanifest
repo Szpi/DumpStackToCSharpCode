@@ -5,7 +5,7 @@
         <DisplayName>DumpStackToCSharpCode</DisplayName>
         <Description xml:space="preserve">Extension that dumps stack objects to c# code.</Description>
         <MoreInfo>https://github.com/Szpi/DumpStackToCSharpCode</MoreInfo>
-        <License>https://raw.githubusercontent.com/Szpi/DumpStackToCSharpCode/master/LICENSE</License>
+        <License>LICENSE.txt</License>
         <GettingStartedGuide>https://github.com/Szpi/DumpStackToCSharpCode</GettingStartedGuide>
         <Icon>logo\Logo.PNG</Icon>
         <PreviewImage>logo\Logo.PNG</PreviewImage>

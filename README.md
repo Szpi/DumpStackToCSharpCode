@@ -2,6 +2,7 @@
 DumpStackToCSharpCode provides functionality to dump stack to C# code directly from visual studio while debugging application.
 You can do it from context menu, which is invoked from Autos or Locals windows.
 
+You can download it from [visual studio marketplace](https://marketplace.visualstudio.com/items?itemName=Szpi.DumpStackToCSharpCode).
 ## Demo 1 
 Invoking action from Autos window.
 ![](https://github.com/Szpi/DumpStackToCSharpCode/raw/master/demo/demo.gif)

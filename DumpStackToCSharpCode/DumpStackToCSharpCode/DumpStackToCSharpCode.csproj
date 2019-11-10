@@ -109,6 +109,10 @@
     <Content Include="Command\Resources\DumpStackToCSharpCommand.ico" />
     <Content Include="Command\Resources\DumpStackToCSharpCommand.png" />
     <Resource Include="Resources\error.png" />
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Logo.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
