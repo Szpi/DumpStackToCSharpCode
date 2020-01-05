@@ -90,6 +90,7 @@
     <Compile Include="ObjectInitializationGeneration\Type\TypeCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StackFrameAnalyzer\DebuggerStackToDumpedObject.cs" />
+    <Compile Include="StackFrameAnalyzer\ObjectOnStack.cs" />
     <Compile Include="ThemeColor\VsThemeColorExtension.cs" />
     <Compile Include="Window\DumpedObjectToCsharpCode.cs" />
     <Compile Include="Window\StackDataDump.cs" />

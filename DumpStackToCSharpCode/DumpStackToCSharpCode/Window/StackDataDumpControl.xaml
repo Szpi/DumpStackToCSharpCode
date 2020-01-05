@@ -10,81 +10,120 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
-    <Grid>
-        <Grid.RowDefinitions >
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="0" Name="ErrorMessageRow"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="10" HorizontalAlignment="Center">StackDataDump</TextBlock>
+    <TabControl Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Grid Name="Panel">
+                                <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowFrameKey}}" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
 
-            <Button Grid.Column="0" Click="CopyEverythingToClipBoard_Click" Width="80" Height="80" Name="CopyEverythingToClipboard" 
-                    HorizontalAlignment="Center" Margin="10,0,0,0"
-                    Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                    FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                    Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+        <TabItem Header="General" 
+                 Name="General"
+                 Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                 Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
-                <TextBlock Text="Copy everything to clipboard" TextWrapping="Wrap" TextAlignment="Center"/>
-            </Button>
-            <Grid Grid.Column="1">
+            <Grid Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
                 <Grid.RowDefinitions >
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="0" Name="ErrorMessageRow"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"></ColumnDefinition>
-                    <ColumnDefinition Width="1*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Content="Max Object Depth:" 
+                <TextBlock Grid.Row="0" Margin="10" HorizontalAlignment="Center">StackDataDump</TextBlock>
+
+                <Grid Grid.Row="1" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="2*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Click="CopyEverythingToClipBoard_Click" Width="80" Height="80" Name="CopyEverythingToClipboard" 
+                        HorizontalAlignment="Center" Margin="10,0,0,0"
+                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+
+                        <TextBlock Text="Copy everything to clipboard" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Button>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions >
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Max Object Depth:" 
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1"  Name="MaxDepth" Height="20" Width="40"
+                        <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1"  Name="MaxDepth" Height="20" Width="40"
                                         HorizontalAlignment="Left"
                                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                                         Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
                                         MaxLength="2"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Refresh automatically" 
-                       Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                       FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                       Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
-                       VerticalAlignment="Center" HorizontalAlignment="Left"
-                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
-                <CheckBox Grid.Row="1" Grid.Column="1"  Name="AutomaticallyRefresh"
+                        <CheckBox Grid.Row="1" Grid.Column="0"  Name="AutomaticallyRefresh"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Unchecked="AutomaticallyRefresh_Unchecked"
-                                    Checked="AutomaticallyRefresh_Checked"/>
-            </Grid>
-        </Grid>
-        <Grid Grid.Row="2" Name="ErrorMessageGrid" Margin="0,5,0,0">
-            <Grid.ColumnDefinitions >
-                <ColumnDefinition Width="1*"></ColumnDefinition>
-                <ColumnDefinition Width="8*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Image Source="pack://application:,,,/DumpStackToCSharpCode;component/Resources/error.png"
+                                    Checked="AutomaticallyRefresh_Checked"
+                          Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                          FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                          Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" >Refresh automatically</CheckBox>
+
+                        <CheckBox Grid.Row="1" Grid.Column="1"  Name="test"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Unchecked="AutomaticallyRefresh_Unchecked"
+                                    Checked="AutomaticallyRefresh_Checked"
+                          Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                          FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                          Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" >test</CheckBox>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="2" Name="ErrorMessageGrid" Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                        <ColumnDefinition Width="8*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="pack://application:,,,/DumpStackToCSharpCode;component/Resources/error.png"
                    Grid.Column="0" 
                    Height="30"
                    Margin="5,0,3,0"/>
 
-            <Border CornerRadius="5" BorderBrush="DarkRed" Grid.Column="1" BorderThickness="2" HorizontalAlignment="Left" >
+                    <Border CornerRadius="5" BorderBrush="DarkRed" Grid.Column="1" BorderThickness="2" HorizontalAlignment="Left" >
 
-                <TextBlock Grid.Column="1"
+                        <TextBlock Grid.Column="1"
                            Text="Error Message" 
                            Name="ErrorMessage"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
@@ -93,32 +132,62 @@
                            VerticalAlignment="Center" HorizontalAlignment="Left"                     
                            Margin="5,3,5,3"                          
                            TextWrapping="WrapWithOverflow"/>
-            </Border>
-        </Grid>
-        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
-            <StackPanel Name="DumpDataStack" Margin="0,5,0,0">
-            </StackPanel>
-        </ScrollViewer>
+                    </Border>
+                </Grid>
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="DumpDataStack" Margin="0,5,0,0">
+                    </StackPanel>
+                </ScrollViewer>
 
-        <Grid Grid.Row="4">
-            <Label Grid.Row="1" Grid.Column="0" Content="Busy ..." Name="BusyLabel" Visibility="Hidden"
+                <Grid Grid.Row="4">
+                    <Label Grid.Row="1" Grid.Column="0" Content="Busy ..." Name="BusyLabel" Visibility="Hidden"
                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        </Grid>
-        <Grid.Resources>
-            <Style TargetType="TextBox">
-                <Setter Property="ContextMenu">
-                    <Setter.Value>
-                        <ContextMenu>
-                            <MenuItem Command="ApplicationCommands.Copy" />
-                            <MenuItem Command="ApplicationCommands.SelectAll" />
-                        </ContextMenu>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </Grid.Resources>
-    </Grid>
+                </Grid>
+                <Grid.Resources>
+                    <Style TargetType="TextBox">
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <MenuItem Command="ApplicationCommands.Copy" />
+                                    <MenuItem Command="ApplicationCommands.SelectAll" />
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Locals"                  
+                 Name="Locals" 
+                 Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                 Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
+
+            <Grid >
+                <Label Grid.Row="1" Grid.Column="0" Content="Pick locals to generate" Name="LocalsToGenerateLabel" Visibility="Hidden"
+                       Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                       FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                       Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                <Button Grid.Column="0" Click="GenerateLocals_Click" Width="60" Height="60" Name="Generate" 
+                        VerticalAlignment="top" Margin="0,10,0,0"
+                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+
+                    <TextBlock Text="Generate" TextWrapping="Wrap" TextAlignment="Center"/>
+                </Button>
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="LocalsStack" Margin="0,5,0,0">
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using DumpStackToCSharpCode.StackFrameAnalyzer;
+using EnvDTE;
 using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
@@ -34,18 +35,19 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             _maxGenerationTime = maxGenerationTime;
         }
 
-        public async Task<(IReadOnlyList<ExpressionData> expressionDatas, string errorMessage)> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
+        public async Task<IReadOnlyList<ObjectOnStack>> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
         {
             await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(token);
-            var currentStackExpressionsData = new List<ExpressionData>();
+
             if (dte?.Debugger?.CurrentStackFrame == null)
             {
-                return (currentStackExpressionsData, DumpStackToCSharpCode.Resources.ErrorMessages.GeneralError);
+                return new List<ObjectOnStack>() { new ObjectOnStack(null, DumpStackToCSharpCode.Resources.ErrorMessages.GeneralError) };
             }
 
             var generationTime = Stopwatch.StartNew();
             int currentAnalyzedObject = 0;
-            string errorMessageToShow = null;
+            var currentStackExpressionsData = new List<ObjectOnStack>();
+
             foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
             {
                 if (currentAnalyzedObject > _maxObjectsToAnalyze)
@@ -53,19 +55,15 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                     break;
                 }
 
-                var (expressionData, errorMessage) = GenerateExpressionData(expression, ref currentAnalyzedObject, generationTime);
+                var objectOnStack = GenerateExpressionData(expression, ref currentAnalyzedObject, generationTime);
 
-                if (expressionData == null)
+                if (objectOnStack == null)
                 {
                     continue;
                 }
 
-                if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    errorMessageToShow = errorMessage;
-                }
+                currentStackExpressionsData.Add(objectOnStack);
 
-                currentStackExpressionsData.Add(expressionData);
                 if (HasExceedMaxGenerationTime(generationTime))
                 {
                     Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking !!");
@@ -74,19 +72,25 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             Trace.WriteLine($">>>>>>>>>>>> |||||||||||||||| total time seconds {generationTime.Elapsed.TotalSeconds}");
-            return (currentStackExpressionsData, errorMessageToShow);
+            test(currentStackExpressionsData);
+            return currentStackExpressionsData;
         }
 
-        private (ExpressionData expressionData, string errorString) GenerateExpressionData(Expression expression, ref int overallAnalyzedObjects, Stopwatch generationTime)
+        private void test(List<ObjectOnStack> currentStackExpressionsData)
+        {
+          
+        }
+
+        private ObjectOnStack GenerateExpressionData(Expression expression, ref int overallAnalyzedObjects, Stopwatch generationTime)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             if (expression == null)
             {
-                return (null, null);
+                return null;
             }
 
             var queue = new Queue<(Expression expression, List<ExpressionData> parentExpressionData)>((int)(_maxObjectsToAnalyze * 1.2f));
-            
+
             queue.Enqueue((expression, null));
             ExpressionData mainObject = null;
             var currentObjectDepth = 1;
@@ -111,17 +115,17 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 if (HasExceedMaxGenerationTime(generationTime))
                 {
                     Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
-                    return (mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.GenerationTimeExceeded);
+                    return new ObjectOnStack(mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.GenerationTimeExceeded);
                 }
 
                 if (currentAnalyzedObjects > _maxObjectsToAnalyze)
                 {
-                    return (mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectToAnalyzeExceeded);
+                    return new ObjectOnStack(mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectToAnalyzeExceeded);
                 }
 
                 if (currentObjectDepth > _maxObjectDepth)
                 {
-                    return (mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectDepthExceeded);
+                    return new ObjectOnStack(mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectDepthExceeded);
                 }
                 var underlyingExpressionData = new List<ExpressionData>();
 
@@ -154,7 +158,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                         break;
                     }
                     iteration++;
-                    queue.Enqueue((child, underlyingExpressionData));                    
+                    queue.Enqueue((child, underlyingExpressionData));
                 }
 
                 nextDepthAfterAnalyzedObjects += iteration;
@@ -166,7 +170,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 }
             }
 
-            return (mainObject, null);
+            return new ObjectOnStack(mainObject, null);
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)

@@ -13,7 +13,11 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 
         public IReadOnlyList<ExpressionData> UnderlyingExpressionData { get; }
 
-        public ExpressionData(string type, string value, string name, IReadOnlyList<ExpressionData> underlyingExpressionData, string typeWithNamespace)
+        public ExpressionData(string type,
+                              string value,
+                              string name,
+                              IReadOnlyList<ExpressionData> underlyingExpressionData,
+                              string typeWithNamespace)
         {
             Type = type;
             Value = value;

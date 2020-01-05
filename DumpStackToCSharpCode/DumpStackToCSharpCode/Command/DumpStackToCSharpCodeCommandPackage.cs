@@ -86,7 +86,7 @@ namespace RuntimeTestDataCollector.Command
         protected override async Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken)
         {            
             return null;
-        }
+        }        
         #endregion
     }
 }

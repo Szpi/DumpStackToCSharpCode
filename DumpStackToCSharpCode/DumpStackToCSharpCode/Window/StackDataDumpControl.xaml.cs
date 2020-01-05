@@ -65,6 +65,25 @@ namespace RuntimeTestDataCollector.Window
             Clipboard.SetText(buffer.ToString());
         }
 
+        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
+        private void GenerateLocals_Click(object sender, RoutedEventArgs e)
+        {
+            var buffer = new StringBuilder();
+            foreach (var child in DumpDataStack.Children)
+            {
+                var expander = child as Expander;
+
+                if (!(expander?.Content is TextBox textBox))
+                {
+                    continue;
+                }
+
+                buffer.AppendLine(textBox.Text);
+            }
+            Clipboard.SetText(buffer.ToString());
+        }
+        
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
         {
             DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange();
@@ -82,6 +101,13 @@ namespace RuntimeTestDataCollector.Window
             ErrorMessageRow.Height = new GridLength(0);
         }
 
+        public void ResetControls()
+        {
+            DumpDataStack.Children.Clear();
+            BusyLabel.Visibility = Visibility.Hidden;
+            ErrorMessageRow.Height = new GridLength(0);
+        }
+
         public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectsToCsharpCode, string errorMessage)
         {
             BusyLabel.Visibility = Visibility.Hidden;
@@ -93,12 +119,16 @@ namespace RuntimeTestDataCollector.Window
             
             foreach (var dumpedObjectToCsharpCode in dumpedObjectsToCsharpCode)
             {
-                var expander = CreateExpander(dumpedObjectToCsharpCode.Name, dumpedObjectToCsharpCode.CsharpCode);
+                var expander = CreateExpander(
+                                dumpedObjectToCsharpCode.Name, 
+                                dumpedObjectToCsharpCode.CsharpCode, 
+                                !string.IsNullOrEmpty(dumpedObjectToCsharpCode.ErrorMessage));
+
                 DumpDataStack.Children.Add(expander);
             }
         }
 
-        private Expander CreateExpander(string headerText, string textBoxContent)
+        private Expander CreateExpander(string headerText, string textBoxContent, bool causedError)
         {
             var expander = new Expander()
             {
@@ -108,7 +138,7 @@ namespace RuntimeTestDataCollector.Window
                 FontFamily = CopyEverythingToClipboard.FontFamily,
                 Foreground = CopyEverythingToClipboard.Foreground,
                 IsExpanded = GeneralOptions.Instance.AutomaticallyExpand,
-                BorderBrush = Brushes.Gray,
+                BorderBrush = causedError ? Brushes.Red : Brushes.Gray,
                 Margin = new Thickness(0, 5, 0, 0),
                 Content = new TextBox()
                 {
@@ -221,6 +251,6 @@ namespace RuntimeTestDataCollector.Window
                 child.IsExpanded = !child.IsExpanded;
                 menuItem.Header = child.IsExpanded ? CollapseAll : ExpandAll;
             }
-        }
+        }       
     }
 }

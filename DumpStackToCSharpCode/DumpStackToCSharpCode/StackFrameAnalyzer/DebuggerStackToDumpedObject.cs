@@ -5,6 +5,7 @@ using RuntimeTestDataCollector.Window;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,16 +27,30 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                     maxObjectsToAnalyze,
                                                     maxGenerationTime);
 
-            var (currentExpressionData, errorMessage) = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
+            var objectsOnStack = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
+            if (objectsOnStack.FirstOrDefault()?.ExpressionData == null)
+            {
+                return (new List<DumpedObjectToCsharpCode>(), objectsOnStack.FirstOrDefault().ErrorMessage);
+            }
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();
 
             var generationTime = Stopwatch.StartNew();
             var dumpedObjectsToCsharpCode = new List<DumpedObjectToCsharpCode>();
-            foreach (var expressionData in currentExpressionData)
+            var errorMessage = string.Empty;
+
+            foreach (var objectOnStack in objectsOnStack)
             {
+                var expressionData = objectOnStack.ExpressionData;
                 var currentExpressionDataInCSharpCode = codeGeneratorManager.GenerateStackDump(expressionData);
-                dumpedObjectsToCsharpCode.Add(new DumpedObjectToCsharpCode(expressionData.Name, currentExpressionDataInCSharpCode));
+                dumpedObjectsToCsharpCode.Add(new DumpedObjectToCsharpCode(
+                    expressionData.Name,
+                    currentExpressionDataInCSharpCode, objectOnStack.ErrorMessage));
+
+                if (!string.IsNullOrEmpty(objectOnStack.ErrorMessage))
+                {
+                    errorMessage = objectOnStack.ErrorMessage;
+                }
             }
 
             Trace.WriteLine($">>>>>>>>>>>> ^^^^^^ total time seconds {generationTime.Elapsed.TotalSeconds}");

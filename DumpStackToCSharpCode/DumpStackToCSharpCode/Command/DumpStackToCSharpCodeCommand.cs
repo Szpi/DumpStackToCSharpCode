@@ -135,7 +135,8 @@ namespace RuntimeTestDataCollector.Command
             }
             catch (Exception)
             {
-
+                _stackDataDumpControl.ResetControls();
+                await RefreshUI();
             }
         }
 
@@ -180,6 +181,6 @@ namespace RuntimeTestDataCollector.Command
                 int hr = vsUiShell.UpdateCommandUI(0);
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
             }
-        }
+        }       
     }
 }
