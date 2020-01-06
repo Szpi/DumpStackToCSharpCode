@@ -21,6 +21,8 @@ namespace RuntimeTestDataCollector.Window
         private const string ExpandAll = "Expand all";
         private const string CollapseAll = "Collapse all";
 
+        private const int GeneralTabIndex = 0;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
         /// </summary>
@@ -83,6 +85,7 @@ namespace RuntimeTestDataCollector.Window
             var arg = new ChosenLocalsEventArgs(checkedLocals);
             
             DumpStackToCSharpCodeCommand.Instance.Execute(this, arg);
+            MainTabControl.SelectedIndex = GeneralTabIndex;
         }
 
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
@@ -108,7 +111,6 @@ namespace RuntimeTestDataCollector.Window
             BusyLabel.Visibility = Visibility.Hidden;
             ErrorMessageRow.Height = new GridLength(0);
         }
-
 
         void OnTabChange(object sender, SelectionChangedEventArgs e)
         {

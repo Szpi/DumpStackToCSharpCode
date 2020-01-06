@@ -11,7 +11,11 @@
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
 
-    <TabControl Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" BorderThickness="0" SelectionChanged="OnTabChange">
+    <TabControl Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}" 
+                BorderThickness="0" 
+                SelectionChanged="OnTabChange"
+                Name="MainTabControl">
+        
         <TabControl.Resources>
             <Style TargetType="TabItem">
                 <Setter Property="Template">
