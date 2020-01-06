@@ -61,7 +61,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Grid.Column="0" Click="CopyEverythingToClipBoard_Click" Width="80" Height="80" Name="CopyEverythingToClipboard" 
-                        HorizontalAlignment="Center" Margin="10,0,0,0"
+                        HorizontalAlignment="Center"
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                         Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
@@ -74,7 +74,7 @@
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
                             <ColumnDefinition Width="1*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
@@ -97,18 +97,8 @@
                                     VerticalAlignment="Center"
                                     Unchecked="AutomaticallyRefresh_Unchecked"
                                     Checked="AutomaticallyRefresh_Checked"
-                          Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" >Refresh automatically</CheckBox>
-
-                        <CheckBox Grid.Row="1" Grid.Column="1"  Name="test"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Unchecked="AutomaticallyRefresh_Unchecked"
-                                    Checked="AutomaticallyRefresh_Checked"
-                          Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                          FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                          Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" >test</CheckBox>
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="2" Name="ErrorMessageGrid" Margin="0,5,0,0">
@@ -122,14 +112,13 @@
                    Margin="5,0,3,0"/>
 
                     <Border CornerRadius="5" BorderBrush="DarkRed" Grid.Column="1" BorderThickness="2" HorizontalAlignment="Left" >
-
                         <TextBlock Grid.Column="1"
                            Text="Error Message" 
                            Name="ErrorMessage"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
-                           VerticalAlignment="Center" HorizontalAlignment="Left"                     
+                           VerticalAlignment="Center" HorizontalAlignment="Left"                           
                            Margin="5,3,5,3"                          
                            TextWrapping="WrapWithOverflow"/>
                     </Border>

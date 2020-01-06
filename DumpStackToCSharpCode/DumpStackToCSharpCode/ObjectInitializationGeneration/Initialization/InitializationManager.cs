@@ -56,6 +56,11 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             foreach (var expressionDataIterator in expressionData.UnderlyingExpressionData)
             {
                 var generatedUnderlyingExpression = GenerateInternal(expressionDataIterator, typeCode);
+                if (generatedUnderlyingExpression == null)
+                {
+                    continue;
+                }
+
                 generatedExpressionsSyntax = generatedExpressionsSyntax.Add(generatedUnderlyingExpression);
             }
 
@@ -91,12 +96,22 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 case TypeCode.DictionaryKeyValuePair:
                     {
                         var dictionaryKey = GetExpressionDataForDictionary(expressionData, "Key");
+                        if (dictionaryKey == null)
+                        {
+                            return null;
+                        }
+                        
                         var dictionaryValue = GetExpressionDataForDictionary(expressionData, "Value");
+
+                        if (dictionaryValue == null)
+                        {
+                            return null;
+                        }
 
                         var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode);
                         var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode);
 
-                        return _dictionaryExpressionGenerator.Generate(expressionData, keyExpressionSyntax, valueExpressionSyntax);
+                        return _dictionaryExpressionGenerator.Generate(keyExpressionSyntax, valueExpressionSyntax);
                     }
                 case TypeCode.Array:
                     {
@@ -197,7 +212,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         {
             if (expressionData.UnderlyingExpressionData.Count == 0)
             {
-                return expressionData;
+                return null;
             }
             return expressionData.UnderlyingExpressionData.First(x => x.Name == keyOrValueName);
         }
@@ -208,6 +223,10 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             foreach (var expressionData in expressionsData.Where(x => x != null))
             {
                 var generatedUnderlyingExpression = GenerateInternal(expressionData, parentType);
+                if (generatedUnderlyingExpression == null)
+                {
+                    continue;
+                }
                 expressionsSyntax = expressionsSyntax.Add(generatedUnderlyingExpression);
             }
 

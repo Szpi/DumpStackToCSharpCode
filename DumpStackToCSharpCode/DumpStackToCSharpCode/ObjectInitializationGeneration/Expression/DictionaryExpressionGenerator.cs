@@ -5,9 +5,10 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
 {
     public class DictionaryExpressionGenerator
-    {
-        public ExpressionSyntax Generate(ExpressionData expressionData, ExpressionSyntax keyExpressionSyntax, ExpressionSyntax valueExpressionSyntax)
+    {   
+        public ExpressionSyntax Generate(ExpressionSyntax keyExpressionSyntax, ExpressionSyntax valueExpressionSyntax)
         {
+            
             return SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
                                                 SyntaxFactory.ImplicitElementAccess()
                                                 .WithArgumentList(
@@ -34,6 +35,5 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
                                                     SyntaxFactory.TriviaList(
                                                         SyntaxFactory.Space)));
         }
-
     }
 }

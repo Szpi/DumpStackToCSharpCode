@@ -8,6 +8,7 @@ using System.Windows.Media;
 namespace RuntimeTestDataCollector.Window
 {
     using DumpStackToCSharpCode.CurrentStack;
+    using DumpStackToCSharpCode.Window;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
@@ -70,7 +71,18 @@ namespace RuntimeTestDataCollector.Window
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void GenerateLocals_Click(object sender, RoutedEventArgs e)
         {
-            DumpStackToCSharpCodeCommand.Instance.Execute(this, null);
+            var checkedLocals = new List<string>();
+            foreach (CheckBox checkBox in LocalsStack.Children)
+            {
+                if (!checkBox.IsChecked.GetValueOrDefault())
+                {
+                    continue;
+                }
+                checkedLocals.Add(checkBox.Name);
+            }
+            var arg = new ChosenLocalsEventArgs(checkedLocals);
+            
+            DumpStackToCSharpCodeCommand.Instance.Execute(this, arg);
         }
 
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
@@ -109,11 +121,12 @@ namespace RuntimeTestDataCollector.Window
             {
                 return;
             }
+            LocalsStack.Children.Clear();
 
             var locals = DumpStackToCSharpCodeCommand.Instance.GetCurrentStack();
-
             CreateLocals(locals);
         }
+
         private void CreateLocals(IReadOnlyCollection<CurrentExpressionOnStack> locals)
         {
             foreach (var local in locals)
@@ -121,10 +134,13 @@ namespace RuntimeTestDataCollector.Window
                 var localVariable = new CheckBox()
                 {
                     Content = local.Name,
+                    Name = local.Name,
                     IsChecked = false,
                     Background = AutomaticallyRefresh.Background,
                     FontFamily = AutomaticallyRefresh.FontFamily,
-                    Foreground = AutomaticallyRefresh.Foreground,                    
+                    Foreground = AutomaticallyRefresh.Foreground,
+                    FocusVisualStyle = AutomaticallyRefresh.FocusVisualStyle,
+                    BorderBrush = AutomaticallyRefresh.BorderBrush
                 };
 
                 LocalsStack.Children.Add(localVariable);

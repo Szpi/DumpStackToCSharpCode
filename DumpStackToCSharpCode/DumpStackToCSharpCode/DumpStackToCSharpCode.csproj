@@ -96,6 +96,7 @@
     <Compile Include="StackFrameAnalyzer\ObjectOnStack.cs" />
     <Compile Include="ThemeColor\VsThemeColorExtension.cs" />
     <Compile Include="Window\DumpedObjectToCsharpCode.cs" />
+    <Compile Include="Window\LocalsEventArgs.cs" />
     <Compile Include="Window\StackDataDump.cs" />
     <Compile Include="Window\StackDataDumpControl.xaml.cs">
       <DependentUpon>StackDataDumpControl.xaml</DependentUpon>

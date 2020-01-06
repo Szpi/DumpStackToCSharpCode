@@ -11,6 +11,7 @@ using Task = System.Threading.Tasks.Task;
 using DumpStackToCSharpCode.CurrentStack;
 using System.Collections.Generic;
 using System.Linq;
+using DumpStackToCSharpCode.Window;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -120,7 +121,7 @@ namespace RuntimeTestDataCollector.Command
         {
             try
             {
-                await DumpStackToCSharpCodeAsync();
+                await DumpStackToCSharpCodeAsync(Enumerable.Empty<string>());
             }
             catch (Exception)
             {
@@ -140,7 +141,12 @@ namespace RuntimeTestDataCollector.Command
         {
             try
             {
-                await DumpStackToCSharpCodeAsync();
+                var locals = Enumerable.Empty<string>();
+                if (e is ChosenLocalsEventArgs chosenLocals)
+                {
+                    locals = chosenLocals.CkeckedLocals;
+                }
+                await DumpStackToCSharpCodeAsync(locals);
             }
             catch (Exception)
             {
@@ -149,7 +155,7 @@ namespace RuntimeTestDataCollector.Command
             }
         }
 
-        private async Task DumpStackToCSharpCodeAsync()
+        private async Task DumpStackToCSharpCodeAsync(IEnumerable<string> chosenLocals)
         {
             if (_stackDataDumpControl == null)
             {
@@ -162,7 +168,7 @@ namespace RuntimeTestDataCollector.Command
 
                     var stackDataDump = window as StackDataDump;
                     _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
-                    await DumpStackToCSharpCodeAsync();
+                    await DumpStackToCSharpCodeAsync(chosenLocals);
                 });
                 return;
             }
@@ -172,7 +178,7 @@ namespace RuntimeTestDataCollector.Command
             await RefreshUI();
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            var locals = _currentStackWrapper.CurrentExpressionOnStacks.Select(x => x.Expression);
+            var locals = _currentStackWrapper.CurrentExpressionOnStacks.Where(x => chosenLocals.Any(y => y == x.Name)).Select(x => x.Expression);
 
             var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(locals.ToList(),
                                                                                           int.Parse(_stackDataDumpControl.MaxDepth.Text),
