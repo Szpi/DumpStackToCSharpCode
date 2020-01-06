@@ -57,6 +57,9 @@
   <ItemGroup>
     <Compile Include="Command\DumpStackToCSharpCodeCommand.cs" />
     <Compile Include="Command\DumpStackToCSharpCodeCommandPackage.cs" />
+    <Compile Include="CurrentStack\CurrentExpressionOnStack.cs" />
+    <Compile Include="CurrentStack\CurrentStackWrapper.cs" />
+    <Compile Include="CurrentStack\ICurrentStackWrapper.cs" />
     <Compile Include="ObjectInitializationGeneration\CodeGeneration\Generators\ArrayCodeGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\CodeGeneration\Generators\ComplexObjectCodeGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\CodeGeneration\Generators\PrimitiveCodeGenerator.cs" />

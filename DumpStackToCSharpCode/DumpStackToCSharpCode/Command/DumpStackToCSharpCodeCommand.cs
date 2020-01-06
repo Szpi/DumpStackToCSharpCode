@@ -8,6 +8,9 @@ using System;
 using System.ComponentModel.Design;
 using RuntimeTestDataCollector.Options;
 using Task = System.Threading.Tasks.Task;
+using DumpStackToCSharpCode.CurrentStack;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -33,6 +36,7 @@ namespace RuntimeTestDataCollector.Command
 
         private static DTE2 _dte;
         private static DebuggerEvents _debuggerEvents;
+        private ICurrentStackWrapper _currentStackWrapper;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommand"/> class.
@@ -48,6 +52,7 @@ namespace RuntimeTestDataCollector.Command
             var menuCommandID = new CommandID(CommandSet, CommandId);
             var menuItem = new MenuCommand(this.Execute, menuCommandID);
             commandService.AddCommand(menuItem);
+            _currentStackWrapper = new CurrentStackWrapper();
         }
 
         /// <summary>
@@ -82,6 +87,10 @@ namespace RuntimeTestDataCollector.Command
             Instance = new DumpStackToCSharpCodeCommand(package, commandService);
         }
 
+        public IReadOnlyCollection<CurrentExpressionOnStack> GetCurrentStack()
+        {
+            return _currentStackWrapper.RefreshCurrentLocals(_dte);
+        }
 
         public void SubscribeForDebuggerContextChange()
         {
@@ -127,7 +136,7 @@ namespace RuntimeTestDataCollector.Command
         /// <param name="e">Event args.</param>
 
 
-        private async void Execute(object sender, EventArgs e)
+        public async void Execute(object sender, EventArgs e)
         {
             try
             {
@@ -163,12 +172,13 @@ namespace RuntimeTestDataCollector.Command
             await RefreshUI();
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
-            var dumpedObjectsToCsharpCode = await debuggerStackToDumpedObject.DumpObjectOnStackAsync(_dte,
-                                                                                                     int.Parse(_stackDataDumpControl.MaxDepth.Text),
-                                                                                                     GeneralOptions.Instance.GenerateTypeWithNamespace,
-                                                                                                     package.DisposalToken,
-                                                                                                     GeneralOptions.Instance.MaxObjectsToAnalyze,
-                                                                                                     GeneralOptions.Instance.MaxGenerationTime);
+            var locals = _currentStackWrapper.CurrentExpressionOnStacks.Select(x => x.Expression);
+
+            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(locals.ToList(),
+                                                                                          int.Parse(_stackDataDumpControl.MaxDepth.Text),
+                                                                                          GeneralOptions.Instance.GenerateTypeWithNamespace,
+                                                                                          GeneralOptions.Instance.MaxObjectsToAnalyze,
+                                                                                          GeneralOptions.Instance.MaxGenerationTime);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode.dumpedObjectToCsharpCode, dumpedObjectsToCsharpCode.errorMessage);
         }
@@ -181,6 +191,6 @@ namespace RuntimeTestDataCollector.Command
                 int hr = vsUiShell.UpdateCommandUI(0);
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(hr);
             }
-        }       
+        }
     }
 }

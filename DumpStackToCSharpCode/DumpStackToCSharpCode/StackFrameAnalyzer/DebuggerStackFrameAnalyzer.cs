@@ -1,4 +1,5 @@
-﻿using DumpStackToCSharpCode.StackFrameAnalyzer;
+﻿using DumpStackToCSharpCode.CurrentStack;
+using DumpStackToCSharpCode.StackFrameAnalyzer;
 using EnvDTE;
 using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
@@ -35,20 +36,13 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             _maxGenerationTime = maxGenerationTime;
         }
 
-        public async Task<IReadOnlyList<ObjectOnStack>> AnalyzeCurrentStackAsync(DTE2 dte, CancellationToken token)
+        public IReadOnlyList<ObjectOnStack> AnalyzeCurrentStack(IReadOnlyCollection<Expression> currentExpressionOnStacks)
         {
-            await Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(token);
-
-            if (dte?.Debugger?.CurrentStackFrame == null)
-            {
-                return new List<ObjectOnStack>() { new ObjectOnStack(null, DumpStackToCSharpCode.Resources.ErrorMessages.GeneralError) };
-            }
-
             var generationTime = Stopwatch.StartNew();
             int currentAnalyzedObject = 0;
             var currentStackExpressionsData = new List<ObjectOnStack>();
 
-            foreach (Expression expression in dte.Debugger.CurrentStackFrame.Locals)
+            foreach (Expression expression in currentExpressionOnStacks)
             {
                 if (currentAnalyzedObject > _maxObjectsToAnalyze)
                 {
@@ -72,14 +66,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             Trace.WriteLine($">>>>>>>>>>>> |||||||||||||||| total time seconds {generationTime.Elapsed.TotalSeconds}");
-            test(currentStackExpressionsData);
+            
             return currentStackExpressionsData;
-        }
-
-        private void test(List<ObjectOnStack> currentStackExpressionsData)
-        {
-          
-        }
+        }        
 
         private ObjectOnStack GenerateExpressionData(Expression expression, ref int overallAnalyzedObjects, Stopwatch generationTime)
         {

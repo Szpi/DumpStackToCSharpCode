@@ -1,4 +1,6 @@
-﻿using EnvDTE80;
+﻿using DumpStackToCSharpCode.CurrentStack;
+using EnvDTE;
+using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
@@ -13,10 +15,10 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
-        public async Task<(IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectToCsharpCode, string errorMessage)> DumpObjectOnStackAsync(DTE2 dte,
+        public (IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectToCsharpCode, string errorMessage) DumpObjectOnStack(
+                                                                                          IReadOnlyCollection<Expression> currentExpressionOnStacks,
                                                                                           int maxDepth,
                                                                                           bool generateTypeWithNamespace,
-                                                                                          CancellationToken token,
                                                                                           int maxObjectsToAnalyze,
                                                                                           TimeSpan maxGenerationTime)
         {
@@ -27,7 +29,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                     maxObjectsToAnalyze,
                                                     maxGenerationTime);
 
-            var objectsOnStack = await debuggerStackFrameAnalyzer.AnalyzeCurrentStackAsync(dte, token);
+            var objectsOnStack = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(currentExpressionOnStacks);
             if (objectsOnStack.FirstOrDefault()?.ExpressionData == null)
             {
                 return (new List<DumpedObjectToCsharpCode>(), objectsOnStack.FirstOrDefault().ErrorMessage);

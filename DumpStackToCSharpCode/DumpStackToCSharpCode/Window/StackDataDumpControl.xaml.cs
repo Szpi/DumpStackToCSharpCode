@@ -7,6 +7,7 @@ using System.Windows.Media;
 
 namespace RuntimeTestDataCollector.Window
 {
+    using DumpStackToCSharpCode.CurrentStack;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
@@ -40,7 +41,7 @@ namespace RuntimeTestDataCollector.Window
                 DumpDataStack.Children.Clear();
             }
         }
-        
+
         /// <summary>
         /// Handles click on the button by displaying a message box.
         /// </summary>
@@ -69,21 +70,9 @@ namespace RuntimeTestDataCollector.Window
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void GenerateLocals_Click(object sender, RoutedEventArgs e)
         {
-            var buffer = new StringBuilder();
-            foreach (var child in DumpDataStack.Children)
-            {
-                var expander = child as Expander;
-
-                if (!(expander?.Content is TextBox textBox))
-                {
-                    continue;
-                }
-
-                buffer.AppendLine(textBox.Text);
-            }
-            Clipboard.SetText(buffer.ToString());
+            DumpStackToCSharpCodeCommand.Instance.Execute(this, null);
         }
-        
+
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
         {
             DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange();
@@ -108,6 +97,40 @@ namespace RuntimeTestDataCollector.Window
             ErrorMessageRow.Height = new GridLength(0);
         }
 
+
+        void OnTabChange(object sender, SelectionChangedEventArgs e)
+        {
+            if (!(e.Source is TabControl))
+            {
+                return;
+            }
+
+            if (!LocalsTab.IsSelected)
+            {
+                return;
+            }
+
+            var locals = DumpStackToCSharpCodeCommand.Instance.GetCurrentStack();
+
+            CreateLocals(locals);
+        }
+        private void CreateLocals(IReadOnlyCollection<CurrentExpressionOnStack> locals)
+        {
+            foreach (var local in locals)
+            {
+                var localVariable = new CheckBox()
+                {
+                    Content = local.Name,
+                    IsChecked = false,
+                    Background = AutomaticallyRefresh.Background,
+                    FontFamily = AutomaticallyRefresh.FontFamily,
+                    Foreground = AutomaticallyRefresh.Foreground,                    
+                };
+
+                LocalsStack.Children.Add(localVariable);
+            }
+        }
+
         public void CreateStackDumpControls(IReadOnlyList<DumpedObjectToCsharpCode> dumpedObjectsToCsharpCode, string errorMessage)
         {
             BusyLabel.Visibility = Visibility.Hidden;
@@ -116,12 +139,12 @@ namespace RuntimeTestDataCollector.Window
                 ErrorMessage.Text = "Error: " + errorMessage;
                 ErrorMessageRow.Height = new GridLength(1, GridUnitType.Auto);
             }
-            
+
             foreach (var dumpedObjectToCsharpCode in dumpedObjectsToCsharpCode)
             {
                 var expander = CreateExpander(
-                                dumpedObjectToCsharpCode.Name, 
-                                dumpedObjectToCsharpCode.CsharpCode, 
+                                dumpedObjectToCsharpCode.Name,
+                                dumpedObjectToCsharpCode.CsharpCode,
                                 !string.IsNullOrEmpty(dumpedObjectToCsharpCode.ErrorMessage));
 
                 DumpDataStack.Children.Add(expander);
@@ -251,6 +274,6 @@ namespace RuntimeTestDataCollector.Window
                 child.IsExpanded = !child.IsExpanded;
                 menuItem.Header = child.IsExpanded ? CollapseAll : ExpandAll;
             }
-        }       
+        }
     }
 }
