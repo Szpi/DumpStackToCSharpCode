@@ -32,7 +32,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             var objectsOnStack = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(currentExpressionOnStacks);
             if (objectsOnStack.FirstOrDefault()?.ExpressionData == null)
             {
-                return (new List<DumpedObjectToCsharpCode>(), objectsOnStack.FirstOrDefault().ErrorMessage);
+                return (new List<DumpedObjectToCsharpCode>(), objectsOnStack?.FirstOrDefault()?.ErrorMessage ?? string.Empty);
             }
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create();

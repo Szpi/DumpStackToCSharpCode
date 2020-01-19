@@ -14,7 +14,6 @@ namespace RuntimeTestDataCollector.Options
            public override void SaveSettingsToStorage()
             {
                 base.SaveSettingsToStorage();
-                DumpStackToCSharpCodeCommand.Instance.OnSettingsSaveAsync();
             }
         }
     }

@@ -44,6 +44,18 @@ namespace RuntimeTestDataCollector.Window
             {
                 DumpDataStack.Children.Clear();
             }
+            GeneralOptions.Instance.OnSettingsSave += OnOptionsSave;
+        }
+
+        private async void OnOptionsSave(object sender, bool value)
+        {
+            DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange(OnDebuggerContextChange);
+            if (GeneralOptions.Instance.AutomaticallyRefreshLocals)
+            {
+                DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange(OnDebuggerContextChange);
+            }
+
+            await DumpStackToCSharpCodeCommand.Instance.OnSettingsSaveAsync();
         }
 
         /// <summary>
@@ -84,7 +96,7 @@ namespace RuntimeTestDataCollector.Window
                 checkedLocals.Add(checkBox.Name);
             }
             var arg = new ChosenLocalsEventArgs(checkedLocals);
-            
+
             DumpStackToCSharpCodeCommand.Instance.Execute(this, arg);
             MainTabControl.SelectedIndex = GeneralTabIndex;
         }
@@ -122,10 +134,18 @@ namespace RuntimeTestDataCollector.Window
 
             if (!LocalsTab.IsSelected)
             {
-                DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange(OnDebuggerContextChange);
+                if (GeneralOptions.Instance.AutomaticallyRefreshLocals)
+                {
+                    DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange(OnDebuggerContextChange);
+                }
+
                 return;
             }
-            DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange(OnDebuggerContextChange);
+
+            if (GeneralOptions.Instance.AutomaticallyRefreshLocals)
+            {
+                DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange(OnDebuggerContextChange);
+            }
             CreateLocls();
         }
 

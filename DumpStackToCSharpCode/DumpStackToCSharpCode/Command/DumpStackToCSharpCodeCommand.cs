@@ -177,6 +177,7 @@ namespace RuntimeTestDataCollector.Command
 
                     var stackDataDump = window as StackDataDump;
                     _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
+                    _currentStackWrapper.RefreshCurrentLocals(_dte);
                     await DumpStackToCSharpCodeAsync(chosenLocals);
                 });
                 return;
@@ -187,6 +188,11 @@ namespace RuntimeTestDataCollector.Command
             await RefreshUI();
 
             var debuggerStackToDumpedObject = new DebuggerStackToDumpedObject();
+            if (_currentStackWrapper.CurrentExpressionOnStacks == null)
+            {
+                _currentStackWrapper.RefreshCurrentLocals(_dte);
+            }
+
             var locals = _currentStackWrapper.CurrentExpressionOnStacks.Where(x => chosenLocals.Any(y => y == x.Name)).Select(x => x.Expression);
 
             var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(locals.ToList(),

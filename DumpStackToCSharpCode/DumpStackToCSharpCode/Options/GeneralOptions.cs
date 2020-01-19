@@ -46,5 +46,11 @@ namespace RuntimeTestDataCollector.Options
         [Description("Dump from previous session will be cleared on start")]
         [DefaultValue(false)]
         public bool ClearControlsOnStart { get; set; } = false;
+
+        [Category("General")]
+        [DisplayName("Automatically refresh locals tab")]
+        [Description("Automatically refresh after debugger context change on locals tab")]
+        [DefaultValue(true)]
+        public bool AutomaticallyRefreshLocals { get; set; } = true;
     }
 }

@@ -187,7 +187,7 @@
                 </Grid>
                 <Grid Grid.Row="2" >
                     <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
-                        <StackPanel Name="LocalsStack" Margin="0,5,0,0">
+                        <StackPanel Name="LocalsStack" Margin="5,5,5,5">
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

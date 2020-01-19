@@ -23,6 +23,7 @@ namespace RuntimeTestDataCollector.Options
         private static AsyncLazy<T> _liveModel = new AsyncLazy<T>(CreateAsync, ThreadHelper.JoinableTaskFactory);
         private static AsyncLazy<ShellSettingsManager> _settingsManager = new AsyncLazy<ShellSettingsManager>(GetSettingsManagerAsync, ThreadHelper.JoinableTaskFactory);
 
+        public EventHandler<bool> OnSettingsSave;
         protected BaseOptionModel()
         { }
 
@@ -131,6 +132,8 @@ namespace RuntimeTestDataCollector.Options
             {
                 await liveModel.LoadAsync();
             }
+
+            OnSettingsSave?.Invoke(this, true);
         }
 
         /// <summary>
