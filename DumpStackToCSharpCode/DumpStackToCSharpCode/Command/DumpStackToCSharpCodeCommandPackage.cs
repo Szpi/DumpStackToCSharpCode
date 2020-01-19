@@ -10,6 +10,7 @@ using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Fac
 using RuntimeTestDataCollector.Options;
 using RuntimeTestDataCollector.StackFrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
+using DumpStackToCSharpCode.Command;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -72,6 +73,7 @@ namespace RuntimeTestDataCollector.Command
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await DumpStackToCSharpCodeCommand.InitializeAsync(this);
+            await ChooseLocalsCommand.InitializeAsync(this);
         }
         public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
         {

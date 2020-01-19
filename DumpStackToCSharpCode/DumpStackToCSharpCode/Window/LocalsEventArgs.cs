@@ -8,11 +8,11 @@ namespace DumpStackToCSharpCode.Window
 {
     public class ChosenLocalsEventArgs : EventArgs
     {
-        public ChosenLocalsEventArgs(IEnumerable<string> ckeckedLocals)
+        public ChosenLocalsEventArgs(IList<string> ckeckedLocals)
         {
             CkeckedLocals = ckeckedLocals;
         }
 
-        public IEnumerable<string> CkeckedLocals { get; }
+        public IList<string> CkeckedLocals { get; }
     }
 }

@@ -55,6 +55,19 @@
       <Group guid="guidDumpStackToCSharpCodeCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidVSDebugGroup" id="IDM_LOCALS_CONTEXT"/>
       </Group>
+
+      <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+      </Group>
+      <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0100">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS"/>
+      </Group>
+      <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidVSDebugGroup" id="IDM_AUTOS_CONTEXT"/>
+      </Group>
+      <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidVSDebugGroup" id="IDM_LOCALS_CONTEXT"/>
+      </Group>
     </Groups>
 
     <!--Buttons section. -->
@@ -76,7 +89,20 @@
         <CommandFlag>DynamicVisibility</CommandFlag>-->
         <Strings>
           <CommandName>DumpStackToCSharpCodeCommandId</CommandName>
-          <ButtonText>Dump stack to c# code</ButtonText>
+          <ButtonText>Dump whole stack to c# code</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="guidChooseLocalsCommandPackageCmdSet" id="ChooseLocalsCommandId" priority="0x0100" type="Button">
+      <!--<Button guid="guidChooseLocalsCommandPackageCmdSet" id="DumpStackToCSharpCodeCommandId" priority="0x0100" type="Button">-->
+        <Parent guid="guidDumpStackToCSharpCodeCommandPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <!--<CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>-->
+        <Strings>
+          <CommandName>ChooseLocalsCommandId</CommandName>
+          <ButtonText>Choose locals to dump to c# code</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -102,6 +128,11 @@
       <IDSymbol name="DumpStackToCSharpCodeCommandId" value="0x0100" />
     </GuidSymbol>
 
+    <GuidSymbol name="guidChooseLocalsCommandPackageCmdSet" value="{ba684a32-934e-4c57-a8e5-f2ab491d485d}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="ChooseLocalsCommandId" value="0x0100" />
+    </GuidSymbol>
+    
     <GuidSymbol name="guidImages" value="{e3832572-0174-47e4-924f-3498d7b7518d}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />

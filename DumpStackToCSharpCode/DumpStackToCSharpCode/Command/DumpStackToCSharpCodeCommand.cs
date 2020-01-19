@@ -130,7 +130,7 @@ namespace RuntimeTestDataCollector.Command
         {
             try
             {
-                await DumpStackToCSharpCodeAsync(Enumerable.Empty<string>());
+                await DumpStackToCSharpCodeAsync(new List<string>());
             }
             catch (Exception)
             {
@@ -150,7 +150,7 @@ namespace RuntimeTestDataCollector.Command
         {
             try
             {
-                var locals = Enumerable.Empty<string>();
+                IList<string> locals = new List<string>();
                 if (e is ChosenLocalsEventArgs chosenLocals)
                 {
                     locals = chosenLocals.CkeckedLocals;
@@ -164,7 +164,7 @@ namespace RuntimeTestDataCollector.Command
             }
         }
 
-        private async Task DumpStackToCSharpCodeAsync(IEnumerable<string> chosenLocals)
+        private async Task DumpStackToCSharpCodeAsync(IList<string> chosenLocals)
         {
             if (_stackDataDumpControl == null)
             {
@@ -192,10 +192,12 @@ namespace RuntimeTestDataCollector.Command
             {
                 _currentStackWrapper.RefreshCurrentLocals(_dte);
             }
-
-            var locals = _currentStackWrapper.CurrentExpressionOnStacks.Where(x => chosenLocals.Any(y => y == x.Name)).Select(x => x.Expression);
-
-            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(locals.ToList(),
+            
+            var locals = _currentStackWrapper.CurrentExpressionOnStacks
+                .Where(x => chosenLocals.Count == 0 || chosenLocals.Any(y => y == x.Name))
+                .Select(x => x.Expression).ToList();
+            
+            var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(locals,
                                                                                           int.Parse(_stackDataDumpControl.MaxDepth.Text),
                                                                                           GeneralOptions.Instance.GenerateTypeWithNamespace,
                                                                                           GeneralOptions.Instance.MaxObjectsToAnalyze,

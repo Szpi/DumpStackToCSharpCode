@@ -23,6 +23,7 @@ namespace RuntimeTestDataCollector.Window
         private const string CollapseAll = "Collapse all";
 
         private const int GeneralTabIndex = 0;
+        public const int LocalsTabIndex = 1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
