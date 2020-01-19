@@ -9,6 +9,7 @@ namespace RuntimeTestDataCollector.Window
 {
     using DumpStackToCSharpCode.CurrentStack;
     using DumpStackToCSharpCode.Window;
+    using EnvDTE;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
@@ -121,12 +122,30 @@ namespace RuntimeTestDataCollector.Window
 
             if (!LocalsTab.IsSelected)
             {
+                DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange(OnDebuggerContextChange);
                 return;
             }
+            DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange(OnDebuggerContextChange);
+            CreateLocls();
+        }
+
+        private void CreateLocls()
+        {
             LocalsStack.Children.Clear();
 
             var locals = DumpStackToCSharpCodeCommand.Instance.GetCurrentStack();
             CreateLocals(locals);
+        }
+
+        private void OnDebuggerContextChange(Process newprocess, Program newprogram, Thread newthread, StackFrame newstackframe)
+        {
+            try
+            {
+                CreateLocls();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void CreateLocals(IReadOnlyCollection<CurrentExpressionOnStack> locals)

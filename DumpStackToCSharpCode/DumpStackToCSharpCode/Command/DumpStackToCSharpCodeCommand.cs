@@ -103,6 +103,15 @@ namespace RuntimeTestDataCollector.Command
             _debuggerEvents.OnContextChanged -= OnDebuggerContextChange;
         }
 
+        public void SubscribeForDebuggerContextChange(_dispDebuggerEvents_OnContextChangedEventHandler eventHandler)
+        {
+            _debuggerEvents.OnContextChanged += eventHandler;
+        }
+        public void UnSubscribeForDebuggerContextChange(_dispDebuggerEvents_OnContextChangedEventHandler eventHandler)
+        {
+            _debuggerEvents.OnContextChanged -= eventHandler;
+        }
+
         public async Task OnSettingsSaveAsync()
         {
             var generalOptions = await GeneralOptions.GetLiveInstanceAsync();
