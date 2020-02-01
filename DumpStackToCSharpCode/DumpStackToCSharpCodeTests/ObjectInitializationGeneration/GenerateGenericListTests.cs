@@ -15,7 +15,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         public void Setup()
         {
             var _ = typeof(Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions);
-            _codeGeneratorManager = CodeGeneratorManagerFactory.Create();
+            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(null);
         }
 
         [Test]

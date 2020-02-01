@@ -15,7 +15,7 @@
                 BorderThickness="0" 
                 SelectionChanged="OnTabChange"
                 Name="MainTabControl">
-        
+
         <TabControl.Resources>
             <Style TargetType="TabItem">
                 <Setter Property="Template">
@@ -166,7 +166,7 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                
+
                 <Grid Grid.Row="0" >
                     <Label Grid.Row="1" Grid.Column="0" Content="Pick locals to generate" Name="LocalsToGenerateLabel" Visibility="Visible"                           
                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
@@ -191,6 +191,94 @@
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Arguments"                  
+                 Name="ReadOnlyArguments" 
+                 Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                 Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
+
+            <Grid >
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Class name" 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                <Label Grid.Row="0" Grid.Column="1" Content="Arguments" 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="Class" Margin="5,5,5,5">
+                        <TextBox  Name="ClassPrototype" 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox  
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                    </StackPanel>
+                </ScrollViewer>
+                <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Name="Arguments" Margin="5,5,5,5">
+                        <TextBox Name="ArgumentsPrototype"
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                        <TextBox
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                    </StackPanel>
+                </ScrollViewer>
+                <Button Grid.Column="1" Grid.Row="2" Click="AddRow_Click" Width="60" Height="30" 
+                        VerticalAlignment="top" 
+                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+
+                    <TextBlock Text="Add row" TextWrapping="Wrap" TextAlignment="Center"/>
+                </Button>
             </Grid>
         </TabItem>
     </TabControl>

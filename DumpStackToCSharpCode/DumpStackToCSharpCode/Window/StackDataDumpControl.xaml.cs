@@ -101,6 +101,27 @@ namespace RuntimeTestDataCollector.Window
             DumpStackToCSharpCodeCommand.Instance.Execute(this, arg);
             MainTabControl.SelectedIndex = GeneralTabIndex;
         }
+        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
+        private void AddRow_Click(object sender, RoutedEventArgs e)
+        {
+            Arguments.Children.Add(new TextBox()
+            {
+                Background = ClassPrototype.Background,
+                Foreground = ClassPrototype.Foreground,
+                FontFamily = ClassPrototype.FontFamily,
+                Width = ClassPrototype.Width,
+                Margin = ClassPrototype.Margin
+            });
+            Class.Children.Add(new TextBox()
+            {
+                Background = ArgumentsPrototype.Background,
+                Foreground = ArgumentsPrototype.Foreground,
+                FontFamily = ArgumentsPrototype.FontFamily,
+                Width = ArgumentsPrototype.Width,
+                Margin = ArgumentsPrototype.Margin
+            });
+        }
 
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
         {

@@ -12,6 +12,8 @@ using DumpStackToCSharpCode.CurrentStack;
 using System.Collections.Generic;
 using System.Linq;
 using DumpStackToCSharpCode.Window;
+using System.Windows.Controls;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -173,7 +175,10 @@ namespace RuntimeTestDataCollector.Command
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
                     var windowFrame = (IVsWindowFrame)window.Frame;
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                    if (windowFrame.IsVisible() != 0)
+                    {
+                        Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                    }
 
                     var stackDataDump = window as StackDataDump;
                     _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;
@@ -192,18 +197,48 @@ namespace RuntimeTestDataCollector.Command
             {
                 _currentStackWrapper.RefreshCurrentLocals(_dte);
             }
-            
+
             var locals = _currentStackWrapper.CurrentExpressionOnStacks
                 .Where(x => chosenLocals.Count == 0 || chosenLocals.Any(y => y == x.Name))
                 .Select(x => x.Expression).ToList();
-            
+            var readonlyObjects = GetConstructorArguments();
+
             var dumpedObjectsToCsharpCode = debuggerStackToDumpedObject.DumpObjectOnStack(locals,
                                                                                           int.Parse(_stackDataDumpControl.MaxDepth.Text),
                                                                                           GeneralOptions.Instance.GenerateTypeWithNamespace,
                                                                                           GeneralOptions.Instance.MaxObjectsToAnalyze,
-                                                                                          GeneralOptions.Instance.MaxGenerationTime);
+                                                                                          GeneralOptions.Instance.MaxGenerationTime,
+                                                                                          readonlyObjects);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode.dumpedObjectToCsharpCode, dumpedObjectsToCsharpCode.errorMessage);
+        }
+
+        private Dictionary<string, IReadOnlyList<string>> GetConstructorArguments()
+        {
+            var readonlyObjects = new Dictionary<string, IReadOnlyList<string>>(new OrdinalIgnoreCaseComparer());
+
+            for (int i = 0; i < _stackDataDumpControl.Class.Children.Count; i++)
+            {
+                var classNameTextBox = _stackDataDumpControl.Class.Children[i] as TextBox;
+
+                var className = classNameTextBox.Text.Trim();
+
+                if (string.IsNullOrWhiteSpace(className))
+                {
+                    continue;
+                }
+
+                var argumentListTextBox = _stackDataDumpControl.Arguments.Children[i] as TextBox;
+                var argumentList = argumentListTextBox.Text.Trim().Split(new[] { ",", ";" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                if (argumentList.Count == 0)
+                {
+                    continue;
+                }
+                readonlyObjects[className] = argumentList;
+            }
+
+            return readonlyObjects;
         }
 
         private async Task RefreshUI()

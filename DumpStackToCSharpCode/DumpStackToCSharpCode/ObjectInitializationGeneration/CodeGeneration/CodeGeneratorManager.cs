@@ -8,11 +8,12 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
     {
         private readonly TypeAnalyzer _typeAnalyzer;
         private readonly InitializationManager _initializationManager;
-
-        public CodeGeneratorManager(TypeAnalyzer typeAnalyzer, InitializationManager initializationManager)
+        private readonly ArrayCodeGenerator _arrayCodeGenerator;
+        public CodeGeneratorManager(TypeAnalyzer typeAnalyzer, InitializationManager initializationManager, ArrayCodeGenerator arrayCodeGenerator)
         {
             _typeAnalyzer = typeAnalyzer;
             _initializationManager = initializationManager;
+            _arrayCodeGenerator = arrayCodeGenerator;
         }
 
         public string GenerateStackDump(ExpressionData expressionsData)
@@ -29,9 +30,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 
             if (expressionTypeCode == TypeCode.Array)
             {
-                var arrayInitializationGenerator = new ArrayCodeGenerator();
-
-                var memberSyntax = arrayInitializationGenerator.Generate(expressionsData.Type, expressionsData.Name, generatedSyntax);
+                var memberSyntax = _arrayCodeGenerator.Generate(expressionsData.Type, expressionsData.Name, generatedSyntax);
                 return codeGenerator.GetStringDump(expressionsData.Name, memberSyntax);
             }
 

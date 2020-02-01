@@ -56,7 +56,10 @@ namespace DumpStackToCSharpCode.Command
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                         var window = await package.FindToolWindowAsync(typeof(StackDataDump), 0, true, package.DisposalToken);
                         var windowFrame = (IVsWindowFrame)window.Frame;
-                        Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                        if (windowFrame.IsVisible() != 0)
+                        {
+                            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                        }
 
                         var stackDataDump = window as StackDataDump;
                         _stackDataDumpControl = stackDataDump?.Content as StackDataDumpControl;

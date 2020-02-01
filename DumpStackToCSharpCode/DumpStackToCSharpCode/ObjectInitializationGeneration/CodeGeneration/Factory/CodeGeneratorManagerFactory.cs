@@ -1,4 +1,5 @@
 ﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
@@ -9,13 +10,9 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 {
     public class CodeGeneratorManagerFactory
     {
-        public static CodeGeneratorManager Create()
-        {
-            var arguments = new Dictionary<string, IReadOnlyList<string>>
-            {
-                ["DateTimeaaaaaaaaaaaaaaaaaaaa"] = new List<string>() { "Year", "Month", "Day", "Hour", "Minutes" }
-            };
-            var argumentListManager = new ArgumentListManager(arguments, new ConcreteTypeAnalyzer());
+        public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects)
+        {           
+            var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer());
 
             var initializationManager = new InitializationManager(new TypeAnalyzer(),
                                                                   new PrimitiveExpressionGenerator(),
@@ -27,7 +24,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new EnumExpressionGenerator(),
                                                                   new ImmutableInitializationGenerator());
             
-            return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager);
+            return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator());
         }
     }
 }

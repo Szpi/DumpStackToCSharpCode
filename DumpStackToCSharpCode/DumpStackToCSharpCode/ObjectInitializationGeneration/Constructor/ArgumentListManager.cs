@@ -1,6 +1,7 @@
 ﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,7 +23,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
             {
                 return TryAddConstructorArguments(expressionData, type) ? null : GetArgumentList(expressionData, type);
             }
-            
+
             var matchedArgumentList = argumentNames
                 .Select(x => expressionData
                              .UnderlyingExpressionData
@@ -56,6 +57,12 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
 
         private bool GetArgumentNames(ExpressionData expressionData, out IReadOnlyList<string> argumentNames)
         {
+            if (_typeToArgumentNames == null)
+            {
+                argumentNames = new List<string>();
+                return false;
+            }
+
             if (_typeToArgumentNames.TryGetValue(expressionData.Type, out argumentNames))
             {
                 return true;
