@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using System;
+using System.ComponentModel;
+using Microsoft.VisualStudio.Shell;
 
 namespace RuntimeTestDataCollector.Options
 {
@@ -9,6 +11,7 @@ namespace RuntimeTestDataCollector.Options
     {
         protected readonly BaseOptionModel<T> _model;
 
+        public EventHandler<bool> OnSettingsPageActivate;
         public BaseOptionPage()
         {
 #pragma warning disable VSTHRD104 // Offer async methods
@@ -26,6 +29,18 @@ namespace RuntimeTestDataCollector.Options
         public override void SaveSettingsToStorage()
         {
             _model.Save();
+        }
+
+        public void SubstribeForModelSave(EventHandler<bool> @event)
+        {
+            _model.OnSettingsSave += @event;
+        }
+
+        protected override void OnActivate(CancelEventArgs e)
+        {
+            OnSettingsPageActivate?.Invoke(this, true);
+            LoadSettingsFromStorage();
+            base.OnActivate(e);
         }
     }
 }

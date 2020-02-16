@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Options\DialogPageProvider.cs" />
     <Compile Include="Options\GeneralOptions.cs" />
+    <Compile Include="Options\ReadOnlyObjectArgumentsOptions.cs" />
     <Compile Include="Resources\ErrorMessages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

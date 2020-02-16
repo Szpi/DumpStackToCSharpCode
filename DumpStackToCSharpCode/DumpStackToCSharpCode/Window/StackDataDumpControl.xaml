@@ -63,8 +63,24 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
+                    
+                    <Grid.RowDefinitions >
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
 
-                    <Button Grid.Column="0" Click="CopyEverythingToClipBoard_Click" Width="80" Height="80" Name="CopyEverythingToClipboard" 
+                    <Button Grid.Column="0" Grid.Row="0" Click="GenerateLocals_Click" Width="75" Height="30" Name="GenerateOnGeneral"
+                            Margin="0,5"
+                        VerticalAlignment="top" 
+                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+
+                        <TextBlock Text="Generate" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Button>
+                    
+                    <Button Grid.Column="0" Grid.Row="1" Click="CopyEverythingToClipBoard_Click" Width="75" Height="60" Name="CopyEverythingToClipboard" 
+                            Margin="0,5"
                         HorizontalAlignment="Center"
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
@@ -73,36 +89,37 @@
                         <TextBlock Text="Copy everything to clipboard" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
                     <Grid Grid.Column="1">
-                        <Grid.RowDefinitions >
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"></ColumnDefinition>
-                            <ColumnDefinition Width="1*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                        <Label Grid.Row="0" Grid.Column="0" Content="Max Object Depth:" 
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
-                        <xctk:IntegerUpDown Grid.Row="0" Grid.Column="1"  Name="MaxDepth" Height="20" Width="40"
-                                        HorizontalAlignment="Left"
-                                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
-                                        MaxLength="2"/>
-
                         <CheckBox Grid.Row="1" Grid.Column="0"  Name="AutomaticallyRefresh"
+                                  Margin="5,5"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Unchecked="AutomaticallyRefresh_Unchecked"
                                     Checked="AutomaticallyRefresh_Checked"
                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" >Refresh automatically</CheckBox>
+                    </Grid>
+                    
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Max Object Depth:" 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                        <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1"  Name="MaxDepth" Height="20" Width="40"
+                                        HorizontalAlignment="Left"
+                                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                                        MaxLength="2"/>
+
+                        
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="2" Name="ErrorMessageGrid" Margin="0,5,0,0">
@@ -180,7 +197,7 @@
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
 
                         <TextBlock Text="Generate" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
@@ -222,26 +239,36 @@
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                
+                <Button Grid.Column="1" Click="SaveArguments_Click" Width="60" Height="30" HorizontalAlignment="Right"
+                        Margin="5,0,5,0"
+                        VerticalAlignment="top" 
+                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
+                    <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center"/>
+                </Button>
                 <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto">
                     <StackPanel Name="Class" Margin="5,5,5,5">
-                        <TextBox  Name="ClassPrototype" 
+                        <TextBox  Name="ClassPrototype" Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox 
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox  
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox 
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox 
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
@@ -249,23 +276,23 @@
                 </ScrollViewer>
                 <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
                     <StackPanel Name="Arguments" Margin="5,5,5,5">
-                        <TextBox Name="ArgumentsPrototype"
+                        <TextBox Name="ArgumentsPrototype" Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox
+                        <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />

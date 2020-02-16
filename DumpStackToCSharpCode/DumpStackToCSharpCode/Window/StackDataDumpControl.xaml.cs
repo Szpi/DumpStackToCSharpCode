@@ -8,11 +8,14 @@ using System.Windows.Media;
 namespace RuntimeTestDataCollector.Window
 {
     using DumpStackToCSharpCode.CurrentStack;
+    using DumpStackToCSharpCode.Options;
     using DumpStackToCSharpCode.Window;
     using EnvDTE;
+    using System.Collections;
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
+    using static RuntimeTestDataCollector.Options.DialogPageProvider;
 
     /// <summary>
     /// Interaction logic for StackDataDumpControl.
@@ -46,6 +49,37 @@ namespace RuntimeTestDataCollector.Window
                 DumpDataStack.Children.Clear();
             }
             GeneralOptions.Instance.OnSettingsSave += OnOptionsSave;
+            ReadOnlyObjectArgumentsOptions.Instance.OnSettingsSave += OnReadOnlyObjectArgumentsOptionsSave;
+
+            DumpStackToCSharpCodeCommand.Instance.SubscribeForReadOnlyObjectArgumentsPageProviderEvents(
+                OnReadOnlyObjectArgumentsPageProviderActivated,
+                OnReadOnlyObjectArgumentsOptionsSave);
+
+            GenerateArguments();
+        }
+
+        private void OnReadOnlyObjectArgumentsPageProviderActivated(object sender, bool e)
+        {
+            SaveReadonlyObjectArguments();
+        }
+
+        private void OnReadOnlyObjectArgumentsOptionsSave(object sender, bool e)
+        {
+            ReadOnlyObjectArgumentsOptions.Instance.Load();
+            for (int i = 0; i < Class.Children?.Count; i++)
+            {
+                var control = Class.Children[i];
+                if (control is TextBox classTextBox)
+                {
+                    classTextBox.Text = string.Empty;
+                }
+
+                if (Arguments.Children[i] is TextBox argumentsTextBox)
+                {
+                    argumentsTextBox.Text = string.Empty;
+                }
+            }
+            GenerateArguments();
         }
 
         private async void OnOptionsSave(object sender, bool value)
@@ -111,7 +145,8 @@ namespace RuntimeTestDataCollector.Window
                 Foreground = ClassPrototype.Foreground,
                 FontFamily = ClassPrototype.FontFamily,
                 Width = ClassPrototype.Width,
-                Margin = ClassPrototype.Margin
+                Margin = ClassPrototype.Margin,
+                Height = ClassPrototype.Height
             });
             Class.Children.Add(new TextBox()
             {
@@ -119,8 +154,66 @@ namespace RuntimeTestDataCollector.Window
                 Foreground = ArgumentsPrototype.Foreground,
                 FontFamily = ArgumentsPrototype.FontFamily,
                 Width = ArgumentsPrototype.Width,
-                Margin = ArgumentsPrototype.Margin
+                Margin = ArgumentsPrototype.Margin,
+                Height = ArgumentsPrototype.Height
             });
+        }
+        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
+        private void SaveArguments_Click(object sender, RoutedEventArgs e)
+        {
+            SaveReadonlyObjectArguments();
+        }
+
+        private void GenerateArguments()
+        {
+            for (int i = 0; i < ReadOnlyObjectArgumentsOptions.Instance?.ObjectDescription?.Count; i++)
+            {
+                var objectDescription = ReadOnlyObjectArgumentsOptions.Instance.ObjectDescription[i];
+                if (string.IsNullOrWhiteSpace(objectDescription.ClassName) || string.IsNullOrWhiteSpace(objectDescription.Arguments))
+                {
+                    continue;
+                }
+
+                if (i < Arguments.Children.Count)
+                {
+                    var control = Class.Children[i];
+                    if (control is TextBox classTextBox && string.IsNullOrWhiteSpace(classTextBox.Text))
+                    {
+                        classTextBox.Text = objectDescription.ClassName;
+                        if (Arguments.Children[i] is TextBox argumentsTextBox)
+                        {
+                            argumentsTextBox.Text = objectDescription.Arguments;
+                        }
+                    }
+
+                    continue;
+                }
+
+                Arguments.Children.Add(new TextBox()
+                {
+                    Background = ClassPrototype.Background,
+                    Foreground = ClassPrototype.Foreground,
+                    FontFamily = ClassPrototype.FontFamily,
+                    Width = ClassPrototype.Width,
+                    Margin = ClassPrototype.Margin,
+                    Text = objectDescription.ClassName
+                });
+                Class.Children.Add(new TextBox()
+                {
+                    Background = ArgumentsPrototype.Background,
+                    Foreground = ArgumentsPrototype.Foreground,
+                    FontFamily = ArgumentsPrototype.FontFamily,
+                    Width = ArgumentsPrototype.Width,
+                    Margin = ArgumentsPrototype.Margin,
+                    Text = objectDescription.Arguments
+                });
+
+            }
+            if (Class.Children.Count - ReadOnlyObjectArgumentsOptions.Instance?.ObjectDescription?.Count == 0)
+            {
+                AddRow_Click(this, null);
+            }
         }
 
         private void AutomaticallyRefresh_Checked(object sender, RoutedEventArgs e)
@@ -165,11 +258,36 @@ namespace RuntimeTestDataCollector.Window
                 return;
             }
 
+            SaveReadonlyObjectArguments();
+
             if (GeneralOptions.Instance.AutomaticallyRefreshLocals)
             {
                 DumpStackToCSharpCodeCommand.Instance.SubscribeForDebuggerContextChange(OnDebuggerContextChange);
             }
             CreateLocls();
+        }
+
+        private void SaveReadonlyObjectArguments()
+        {
+            if (!GeneralOptions.Instance.AutomaticallySaveConsturctorParameters)
+            {
+                return;
+            }
+
+            ReadOnlyObjectArgumentsOptions.Instance.ObjectDescription = new List<ReadOnlyObjectDescription>();
+            for (int i = 0; i < Class.Children.Count; i++)
+            {
+                if (Class.Children[i] is TextBox classTextBox && !string.IsNullOrWhiteSpace(classTextBox.Text)
+                    && Arguments.Children[i] is TextBox argumentsTextBox && !string.IsNullOrWhiteSpace(argumentsTextBox.Text))
+                {
+                    ReadOnlyObjectArgumentsOptions.Instance.ObjectDescription.Add(new ReadOnlyObjectDescription
+                    {
+                        ClassName = classTextBox.Text,
+                        Arguments = argumentsTextBox.Text,
+                    });
+                }
+            }
+            ReadOnlyObjectArgumentsOptions.Instance.Save();
         }
 
         private void CreateLocls()

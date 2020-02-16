@@ -11,6 +11,7 @@ using RuntimeTestDataCollector.Options;
 using RuntimeTestDataCollector.StackFrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
 using DumpStackToCSharpCode.Command;
+using DumpStackToCSharpCode.Options;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -38,6 +39,7 @@ namespace RuntimeTestDataCollector.Command
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(StackDataDump), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left)]
     [ProvideOptionPage(typeof(DialogPageProvider.General), OptionsPage, "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(DialogPageProvider.ReadOnlyObjectArgumentsPageProvider), OptionsPage, "Readonly class arguments", 0, 0, true)]
     public sealed class DumpStackToCSharpCodeCommandPackage : AsyncPackage
     {
         private const string OptionsPage = "DumpStack to C# code";

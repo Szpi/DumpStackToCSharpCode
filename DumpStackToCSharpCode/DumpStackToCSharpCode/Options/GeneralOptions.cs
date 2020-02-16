@@ -52,5 +52,11 @@ namespace RuntimeTestDataCollector.Options
         [Description("Automatically refresh after debugger context change on locals tab")]
         [DefaultValue(true)]
         public bool AutomaticallyRefreshLocals { get; set; } = true;
+
+        [Category("General")]
+        [DisplayName("Automatically save readonly class arguments")]
+        [Description("Automatically save readonly class arguments whenever you add it in arguments tab")]
+        [DefaultValue(true)]
+        public bool AutomaticallySaveConsturctorParameters{ get; set; } = true;
     }
 }

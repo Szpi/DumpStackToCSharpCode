@@ -14,6 +14,7 @@ using System.Linq;
 using DumpStackToCSharpCode.Window;
 using System.Windows.Controls;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
+using static RuntimeTestDataCollector.Options.DialogPageProvider;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -88,6 +89,12 @@ namespace RuntimeTestDataCollector.Command
 
             var commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
             Instance = new DumpStackToCSharpCodeCommand(package, commandService);
+        }
+        public void SubscribeForReadOnlyObjectArgumentsPageProviderEvents(EventHandler<bool> action, EventHandler<bool> onReadOnlyObjectArgumentsOptionsSave)
+        {
+            var pageProvider = package.GetDialogPage(typeof(DialogPageProvider.ReadOnlyObjectArgumentsPageProvider)) as ReadOnlyObjectArgumentsPageProvider;
+            pageProvider.OnSettingsPageActivate += action;
+            pageProvider.SubstribeForModelSave(onReadOnlyObjectArgumentsOptionsSave);
         }
 
         public IReadOnlyCollection<CurrentExpressionOnStack> GetCurrentStack()
