@@ -7,7 +7,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 {
     public class ArrayCodeGenerator
     {
-        public MemberDeclarationSyntax Generate(string type, string name, SeparatedSyntaxList<ExpressionSyntax> expressions)
+        public MemberDeclarationSyntax Generate(string name, ExpressionSyntax expressionSyntax)
         {
             return SyntaxFactory.FieldDeclaration(
                                     SyntaxFactory.VariableDeclaration(
@@ -19,15 +19,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                           SyntaxFactory.Identifier(name))
                                                                       .WithInitializer(
                                                                           SyntaxFactory.EqualsValueClause(
-                                                                              SyntaxFactory.ObjectCreationExpression(
-                                                                                               SyntaxFactory
-                                                                                                   .IdentifierName(
-                                                                                                       type))
-                                                                                           .WithInitializer(
-                                                                                               SyntaxFactory.InitializerExpression(
-                                                                                                   SyntaxKind
-                                                                                                       .ObjectInitializerExpression,
-                                                                                                   expressions)))))))
+                                                                              expressionSyntax)))))
                                 .WithSemicolonToken(
                                     SyntaxFactory.Token(
                                         SyntaxFactory.TriviaList(),

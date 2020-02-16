@@ -113,6 +113,10 @@ namespace RuntimeTestDataCollector.Command
         {
             _debuggerEvents.OnContextChanged -= eventHandler;
         }
+        public void ResetCurrentStack()
+        {
+            _currentStackWrapper.Reset();
+        }
 
         public async Task OnSettingsSaveAsync()
         {
@@ -134,8 +138,9 @@ namespace RuntimeTestDataCollector.Command
             {
                 await DumpStackToCSharpCodeAsync(new List<string>());
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _stackDataDumpControl.LogException(e);
             }
         }
 
@@ -159,10 +164,11 @@ namespace RuntimeTestDataCollector.Command
                 }
                 await DumpStackToCSharpCodeAsync(locals);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 _stackDataDumpControl.ResetControls();
                 await RefreshUI();
+                _stackDataDumpControl.LogException(exception);
             }
         }
 

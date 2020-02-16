@@ -18,23 +18,23 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 
         public string GenerateStackDump(ExpressionData expressionsData)
         {
-            var codeGenerator = new CodeGenerator(_typeAnalyzer);
+            var codeGenerator = new CodeGenerator();
 
-            var (generatedSyntax, expressionTypeCode, argumentSyntax) = _initializationManager.Generate(expressionsData);
+            var (generatedSyntax, expressionTypeCode) = _initializationManager.GenerateForMainObject(expressionsData);
 
             if (_typeAnalyzer.IsPrimitiveType(expressionTypeCode))
             {
-                codeGenerator.AddOnePrimitiveExpression(expressionsData.Name, generatedSyntax.FirstOrDefault());
+                codeGenerator.AddOnePrimitiveExpression(expressionsData.Name, generatedSyntax);
                 return codeGenerator.GetStringDump();
             }
 
             if (expressionTypeCode == TypeCode.Array)
             {
-                var memberSyntax = _arrayCodeGenerator.Generate(expressionsData.Type, expressionsData.Name, generatedSyntax);
-                return codeGenerator.GetStringDump(expressionsData.Name, memberSyntax);
+                var memberSyntax = _arrayCodeGenerator.Generate(expressionsData.Name, generatedSyntax);
+                return codeGenerator.GetStringDump(memberSyntax);
             }
 
-            codeGenerator.AddOneExpression(expressionsData.Type, expressionsData.Name, generatedSyntax, argumentSyntax);
+            codeGenerator.AddOneExpression(expressionsData.Name, generatedSyntax);
 
             return codeGenerator.GetStringDump();
         }

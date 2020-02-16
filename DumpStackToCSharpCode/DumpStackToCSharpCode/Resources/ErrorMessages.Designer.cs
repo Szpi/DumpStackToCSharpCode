@@ -61,6 +61,15 @@ namespace DumpStackToCSharpCode.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object was empty. Please try again..
+        /// </summary>
+        internal static string EmptyObjectOnStack {
+            get {
+                return ResourceManager.GetString("EmptyObjectOnStack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Something went wrong. Please try again..
         /// </summary>
         internal static string GeneralError {

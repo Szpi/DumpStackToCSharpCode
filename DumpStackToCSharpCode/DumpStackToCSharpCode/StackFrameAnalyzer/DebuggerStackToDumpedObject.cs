@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using DumpStackToCSharpCode.Resources;
+using EnvDTE;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using RuntimeTestDataCollector.Window;
@@ -19,6 +20,8 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                                                           TimeSpan maxGenerationTime,
                                                                                           Dictionary<string, IReadOnlyList<string>> readonlyObjects)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             var debuggerStackFrameAnalyzer = new DebuggerStackFrameAnalyzer(
                                                     maxDepth,
                                                     new ConcreteTypeAnalyzer(),
@@ -26,10 +29,11 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                     maxObjectsToAnalyze,
                                                     maxGenerationTime);
 
+
             var objectsOnStack = debuggerStackFrameAnalyzer.AnalyzeCurrentStack(currentExpressionOnStacks);
             if (objectsOnStack.FirstOrDefault()?.ExpressionData == null)
             {
-                return (new List<DumpedObjectToCsharpCode>(), objectsOnStack?.FirstOrDefault()?.ErrorMessage ?? string.Empty);
+                return (new List<DumpedObjectToCsharpCode>(), objectsOnStack?.FirstOrDefault()?.ErrorMessage ?? ErrorMessages.EmptyObjectOnStack);
             }
 
             var codeGeneratorManager = CodeGeneratorManagerFactory.Create(readonlyObjects);

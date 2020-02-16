@@ -67,6 +67,7 @@
     <Compile Include="ObjectInitializationGeneration\Constructor\ArgumentListManager.cs" />
     <Compile Include="Command\OrdinalIgnoreCaseComparer.cs" />
     <Compile Include="ObjectInitializationGeneration\Expression\EnumExpressionGenerator.cs" />
+    <Compile Include="ObjectInitializationGeneration\Expression\ObjectInicializationExpressionGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\Initialization\ImmutableInitializationGenerator.cs" />
     <Compile Include="Options\BaseOptionModel.cs" />
     <Compile Include="Options\BaseOptionPage.cs">

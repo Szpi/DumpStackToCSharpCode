@@ -9,31 +9,14 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
     public class CodeGenerator
     {
         private CompilationUnitSyntax _compilationUnitSyntax;
-        private readonly TypeAnalyzer _typeAnalyzer;
-        public CodeGenerator(TypeAnalyzer typeAnalyzer)
+        public CodeGenerator()
         {
-            _typeAnalyzer = typeAnalyzer;
             _compilationUnitSyntax = SyntaxFactory.CompilationUnit();
         }
 
-        public void AddOneExpression(string type,
-                                     string name,
-                                     SeparatedSyntaxList<ExpressionSyntax> expressions,
-                                     List<ExpressionSyntax> argumentSyntax)
+        public void AddOneExpression(string name, ExpressionSyntax objectInitializationSyntax)
         {
-            var argumentList = GenerateArgumentListSyntaxWithCommas(argumentSyntax);
-            InitializerExpressionSyntax initializerExpressionSyntax = null;
-
-            if (!_typeAnalyzer.IsArray(type) && argumentList.Arguments.Count == 0)
-            {
-                argumentList = CreateEmptyArgumentList();
-
-                initializerExpressionSyntax =
-                    SyntaxFactory.InitializerExpression(
-                        SyntaxKind
-                            .ObjectInitializerExpression,
-                        expressions);
-            }
+            
             _compilationUnitSyntax = _compilationUnitSyntax.AddMembers(SyntaxFactory.FieldDeclaration(
                                        SyntaxFactory.VariableDeclaration(
                                                SyntaxFactory.IdentifierName("var"))
@@ -43,12 +26,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                    SyntaxFactory.VariableDeclarator(
                                                            SyntaxFactory.Identifier(name))
                                                        .WithInitializer(
-                                                           SyntaxFactory.EqualsValueClause(
-                                                               SyntaxFactory.ObjectCreationExpression(
-                                                                       SyntaxFactory.IdentifierName(
-                                                                           type))
-                                                                   .WithArgumentList(argumentList)
-                                                                   .WithInitializer(initializerExpressionSyntax))))))
+                                                           SyntaxFactory.EqualsValueClause(objectInitializationSyntax)))))
                                                                            .WithSemicolonToken(
                                                                                SyntaxFactory.Token(
                                                                                    SyntaxFactory.TriviaList(),
@@ -56,32 +34,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                                    SyntaxFactory.TriviaList(
                                                                                        SyntaxFactory.LineFeed))));
         }
-
-        private static ArgumentListSyntax CreateEmptyArgumentList()
-        {
-            return SyntaxFactory.ArgumentList().WithCloseParenToken(
-                SyntaxFactory.Token(
-                    SyntaxFactory.TriviaList(),
-                    SyntaxKind.CloseParenToken,
-                    SyntaxFactory.TriviaList(
-                        SyntaxFactory.LineFeed)));
-        }
-
-        private static ArgumentListSyntax GenerateArgumentListSyntaxWithCommas(List<ExpressionSyntax> argumentSyntax)
-        {
-            var argumentListSyntaxWithCommas = new List<SyntaxNodeOrToken>();
-            for (var i = 0; i < argumentSyntax?.Count; i++)
-            {
-                argumentListSyntaxWithCommas.Add(SyntaxFactory.Argument(argumentSyntax[i]));
-                if (i != argumentSyntax.Count - 1)
-                {
-                    argumentListSyntaxWithCommas.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
-                }
-            }
-
-            return SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(argumentListSyntaxWithCommas));
-        }
-
+        
         public void AddOnePrimitiveExpression(string name, ExpressionSyntax expression)
         {
             _compilationUnitSyntax = _compilationUnitSyntax.AddMembers(SyntaxFactory.FieldDeclaration(
@@ -122,7 +75,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
             return formattedSyntax.ToFullString();
         }
 
-        public string GetStringDump(string name, MemberDeclarationSyntax memberDeclarationSyntax)
+        public string GetStringDump(MemberDeclarationSyntax memberDeclarationSyntax)
         {
             var compilationUnitSyntax = SyntaxFactory.CompilationUnit();
             compilationUnitSyntax = compilationUnitSyntax.AddMembers(memberDeclarationSyntax);

@@ -161,6 +161,7 @@ namespace RuntimeTestDataCollector.Window
                     DumpStackToCSharpCodeCommand.Instance.UnSubscribeForDebuggerContextChange(OnDebuggerContextChange);
                 }
 
+                DumpStackToCSharpCodeCommand.Instance.ResetCurrentStack();
                 return;
             }
 
@@ -185,8 +186,9 @@ namespace RuntimeTestDataCollector.Window
             {
                 CreateLocls();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                LogException(e);
             }
         }
 
@@ -353,6 +355,22 @@ namespace RuntimeTestDataCollector.Window
                 child.IsExpanded = !child.IsExpanded;
                 menuItem.Header = child.IsExpanded ? CollapseAll : ExpandAll;
             }
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        public void LogException(Exception exception)
+        {
+            if (exception is AggregateException aggregateException)
+            {
+                ErrorMessage.Text = "Exception: " + aggregateException.Flatten().Message;
+            }
+            else
+            {
+                ErrorMessage.Text = "Exception: " + exception.Message;
+            }
+
+            ErrorMessage.Text += Environment.NewLine + exception.StackTrace;
+            ErrorMessageRow.Height = new GridLength(1, GridUnitType.Auto);
         }
     }
 }

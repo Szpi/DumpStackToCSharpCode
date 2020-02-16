@@ -25,5 +25,9 @@ namespace DumpStackToCSharpCode.CurrentStack
             CurrentExpressionOnStacks = list;
             return CurrentExpressionOnStacks;
         }
+        public void Reset()
+        {
+            CurrentExpressionOnStacks = null;
+        }
     }
 }

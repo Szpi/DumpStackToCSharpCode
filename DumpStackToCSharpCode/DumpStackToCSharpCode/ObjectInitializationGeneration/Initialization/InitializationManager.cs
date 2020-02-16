@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
@@ -21,6 +22,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private readonly ArgumentListManager _argumentListManager;
         private readonly EnumExpressionGenerator _enumExpressionGenerator;
         private readonly ImmutableInitializationGenerator _immutableInitializationGenerator;
+        private readonly ObjectInicializationExpressionGenerator _objectInicializationExpressionGenerator;
 
         public InitializationManager(TypeAnalyzer typeAnalyzer,
                                      PrimitiveExpressionGenerator primitiveExpressionGenerator,
@@ -30,7 +32,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                      AssignmentExpressionGenerator assignmentExpressionGenerator,
                                      ArgumentListManager argumentListManager,
                                      EnumExpressionGenerator enumExpressionGenerator,
-                                     ImmutableInitializationGenerator immutableInitializationGenerator)
+                                     ImmutableInitializationGenerator immutableInitializationGenerator,
+                                     ObjectInicializationExpressionGenerator objectInicializationExpressionGenerator)
         {
             _typeAnalyzer = typeAnalyzer;
             _primitiveExpressionGenerator = primitiveExpressionGenerator;
@@ -41,9 +44,31 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _argumentListManager = argumentListManager;
             _enumExpressionGenerator = enumExpressionGenerator;
             _immutableInitializationGenerator = immutableInitializationGenerator;
+            _objectInicializationExpressionGenerator = objectInicializationExpressionGenerator;
         }
 
-        public (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, TypeCode mainTypeCode, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
+        public (ExpressionSyntax generatedSyntax, TypeCode mainTypeCode) GenerateForMainObject(ExpressionData expressionData)
+        {
+            var (generatedSyntax, expressionTypeCode, argumentSyntax) = Generate(expressionData);
+
+            ExpressionSyntax generatedSyntaxForMainObject = null;
+            if (_typeAnalyzer.IsPrimitiveType(expressionTypeCode))
+            {
+                generatedSyntaxForMainObject = generatedSyntax.FirstOrDefault();
+            }
+            else if (expressionTypeCode == TypeCode.Array)
+            {
+                generatedSyntaxForMainObject = _objectInicializationExpressionGenerator.GenerateForArray(expressionData.Type, generatedSyntax);
+            }
+            else
+            {
+                generatedSyntaxForMainObject = _objectInicializationExpressionGenerator.GenerateForObject(expressionData.Type, generatedSyntax, argumentSyntax);
+            }
+
+            return (generatedSyntaxForMainObject, expressionTypeCode);
+        }
+
+        private (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, TypeCode mainTypeCode, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
         {
             var (success, typeCode, valueTuple) = GenerateForMainExpression(expressionData);
 
@@ -164,7 +189,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             {
                 var argumentSyntaxList = immutableArgumentsList
                                          .UnderlyingExpressionData
-                                         .Select(x => Generate(x).generatedSyntax.First())
+                                         .Select(x => GenerateForMainObject(x).generatedSyntax)
+                                         .Where(x => x != null)
                                          .ToList();
 
                 return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>(), argumentSyntaxList));

@@ -8,5 +8,6 @@ namespace DumpStackToCSharpCode.CurrentStack
         IReadOnlyCollection<CurrentExpressionOnStack> CurrentExpressionOnStacks { get; }
 
         IReadOnlyCollection<CurrentExpressionOnStack> RefreshCurrentLocals(DTE2 dte);
+        void Reset();
     }
 }
