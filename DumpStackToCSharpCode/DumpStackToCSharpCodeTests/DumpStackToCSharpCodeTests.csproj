@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ObjectInitializationGeneration\GenerateArrayTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateCharacterTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateComplexObjectTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateGenericDictionaryTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateGenericListTests.cs" />
