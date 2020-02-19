@@ -165,6 +165,7 @@
     <Compile Include="ObjectInitializationGeneration\GenerateImmutableTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateReadonlyTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateStringTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\Type\ConcreteTypeAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -76,9 +77,11 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
                     }
                 case TypeCode.String:
                     {
+                        value = Regex.Replace(value, @"\\\\\\\\", "\\");
+                        value = Regex.Replace(value, @"\\\""", "\"");
                         return SyntaxFactory.LiteralExpression(
                             SyntaxKind.StringLiteralExpression,
-                            SyntaxFactory.Literal(value.Replace("\\", string.Empty).Trim('\"')));
+                            SyntaxFactory.Literal(value.Trim('\"')));
                     }
                 case TypeCode.Boolean:
                     {
