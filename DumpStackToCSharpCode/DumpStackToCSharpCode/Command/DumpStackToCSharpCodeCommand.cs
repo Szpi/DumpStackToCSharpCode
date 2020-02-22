@@ -211,6 +211,11 @@ namespace RuntimeTestDataCollector.Command
                 _currentStackWrapper.RefreshCurrentLocals(_dte);
             }
 
+            if (_currentStackWrapper.CurrentExpressionOnStacks == null)
+            {
+                return;
+            }
+
             var locals = _currentStackWrapper.CurrentExpressionOnStacks
                 .Where(x => chosenLocals.Count == 0 || chosenLocals.Any(y => y == x.Name))
                 .Select(x => x.Expression).ToList();

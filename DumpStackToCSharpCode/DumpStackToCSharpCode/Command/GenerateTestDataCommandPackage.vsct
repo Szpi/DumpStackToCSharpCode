@@ -55,13 +55,7 @@
       <Group guid="guidDumpStackToCSharpCodeCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidVSDebugGroup" id="IDM_LOCALS_CONTEXT"/>
       </Group>
-
-      <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0100">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
-      </Group>
-      <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0100">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS"/>
-      </Group>
+      
       <Group guid="guidChooseLocalsCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidVSDebugGroup" id="IDM_AUTOS_CONTEXT"/>
       </Group>
@@ -83,7 +77,7 @@
           If you do not want an image next to your command, remove the Icon node /> -->
       <Button guid="guidDumpStackToCSharpCodeCommandPackageCmdSet" id="DumpStackToCSharpCodeCommandId" priority="0x0100" type="Button">
         <Parent guid="guidDumpStackToCSharpCodeCommandPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="MiniLogo" id="MiniLogo1" />
         <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
         <!--<CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>-->
@@ -96,7 +90,7 @@
       <Button guid="guidChooseLocalsCommandPackageCmdSet" id="ChooseLocalsCommandId" priority="0x0100" type="Button">
       <!--<Button guid="guidChooseLocalsCommandPackageCmdSet" id="DumpStackToCSharpCodeCommandId" priority="0x0100" type="Button">-->
         <Parent guid="guidDumpStackToCSharpCodeCommandPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="MiniLogo" id="MiniLogo1" />
         <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
         <!--<CommandFlag>DefaultInvisible</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>-->
@@ -114,7 +108,8 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\DumpStackToCSharpCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="MiniLogo" href="..\logo\Minilogo.png" usedList="MiniLogo1"/>
+    
     </Bitmaps>
   </Commands>
 
@@ -131,6 +126,10 @@
     <GuidSymbol name="guidChooseLocalsCommandPackageCmdSet" value="{ba684a32-934e-4c57-a8e5-f2ab491d485d}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="ChooseLocalsCommandId" value="0x0100" />
+    </GuidSymbol>
+    
+    <GuidSymbol name="MiniLogo" value="{60D5F138-4F66-43CC-A466-1B2F1E3E0612}">
+      <IDSymbol name="MiniLogo1" value="1" />
     </GuidSymbol>
     
     <GuidSymbol name="guidImages" value="{e3832572-0174-47e4-924f-3498d7b7518d}" >
