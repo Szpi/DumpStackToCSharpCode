@@ -374,7 +374,49 @@ namespace RuntimeTestDataCollector.Window
             };
 
             CreateExpanderContextMenu(expander);
+            CreateExpanderContextMenuForContent(expander);
             return expander;
+        }
+        private void CreateExpanderContextMenuForContent(Expander expander)
+        {
+            var copyMenuItem = new MenuItem()
+            {
+                Header = "Copy",
+                CommandParameter = expander
+            };
+            copyMenuItem.Click += CopyMenuItem_OnClick;
+
+            var copyAllMenuItem = new MenuItem()
+            {
+                Header = "Copy all",
+                CommandParameter = expander
+            };
+            copyAllMenuItem.Click += CopyEverythingToClipBoard_Click;
+
+            var expandMenuItem = new MenuItem()
+            {
+                Header = CollapseAll,
+                CommandParameter = expander
+            };
+            expandMenuItem.Click += ExpandMenuItemDontChangeHeader_OnClick;
+
+            var clearAllMenuItem = new MenuItem()
+            {
+                Header = "Clear all",
+                CommandParameter = expander
+            };
+            clearAllMenuItem.Click += ClearAllItem_OnClick;
+
+            (expander.Content as TextBox).ContextMenu = new ContextMenu()
+            {
+                Items =
+                {
+                    copyMenuItem,
+                    copyAllMenuItem,
+                    expandMenuItem,
+                    clearAllMenuItem
+                }
+            };
         }
 
         private void CreateExpanderContextMenu(Expander expander)
@@ -465,13 +507,44 @@ namespace RuntimeTestDataCollector.Window
 
             ExecuteExpandCollapseContextItem(menuItem);
         }
-
         private void ExecuteExpandCollapseContextItem(MenuItem menuItem)
         {
             foreach (Expander child in DumpDataStack.Children)
             {
                 child.IsExpanded = !child.IsExpanded;
                 menuItem.Header = child.IsExpanded ? CollapseAll : ExpandAll;
+            }
+        }
+
+        private void ExpandMenuItemDontChangeHeader_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is MenuItem menuItem))
+            {
+                return;
+            }
+
+            if (!(menuItem.CommandParameter is Expander expander))
+            {
+                return;
+            }
+
+            foreach (MenuItem item in expander.ContextMenu.Items)
+            {
+                var content = item.Header as string;
+                if (content == CollapseAll || content == ExpandAll)
+                {
+                    item.Header = expander.IsExpanded ? CollapseAll : ExpandAll;
+                }
+            }
+            
+            ExecuteExpandCollapseContextItemDontChangeHeader(menuItem);
+        }
+
+        private void ExecuteExpandCollapseContextItemDontChangeHeader(MenuItem menuItem)
+        {
+            foreach (Expander child in DumpDataStack.Children)
+            {
+                child.IsExpanded = !child.IsExpanded;
             }
         }
 
