@@ -1,12 +1,4 @@
 # .NET Desktop
-- task: VersionVSIX@2
-  inputs:
-    Path: '$(Build.SourcesDirectory)'
-    VersionNumber: '$(PackageVersion)'
-    UseRegex: true
-    DigitMode: 'All'
-    VersionRegex: '\d+\.\d+\.\d+\.\d+'
-    OutputVersion: 'OutputedVersion'
 # Build and run tests for .NET Desktop or Windows classic desktop solutions.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
@@ -23,14 +15,14 @@ variables:
   buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
-name: 1.0.$(patch) # Set the value of $(Build.BuildNumber)
+name: 1.0.$(patch) # Set the value of $(PackageVersion)
 
 steps:
 - task: PowerShell@2
   displayName: Update version in the vsix manifest
   inputs:
     filePath: 'build\update-version.ps1'
-    arguments: '$(Build.BuildNumber)'
+    arguments: '$(PackageVersion)'
     pwsh: true
 
 - task: NuGetCommand@2
