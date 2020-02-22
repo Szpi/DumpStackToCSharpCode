@@ -1,4 +1,12 @@
 # .NET Desktop
+- task: VersionVSIX@2
+  inputs:
+    Path: '$(Build.SourcesDirectory)'
+    VersionNumber: '$(PackageVersion)'
+    UseRegex: true
+    DigitMode: 'All'
+    VersionRegex: '\d+\.\d+\.\d+\.\d+'
+    OutputVersion: 'OutputedVersion'
 # Build and run tests for .NET Desktop or Windows classic desktop solutions.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
