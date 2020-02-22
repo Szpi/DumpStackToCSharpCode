@@ -213,6 +213,7 @@ namespace RuntimeTestDataCollector.Command
 
             if (_currentStackWrapper.CurrentExpressionOnStacks == null)
             {
+                _stackDataDumpControl.ResetControls();
                 return;
             }
 
