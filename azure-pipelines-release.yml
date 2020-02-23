@@ -15,7 +15,7 @@ variables:
   buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
-name: 1.0.$(patch) # Set the value of $(PackageVersion)
+name: $(PackageVersion) # Set the value of $(PackageVersion)
 
 steps:
 - task: PowerShell@2
