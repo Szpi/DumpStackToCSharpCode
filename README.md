@@ -19,5 +19,11 @@ Refresh automatically during debugging.
 Basic configuration.
 ![](https://github.com/Szpi/DumpStackToCSharpCode/raw/master/demo//demo3_Configuration.gif)
 
+## Choose which object you want to dump
+![](https://github.com/Szpi/DumpStackToCSharpCode/raw/master/demo//demo4_chooseLocals.gif)
+
+## Configure object that should be created via constructor
+![](https://github.com/Szpi/DumpStackToCSharpCode/raw/master/demo//demo5_readonlyTypes.gif)
+
 ## Build Status
 [![Build Status](https://dev.azure.com/szpi/DumpStackToCSharpCode/_apis/build/status/Szpi.DumpStackToCSharpCode.Master-CI?branchName=master)](https://dev.azure.com/szpi/DumpStackToCSharpCode/_build/latest?definitionId=1&branchName=master)
