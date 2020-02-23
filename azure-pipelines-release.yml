@@ -9,11 +9,12 @@ pool:
   vmImage: 'windows-latest'
 variables:
   # patch will be incremented at each build. This is useful to create a unique build version.
-  patch: $[counter('PatchVersionPartCounterNew', 0)]
+  # patch: $[counter('PatchVersionPartCounterNew', 0)]
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  group: 'Version'
 
 name: $(PackageVersion) # Set the value of $(PackageVersion)
 
