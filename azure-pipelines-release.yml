@@ -14,7 +14,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  group: Version
+  group: 'Version'
 
 name: $(PackageVersion) # Set the value of $(PackageVersion)
 
