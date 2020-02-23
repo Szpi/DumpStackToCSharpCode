@@ -125,6 +125,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="logo\Logo.PNG" />
+    <Content Include="logo\MiniLogo.PNG" />
     <Content Include="Window\Resources\StackDataDumpCommand.png" />
     <VSCTCompile Include="Command\GenerateTestDataCommandPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
