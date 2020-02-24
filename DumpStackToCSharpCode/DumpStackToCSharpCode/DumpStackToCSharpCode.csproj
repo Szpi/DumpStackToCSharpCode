@@ -126,10 +126,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="logo\Logo.PNG">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="logo\MiniLogo.PNG">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Window\Resources\StackDataDumpCommand.png" />
     <VSCTCompile Include="Command\GenerateTestDataCommandPackage.vsct">
