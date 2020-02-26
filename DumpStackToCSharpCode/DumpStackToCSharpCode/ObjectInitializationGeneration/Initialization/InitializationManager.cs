@@ -103,7 +103,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             if (success)
             {
                 var generated = generatedSyntax.FirstOrDefault();
-                if (IsNotImmutableType(generated))
+                if (IsNotImmutableType(generated, typeCode))
                 {
                     return GenerateExpressionSyntax(expressionData, parentTypeCode, generated);
                 }
@@ -163,9 +163,9 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 : objectCreationSyntax;
         }
 
-        private static bool IsNotImmutableType(ExpressionSyntax generated)
+        private static bool IsNotImmutableType(ExpressionSyntax generated, TypeCode typeCode)
         {
-            return generated != null;
+            return generated != null && typeCode != TypeCode.Guid;
         }
 
         private (bool success, TypeCode typeCode, (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, List<ExpressionSyntax> argumentSyntax) valueTuple)

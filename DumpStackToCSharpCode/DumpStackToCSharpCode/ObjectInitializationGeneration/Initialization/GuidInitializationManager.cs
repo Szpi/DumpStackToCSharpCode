@@ -27,9 +27,9 @@ namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization
             }
 
             var guid = new System.Guid(
-                uint.Parse(expressionData.UnderlyingExpressionData[0].Value),
-                ushort.Parse(expressionData.UnderlyingExpressionData[1].Value),
-                ushort.Parse(expressionData.UnderlyingExpressionData[2].Value),
+                int.Parse(expressionData.UnderlyingExpressionData[0].Value),
+                short.Parse(expressionData.UnderlyingExpressionData[1].Value),
+                short.Parse(expressionData.UnderlyingExpressionData[2].Value),
                 byte.Parse(expressionData.UnderlyingExpressionData[3].Value),
                 byte.Parse(expressionData.UnderlyingExpressionData[4].Value),
                 byte.Parse(expressionData.UnderlyingExpressionData[5].Value),
