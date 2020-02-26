@@ -21,77 +21,127 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         [Test]
         public void ShouldGenerate_ComplexObjectAssignment()
         {
-            var firstElement = new ExpressionData("string", "test1", "TestString", new ExpressionData[] { }, "string");
-            var secondElement = new ExpressionData("int", "10", "TestInt", new ExpressionData[] { }, "int");
-            var stackObject = new ExpressionData("Test",
-                                                 "Test",
-                                                 "testComplexObject",
-                                                 new[]
-                                                 {
-                                                     firstElement,
-                                                     secondElement
-                                                 },
-                                                 "Test");
+            var stackObject = new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "test123", new List<ExpressionData>()
+            {
+                new ExpressionData("List<int>", "Count = 3", "testListOfInt", new List<ExpressionData>()
+                {
+                    new ExpressionData("int", "84", "[0]", new List<ExpressionData>()
+                    {
+                    }, "int"),
+                    new ExpressionData("int", "193", "[1]", new List<ExpressionData>()
+                    {
+                    }, "int"),
+                    new ExpressionData("int", "167", "[2]", new List<ExpressionData>()
+                    {
+                    }, "int")
+                }, "System.Collections.Generic.List<int>")
+            }, "ConsoleApp1.Program.Test");
+
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    TestString = \"test1\",\r\n    TestInt = 10\r\n};\n");
+            generated.Should().Be("var test123 = new Test()\n{\r\n    testListOfInt = new List<int>() { 84, 193, 167 }\r\n};\n");
         }
 
 
         [Test]
         public void ShouldGenerate_ComplexObjectAssignment_WithStringArray()
         {
-            var firstElement = new ExpressionData("string", "test1", "[0]", new ExpressionData[] { }, "string");
-            var secondElement = new ExpressionData("string", "test2", "[1]", new ExpressionData[] { }, "string");
-            var array = new ExpressionData("string[]",
-                                   "{string[2]}",
-                                   "testStringArray",
-                                   new []
-                                   {
-                                       firstElement,
-                                       secondElement
-                                   },
-                                   "string[]");
+            var stackObject = new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "test123", new List<ExpressionData>()
+            {
+                new ExpressionData("string[]", "{string[3]}", "TestStringArray", new List<ExpressionData>()
+                {
+                    new ExpressionData("string", "26d027f0-238e-4672-90ea-7bb489c35408", "[0]", new List<ExpressionData>()
+                    {
+                    }, "string"),
+                    new ExpressionData("string", "b27bbabc-f00d-4142-b031-5bfb2f94f0aa", "[1]", new List<ExpressionData>()
+                    {
+                    }, "string"),
+                    new ExpressionData("string", "5847d2a8-138a-49a5-973f-7ce86b700c7b", "[2]", new List<ExpressionData>()
+                    {
+                    }, "string")
+                }, "string[]")
+            }, "ConsoleApp1.Program.Test");
 
-            var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new [] { array }, "Test");
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testStringArray = new string[] { \"test1\", \"test2\" }\r\n};\n");
+            generated.Should().Be("var test123 = new Test()\n{\r\n    TestStringArray = new string[] { \"26d027f0-238e-4672-90ea-7bb489c35408\", \"b27bbabc-f00d-4142-b031-5bfb2f94f0aa\", \"5847d2a8-138a-49a5-973f-7ce86b700c7b\" }\r\n};\n");
         }
 
         [Test]
         public void ShouldGenerate_ComplexObjectAssignment_WithInterface()
         {
-            var firstElement = new ExpressionData("test", "{ConsoleApp1.test}", "TestTestTest", new ExpressionData[] { }, "ConsoleApp1.Itest {ConsoleApp1.test}");
+            var stackObject = new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "testInterface", new List<ExpressionData>()
+            {
+                new ExpressionData("ITestImplementation", "{ConsoleApp1.Program.ITestImplementation}", "TestInterface", new List<ExpressionData>()
+                {
+                    new ExpressionData("int", "20", "TestInt", new List<ExpressionData>()
+                    {
+                    }, "int")
+                }, "ConsoleApp1.Program.ITest {ConsoleApp1.Program.ITestImplementation}")
+            }, "ConsoleApp1.Program.Test");
 
-            var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new [] { firstElement }, "Test");
+
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-           generated.Should().Be("var testComplexObject = new Test()\n{\r\n    TestTestTest = new test()\r\n    {\r\n    }\r\n};\n");
+            generated.Should().Be("var testInterface = new Test()\n{\r\n    TestInterface = new ITestImplementation()\r\n    {\r\n        TestInt = 20\r\n    }\r\n};\n");
         }
 
         [Test]
         public void ShouldGenerate_ComplexObjectAssignment_WithList()
         {
-            var intFirst = new ExpressionData("int", "10", "[0]", new ExpressionData[]
+            var stackObject = new ExpressionData("List<Test>", "Count = 3", "test123", new List<ExpressionData>()
             {
-            }, "int");
-            var intSecond = new ExpressionData("int", "20", "[1]", new ExpressionData[] { }, "int");
+                new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "[0]", new List<ExpressionData>()
+                {
+                    new ExpressionData("decimal?", "106", "TestDecimal", new List<ExpressionData>()
+                    {
+                    }, "decimal?"),
+                    new ExpressionData("int", "102", "TestInt", new List<ExpressionData>()
+                    {
+                    }, "int"),
+                    new ExpressionData("int?", "28", "TestNullableInt", new List<ExpressionData>()
+                    {
+                    }, "int?"),
+                    new ExpressionData("string", "TestStringb4073650-af31-47a3-a64e-8555da37ff9a", "TestString", new List<ExpressionData>()
+                    {
+                    }, "string")
+                }, "ConsoleApp1.Program.Test"),
+                new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "[1]", new List<ExpressionData>()
+                {
+                    new ExpressionData("decimal?", "145", "TestDecimal", new List<ExpressionData>()
+                    {
+                    }, "decimal?"),
+                    new ExpressionData("int", "50", "TestInt", new List<ExpressionData>()
+                    {
+                    }, "int"),
+                    new ExpressionData("int?", "25", "TestNullableInt", new List<ExpressionData>()
+                    {
+                    }, "int?"),
+                    new ExpressionData("string", "TestString76a1d3c9-0bb9-4651-9b2d-68363f96ddda", "TestString", new List<ExpressionData>()
+                    {
+                    }, "string")
+                }, "ConsoleApp1.Program.Test"),
+                new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "[2]", new List<ExpressionData>()
+                {
+                    new ExpressionData("decimal?", "120", "TestDecimal", new List<ExpressionData>()
+                    {
+                    }, "decimal?"),
+                    new ExpressionData("int", "11", "TestInt", new List<ExpressionData>()
+                    {
+                    }, "int"),
+                    new ExpressionData("int?", "136", "TestNullableInt", new List<ExpressionData>()
+                    {
+                    }, "int?"),
+                    new ExpressionData("string", "TestString1c8653d0-62d2-4a99-a087-3a21d49764b4", "TestString", new List<ExpressionData>()
+                    {
+                    }, "string")
+                }, "ConsoleApp1.Program.Test")
+            }, "System.Collections.Generic.List<ConsoleApp1.Program.Test>");
 
-            var listElement = new ExpressionData("List<int>",
-                                                 "Count = 2",
-                                                 "testListOfInt",
-                                                 new[]
-                                                 {
-                                                     intFirst,
-                                                     intSecond
-                                                 },
-                                                 "System.Collections.Generic.List<int>");
-            var stackObject = new ExpressionData("Test", "Test", "testComplexObject", new[] { listElement }, "Test");
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var testComplexObject = new Test()\n{\r\n    testListOfInt = new List<int>() { 10, 20 }\r\n};\n");
+            generated.Should().Be("var test123 = new List<Test>()\n{\r\n    new Test()\r\n    {\r\n        TestDecimal = 106M,\r\n        TestInt = 102,\r\n        TestNullableInt = 28,\r\n        TestString = \"TestStringb4073650-af31-47a3-a64e-8555da37ff9a\"\r\n    },\r\n    new Test()\r\n    {\r\n        TestDecimal = 145M,\r\n        TestInt = 50,\r\n        TestNullableInt = 25,\r\n        TestString = \"TestString76a1d3c9-0bb9-4651-9b2d-68363f96ddda\"\r\n    },\r\n    new Test()\r\n    {\r\n        TestDecimal = 120M,\r\n        TestInt = 11,\r\n        TestNullableInt = 136,\r\n        TestString = \"TestString1c8653d0-62d2-4a99-a087-3a21d49764b4\"\r\n    }\r\n};\n");
         }
         [Test]
         public void ShouldGenerate_ComplexObject()

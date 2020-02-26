@@ -8,7 +8,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 {
     public class ImmutableInitializationGenerator
     {
-        public ExpressionSyntax Generate(ExpressionData expressionData, List<ExpressionSyntax> expressionsSyntax)
+        public ExpressionSyntax Generate(ExpressionData expressionData, List<ExpressionSyntax> constructorArguments)
         {
             return SyntaxFactory.ObjectCreationExpression(
                                     SyntaxFactory.IdentifierName(expressionData.Type))
@@ -18,7 +18,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                         SyntaxKind.NewKeyword,
                                         SyntaxFactory.TriviaList(
                                             SyntaxFactory.Space)))
-                                .WithArgumentList(GenerateArgumentListSyntaxWithCommas(expressionsSyntax));
+                                .WithArgumentList(GenerateArgumentListSyntaxWithCommas(constructorArguments));
         }
         private static ArgumentListSyntax GenerateArgumentListSyntaxWithCommas(List<ExpressionSyntax> argumentSyntax)
         {

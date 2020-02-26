@@ -1,22 +1,18 @@
-﻿using DumpStackToCSharpCode.CurrentStack;
-using DumpStackToCSharpCode.StackFrameAnalyzer;
+﻿using DumpStackToCSharpCode.StackFrameAnalyzer;
 using EnvDTE;
-using EnvDTE80;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Resources;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace RuntimeTestDataCollector.StackFrameAnalyzer
 {
     public class DebuggerStackFrameAnalyzer
     {
+        private static readonly string DateTime = $"{nameof(System)}.{nameof(DateTime)}";
+
         private readonly int _maxObjectsToAnalyze;
         private readonly int _maxObjectDepth;
         private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
@@ -66,9 +62,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             Trace.WriteLine($">>>>>>>>>>>> |||||||||||||||| total time seconds {generationTime.Elapsed.TotalSeconds}");
-            
+
             return currentStackExpressionsData;
-        }        
+        }
 
         private ObjectOnStack GenerateExpressionData(Expression expression, ref int overallAnalyzedObjects, Stopwatch generationTime)
         {
@@ -96,11 +92,6 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 currentAnalyzedObjects++;
                 overallAnalyzedObjects++;
 
-                if (IsDictionaryDuplicatedValue(dataMember.Name))
-                {
-                    continue;
-                }
-
                 if (HasExceedMaxGenerationTime(generationTime))
                 {
                     Trace.WriteLine($">>>>>>>>>>>> seconds {generationTime.Elapsed.TotalSeconds} breaking");
@@ -116,11 +107,25 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 {
                     return new ObjectOnStack(mainObject, DumpStackToCSharpCode.Resources.ErrorMessages.MaxObjectDepthExceeded);
                 }
+                var dataMemberName = dataMember.Name;
+                var dataMemberType = dataMember.Type;
+
+                if (IsDictionaryDuplicatedValue(dataMemberName))
+                {
+                    continue;
+                }
+
+                //if (IsDateTimeRecursion(dataMemberType, currentObjectDepth))
+                //{
+                //    continue;
+                //}
+
                 var underlyingExpressionData = new List<ExpressionData>();
 
-                var value = CorrectCharValue(dataMember.Type, dataMember.Value);
-                var type = GetTypeToGenerate(dataMember.Type);
-                var expressionData = new ExpressionData(type, value, dataMember.Name, underlyingExpressionData, dataMember.Type);
+                var value = CorrectCharValue(dataMemberType, dataMember.Value);
+                var type = GetTypeToGenerate(dataMemberType);
+
+                var expressionData = new ExpressionData(type, value, dataMemberName, underlyingExpressionData, dataMemberType);
 
                 if (HasParentExpressionData(stackObject))
                 {
@@ -160,6 +165,11 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             }
 
             return new ObjectOnStack(mainObject, null);
+        }
+
+        private bool IsDateTimeRecursion(string dataMemberType, int currentDepth)
+        {
+            return dataMemberType == DateTime && currentDepth >= 3;
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)

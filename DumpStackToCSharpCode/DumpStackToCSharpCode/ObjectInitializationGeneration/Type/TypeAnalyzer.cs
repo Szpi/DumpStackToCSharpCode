@@ -1,4 +1,5 @@
-﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
+﻿using System;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
 {
@@ -58,7 +59,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                 return TypeCode.NullValue;
             }
 
-            switch (type)
+            switch (type.TrimEnd('?'))
             {
                 case "bool":
                     return TypeCode.Boolean;
@@ -90,6 +91,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                     return TypeCode.UShort;
                 case "string":
                     return TypeCode.String;
+                case "System.Guid":
+                    return TypeCode.Guid;
                 default:
                     {
                         if (IsArray(type))
@@ -111,9 +114,18 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                             return TypeCode.Collection;
                         }
 
+                        if (IsEnum(value))
+                        {
+                            return TypeCode.Enum;
+                        }
                         return TypeCode.ComplexObject;
                     }
             }
+        }
+
+        private bool IsEnum(string type)
+        {
+            return !type.StartsWith("{");
         }
 
         public bool IsPrimitiveType(string type, string value)

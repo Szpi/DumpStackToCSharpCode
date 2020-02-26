@@ -1,4 +1,5 @@
 ﻿using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
@@ -23,6 +24,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private readonly EnumExpressionGenerator _enumExpressionGenerator;
         private readonly ImmutableInitializationGenerator _immutableInitializationGenerator;
         private readonly ObjectInicializationExpressionGenerator _objectInicializationExpressionGenerator;
+        private readonly GuidInitializationManager _guidInitializationManager;
 
         public InitializationManager(TypeAnalyzer typeAnalyzer,
                                      PrimitiveExpressionGenerator primitiveExpressionGenerator,
@@ -33,7 +35,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                      ArgumentListManager argumentListManager,
                                      EnumExpressionGenerator enumExpressionGenerator,
                                      ImmutableInitializationGenerator immutableInitializationGenerator,
-                                     ObjectInicializationExpressionGenerator objectInicializationExpressionGenerator)
+                                     ObjectInicializationExpressionGenerator objectInicializationExpressionGenerator,
+                                     GuidInitializationManager guidInitializationManager)
         {
             _typeAnalyzer = typeAnalyzer;
             _primitiveExpressionGenerator = primitiveExpressionGenerator;
@@ -45,6 +48,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _enumExpressionGenerator = enumExpressionGenerator;
             _immutableInitializationGenerator = immutableInitializationGenerator;
             _objectInicializationExpressionGenerator = objectInicializationExpressionGenerator;
+            _guidInitializationManager = guidInitializationManager;
         }
 
         public (ExpressionSyntax generatedSyntax, TypeCode mainTypeCode) GenerateForMainObject(ExpressionData expressionData)
@@ -173,6 +177,18 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             if (success)
             {
                 return (true, TypeCode.Enum, generatedValueTuple);
+            }
+
+            if (typeCode == TypeCode.Enum)
+            {
+                var enumSyntax = _enumExpressionGenerator.Generate(expressionData);
+                return (true, TypeCode.Enum, (new SeparatedSyntaxList<ExpressionSyntax>().Add(enumSyntax), null));
+            }
+
+            if (typeCode == TypeCode.Guid)
+            {
+                var guidSyntax = _guidInitializationManager.Generate(expressionData);
+                return (true, TypeCode.Guid, guidSyntax);
             }
 
             if (_typeAnalyzer.IsPrimitiveType(expressionData.TypeWithNamespace, expressionData.Value))

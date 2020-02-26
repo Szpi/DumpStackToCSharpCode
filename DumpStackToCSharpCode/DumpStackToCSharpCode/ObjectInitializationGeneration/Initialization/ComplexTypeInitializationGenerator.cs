@@ -15,12 +15,12 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _typeAnalyzer = typeAnalyzer;
         }
 
-        public ExpressionSyntax Generate(ExpressionData expressionData, SeparatedSyntaxList<ExpressionSyntax> expressionsSyntax)
+        public ExpressionSyntax Generate(ExpressionData expressionData, SeparatedSyntaxList<ExpressionSyntax> initializationExpressionsSyntax)
         {
-            return GenerateCreationExpressionForComplexType(expressionData, expressionsSyntax);
+            return GenerateCreationExpressionForComplexType(expressionData, initializationExpressionsSyntax);
         }
         
-        private ObjectCreationExpressionSyntax GenerateCreationExpressionForComplexType(ExpressionData expressionData, SeparatedSyntaxList<ExpressionSyntax> expressionsSyntax)
+        private ObjectCreationExpressionSyntax GenerateCreationExpressionForComplexType(ExpressionData expressionData, SeparatedSyntaxList<ExpressionSyntax> initializationExpressionsSyntax)
         {
             var enterAfterEachElement = new SyntaxTriviaList();
             if (!_typeAnalyzer.IsCollectionOfPrimitiveType(expressionData.Type))
@@ -44,7 +44,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                    SyntaxKind.CloseParenToken,
                                    enterAfterEachElement))).WithInitializer(
                        SyntaxFactory.InitializerExpression(
-                           SyntaxKind.ObjectInitializerExpression, expressionsSyntax));
+                           SyntaxKind.ObjectInitializerExpression, initializationExpressionsSyntax));
         }
     }
 }
