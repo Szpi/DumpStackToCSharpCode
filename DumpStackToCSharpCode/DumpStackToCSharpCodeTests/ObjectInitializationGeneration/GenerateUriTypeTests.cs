@@ -28,7 +28,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         }
 
         [Test]
-        public void ShouldGenerate_TimeSpan()
+        public void ShouldGenerate_Uri()
         {
             var stackObject = GetUriDefinition();
 

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
     [TestFixture]
-    class GenerateRegexTypeTests
+    class GenerateGenericClassTypeTests
     {
         private CodeGeneratorManager _codeGeneratorManager;
 
@@ -27,20 +27,24 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
             _codeGeneratorManager = CodeGeneratorManagerFactory.Create(readOnlyTypeConstructorDefinition);
         }
 
-        [Ignore("temporary")]
         [Test]
-        public void ShouldGenerate_Regex()
+        public void ShouldGenerate_GenericClass()
         {
-            var stackObject = GetRegexDefinition();
+            var stackObject = GetGenericClassDefinition();
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var timeSpan = new TimeSpan(0, 10, 10, 10, 0);\n");
+            generated.Should().Be("var genericClass = new GenericClass<string>()\n{\r\n    TestType = \"test\"\r\n};\n");
         }
 
-        private ExpressionData GetRegexDefinition()
+        private ExpressionData GetGenericClassDefinition()
         {
-            return null;
+            return new ExpressionData("GenericClass<string>", "{ConsoleApp1.Program.GenericClass<string>}", "genericClass", new List<ExpressionData>()
+            {
+                new ExpressionData("string", "test", "TestType", new List<ExpressionData>()
+                {
+                }, "string")
+            }, "ConsoleApp1.Program.GenericClass<string>");
         }
     }
 }

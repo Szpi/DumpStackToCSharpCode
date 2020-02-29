@@ -161,7 +161,9 @@
     <Compile Include="ObjectInitializationGeneration\GenerateArrayTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateCharacterTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateComplexObjectTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateComplexObjectWithInheritanceTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateEnumTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateGenericClassTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateGenericDictionaryTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateGenericListTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateGuidTests.cs" />

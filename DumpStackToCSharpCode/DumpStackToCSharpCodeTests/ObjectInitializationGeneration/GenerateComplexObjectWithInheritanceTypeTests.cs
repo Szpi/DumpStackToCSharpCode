@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
     [TestFixture]
-    class GenerateRegexTypeTests
+    class GenerateComplexObjectWithInheritanceTypeTests
     {
         private CodeGeneratorManager _codeGeneratorManager;
 
@@ -27,20 +27,30 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
             _codeGeneratorManager = CodeGeneratorManagerFactory.Create(readOnlyTypeConstructorDefinition);
         }
 
-        [Ignore("temporary")]
         [Test]
-        public void ShouldGenerate_Regex()
+        public void ShouldGenerate_ComplexTypeWithInheritance()
         {
-            var stackObject = GetRegexDefinition();
+            var stackObject = GetComplexTypeWithInheritanceDefinition();
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var timeSpan = new TimeSpan(0, 10, 10, 10, 0);\n");
+            generated.Should().Be("var inheritacne = new MainClass()\n{\r\n    TestBase = 10,\r\n    TestBaseString = \" test\",\r\n    TestMain = 10\r\n};\n");
         }
 
-        private ExpressionData GetRegexDefinition()
+        private ExpressionData GetComplexTypeWithInheritanceDefinition()
         {
-            return null;
+            return new ExpressionData("MainClass", "{ConsoleApp1.Program.MainClass}", "inheritacne", new List<ExpressionData>()
+            {
+                new ExpressionData("int", "10", "TestBase", new List<ExpressionData>()
+                {
+                }, "int"),
+                new ExpressionData("string", " test", "TestBaseString", new List<ExpressionData>()
+                {
+                }, "string"),
+                new ExpressionData("int", "10", "TestMain", new List<ExpressionData>()
+                {
+                }, "int")
+            }, "ConsoleApp1.Program.MainClass");
         }
     }
 }
