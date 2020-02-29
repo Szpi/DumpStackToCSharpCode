@@ -25,6 +25,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private readonly ImmutableInitializationGenerator _immutableInitializationGenerator;
         private readonly ObjectInicializationExpressionGenerator _objectInicializationExpressionGenerator;
         private readonly GuidInitializationManager _guidInitializationManager;
+        private readonly RegexInitializationManager _regexInitializationManager;
 
         public InitializationManager(TypeAnalyzer typeAnalyzer,
                                      PrimitiveExpressionGenerator primitiveExpressionGenerator,
@@ -36,7 +37,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                      EnumExpressionGenerator enumExpressionGenerator,
                                      ImmutableInitializationGenerator immutableInitializationGenerator,
                                      ObjectInicializationExpressionGenerator objectInicializationExpressionGenerator,
-                                     GuidInitializationManager guidInitializationManager)
+                                     GuidInitializationManager guidInitializationManager,
+                                     RegexInitializationManager regexInitializationManager)
         {
             _typeAnalyzer = typeAnalyzer;
             _primitiveExpressionGenerator = primitiveExpressionGenerator;
@@ -49,6 +51,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _immutableInitializationGenerator = immutableInitializationGenerator;
             _objectInicializationExpressionGenerator = objectInicializationExpressionGenerator;
             _guidInitializationManager = guidInitializationManager;
+            _regexInitializationManager = regexInitializationManager;
         }
 
         public (ExpressionSyntax generatedSyntax, TypeCode mainTypeCode) GenerateForMainObject(ExpressionData expressionData)
@@ -188,6 +191,12 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             if (typeCode == TypeCode.Guid)
             {
                 var guidSyntax = _guidInitializationManager.Generate(expressionData);
+                return (true, TypeCode.Guid, guidSyntax);
+            }
+
+            if (typeCode == TypeCode.Regex)
+            {
+                var guidSyntax = _regexInitializationManager.Generate(expressionData);
                 return (true, TypeCode.Guid, guidSyntax);
             }
 

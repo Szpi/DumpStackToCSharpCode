@@ -50,6 +50,7 @@
         Nullable,
         Object,
         Array,
-        DictionaryKeyValuePair
+        DictionaryKeyValuePair,
+        Regex
     }
 }

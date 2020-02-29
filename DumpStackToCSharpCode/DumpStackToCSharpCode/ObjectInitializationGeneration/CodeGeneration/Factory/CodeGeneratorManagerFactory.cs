@@ -24,7 +24,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new EnumExpressionGenerator(),
                                                                   new ImmutableInitializationGenerator(),
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Expression.ObjectInicializationExpressionGenerator(new TypeAnalyzer()),
-                                                                  new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.GuidInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()));
+                                                                  new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.GuidInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()),
+                                                                  new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.RegexInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()));
             
             return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator());
         }

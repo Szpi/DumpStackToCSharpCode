@@ -113,6 +113,10 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                         {
                             return TypeCode.Collection;
                         }
+                        if (IsRegex(type))
+                        {
+                            return TypeCode.Regex;
+                        }
 
                         if (IsEnum(value))
                         {
@@ -121,6 +125,11 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                         return TypeCode.ComplexObject;
                     }
             }
+        }
+
+        private bool IsRegex(string type)
+        {
+            return type == "System.Text.RegularExpressions.Regex";
         }
 
         private bool IsEnum(string type)

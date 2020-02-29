@@ -13,6 +13,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
     {
         private static readonly string DateTime = $"{nameof(System)}.{nameof(DateTime)}";
         private static readonly string Timespan = $"{nameof(System)}.{nameof(Timespan)}";
+        private static readonly string Regex = "System.Text.RegularExpressions.Regex";
 
         private readonly int _maxObjectsToAnalyze;
         private readonly int _maxObjectDepth;
@@ -145,6 +146,11 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                     validChildren = validChildren.Where(x => x.Type != DateTime && x.Name != "TimeOfDay").ToList();
                 }
 
+                if (IsRegex(dataMemberType))
+                {
+                    validChildren = validChildren.Where(x => x.Name == "Pattern").ToList();
+                }
+
                 foreach (var child in validChildren)
                 {
                     if (iteration > remainingObjectToAnalyze)
@@ -170,6 +176,11 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         private bool IsDateTime(string dataMemberType)
         {
             return dataMemberType == DateTime;
+        }
+
+        private bool IsRegex(string dataMemberType)
+        {
+            return dataMemberType == Regex;
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)
