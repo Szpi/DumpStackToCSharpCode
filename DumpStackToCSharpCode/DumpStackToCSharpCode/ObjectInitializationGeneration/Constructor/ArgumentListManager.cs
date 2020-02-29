@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
 {
@@ -18,8 +19,9 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
 
             var builtInTypes = new Dictionary<string, IReadOnlyList<string>>
             {
-                [nameof(DateTime)] = new List<string> { nameof(DateTime.Year), nameof(DateTime.Month), nameof(DateTime.Day), nameof(DateTime.Hour), nameof(DateTime.Minute), nameof(DateTime.Second), nameof(DateTime.Millisecond), "Kind" }
+                [nameof(Uri)] = new List<string> { nameof(Uri.AbsoluteUri) },
             };
+
             if (_typeToArgumentNames != null)
             {
                 _typeToArgumentNames = _typeToArgumentNames.Concat(builtInTypes.Where(x => !_typeToArgumentNames.ContainsKey(x.Key)))

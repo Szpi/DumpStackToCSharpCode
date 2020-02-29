@@ -168,8 +168,10 @@
     <Compile Include="ObjectInitializationGeneration\GenerateImmutableTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateReadonlyTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateRegexTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateStringTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateTimeSpanTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateUriTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\Type\ConcreteTypeAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
