@@ -7,7 +7,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
     {
         public bool IsCollection(string type)
         {
-            return type.StartsWith("System.Collections.Generic");
+            return type.StartsWith("System.Collections.Generic") || type.StartsWith("System.Collections.Concurrent");
         }
 
         public bool IsDictionaryKeyValuePair(string type)

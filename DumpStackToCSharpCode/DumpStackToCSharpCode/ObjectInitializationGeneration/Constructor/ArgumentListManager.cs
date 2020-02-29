@@ -15,6 +15,20 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
         {
             _typeToArgumentNames = typeToArgumentNames;
             _concreteTypeAnalyzer = concreteTypeAnalyzer;
+
+            var builtInTypes = new Dictionary<string, IReadOnlyList<string>>
+            {
+                [nameof(DateTime)] = new List<string> { nameof(DateTime.Year), nameof(DateTime.Month), nameof(DateTime.Day), nameof(DateTime.Hour), nameof(DateTime.Minute), nameof(DateTime.Second), nameof(DateTime.Millisecond), "Kind" }
+            };
+            if (_typeToArgumentNames != null)
+            {
+                _typeToArgumentNames = _typeToArgumentNames.Concat(builtInTypes.Where(x => !_typeToArgumentNames.ContainsKey(x.Key)))
+                    .ToDictionary(x => x.Key, x => x.Value);
+            }
+            else
+            {
+                _typeToArgumentNames = builtInTypes;
+            }
         }
 
         public ExpressionData GetArgumentList(ExpressionData expressionData, System.Type type)

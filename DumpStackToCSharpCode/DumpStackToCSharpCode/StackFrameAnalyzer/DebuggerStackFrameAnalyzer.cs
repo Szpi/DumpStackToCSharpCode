@@ -12,6 +12,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
     public class DebuggerStackFrameAnalyzer
     {
         private static readonly string DateTime = $"{nameof(System)}.{nameof(DateTime)}";
+        private static readonly string Timespan = $"{nameof(System)}.{nameof(Timespan)}";
 
         private readonly int _maxObjectsToAnalyze;
         private readonly int _maxObjectDepth;
@@ -115,11 +116,6 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                     continue;
                 }
 
-                //if (IsDateTimeRecursion(dataMemberType, currentObjectDepth))
-                //{
-                //    continue;
-                //}
-
                 var underlyingExpressionData = new List<ExpressionData>();
 
                 var value = CorrectCharValue(dataMemberType, dataMember.Value);
@@ -144,6 +140,10 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
 
                 var validChildren = dataMember.DataMembers.Cast<Expression>().Where(x => !string.IsNullOrEmpty(x?.Type)).ToList();
                 int iteration = 0;
+                if (IsDateTime(dataMemberType))
+                {
+                    validChildren = validChildren.Where(x => x.Type != DateTime && x.Name != "TimeOfDay").ToList();
+                }
 
                 foreach (var child in validChildren)
                 {
@@ -167,9 +167,9 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
             return new ObjectOnStack(mainObject, null);
         }
 
-        private bool IsDateTimeRecursion(string dataMemberType, int currentDepth)
+        private bool IsDateTime(string dataMemberType)
         {
-            return dataMemberType == DateTime && currentDepth >= 3;
+            return dataMemberType == DateTime;
         }
 
         private static bool WasCurrentDepthReached(int currentAnalyzedObjects, int depthEndsAfterAnalyzingObjects)
