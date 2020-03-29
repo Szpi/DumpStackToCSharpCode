@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
 
 namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
@@ -167,6 +168,10 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
                 default:
                     return false;
             }
+        }
+        public bool IsNullableType(string type)
+        {
+            return type.Last() == '?';
         }
     }
 }

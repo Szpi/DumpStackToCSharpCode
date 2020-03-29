@@ -1,4 +1,5 @@
-﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
+﻿using DumpStackToCSharpCode.Command.Util;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
@@ -11,7 +12,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
     public class CodeGeneratorManagerFactory
     {
         public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects)
-        {           
+        {
             var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer());
 
             var initializationManager = new InitializationManager(new TypeAnalyzer(),
@@ -25,7 +26,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new ImmutableInitializationGenerator(),
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Expression.ObjectInicializationExpressionGenerator(new TypeAnalyzer()),
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.GuidInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()),
-                                                                  new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.RegexInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()));
+                                                                  new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.RegexInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()),
+                                                                  new DumpStackToCSharpCode.ObjectInitializationGeneration.Expression.NullableExpressionGenerator());
             
             return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator());
         }

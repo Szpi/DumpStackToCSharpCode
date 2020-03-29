@@ -26,6 +26,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         private readonly ObjectInicializationExpressionGenerator _objectInicializationExpressionGenerator;
         private readonly GuidInitializationManager _guidInitializationManager;
         private readonly RegexInitializationManager _regexInitializationManager;
+        private readonly NullableExpressionGenerator _nullableExpressionGenerator;
 
         public InitializationManager(TypeAnalyzer typeAnalyzer,
                                      PrimitiveExpressionGenerator primitiveExpressionGenerator,
@@ -38,7 +39,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                                      ImmutableInitializationGenerator immutableInitializationGenerator,
                                      ObjectInicializationExpressionGenerator objectInicializationExpressionGenerator,
                                      GuidInitializationManager guidInitializationManager,
-                                     RegexInitializationManager regexInitializationManager)
+                                     RegexInitializationManager regexInitializationManager,
+                                     NullableExpressionGenerator nullableExpressionGenerator)
         {
             _typeAnalyzer = typeAnalyzer;
             _primitiveExpressionGenerator = primitiveExpressionGenerator;
@@ -52,14 +54,19 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             _objectInicializationExpressionGenerator = objectInicializationExpressionGenerator;
             _guidInitializationManager = guidInitializationManager;
             _regexInitializationManager = regexInitializationManager;
+            _nullableExpressionGenerator = nullableExpressionGenerator;
         }
 
-        public (ExpressionSyntax generatedSyntax, TypeCode mainTypeCode) GenerateForMainObject(ExpressionData expressionData)
+        public (ExpressionSyntax generatedSyntax, TypeCode mainTypeCode) GenerateForMainObject(ExpressionData expressionData, bool isParentImmutableType = false)
         {
-            var (generatedSyntax, expressionTypeCode, argumentSyntax) = Generate(expressionData);
+            var (generatedSyntax, expressionTypeCode, argumentSyntax) = Generate(expressionData, isParentImmutableType);
 
             ExpressionSyntax generatedSyntaxForMainObject = null;
-            if (_typeAnalyzer.IsPrimitiveType(expressionTypeCode))
+            if (_typeAnalyzer.IsNullableType(expressionData.Type))
+            {
+                generatedSyntaxForMainObject = HandleNullableType(expressionData, generatedSyntax, expressionTypeCode, argumentSyntax);
+            }
+            else if (_typeAnalyzer.IsPrimitiveType(expressionTypeCode))
             {
                 generatedSyntaxForMainObject = generatedSyntax.FirstOrDefault();
             }
@@ -75,7 +82,22 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             return (generatedSyntaxForMainObject, expressionTypeCode);
         }
 
-        private (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, TypeCode mainTypeCode, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData)
+        private ExpressionSyntax HandleNullableType(
+            ExpressionData expressionData, 
+            SeparatedSyntaxList<ExpressionSyntax> generatedSyntax,
+            TypeCode expressionTypeCode,
+            List<ExpressionSyntax> argumentSyntax)
+        {
+            if (_typeAnalyzer.IsPrimitiveType(expressionTypeCode))
+            {
+                return _nullableExpressionGenerator.Generate(generatedSyntax.FirstOrDefault(), expressionData.Type);
+            }
+            
+            var complexObject  = _objectInicializationExpressionGenerator.GenerateForObject(expressionData.Type.TrimEnd('?'), generatedSyntax, argumentSyntax);
+            return _nullableExpressionGenerator.Generate(complexObject, expressionData.Type); ;
+        }
+
+        private (SeparatedSyntaxList<ExpressionSyntax> generatedSyntax, TypeCode mainTypeCode, List<ExpressionSyntax> argumentSyntax) Generate(ExpressionData expressionData, bool isParentImmutableType)
         {
             var (success, typeCode, valueTuple) = GenerateForMainExpression(expressionData);
 
@@ -87,7 +109,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             var generatedExpressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var expressionDataIterator in expressionData.UnderlyingExpressionData)
             {
-                var generatedUnderlyingExpression = GenerateInternal(expressionDataIterator, typeCode);
+                var generatedUnderlyingExpression = GenerateInternal(expressionDataIterator, typeCode, isParentImmutableType);
                 if (generatedUnderlyingExpression == null)
                 {
                     continue;
@@ -100,7 +122,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
         }
 
 
-        private ExpressionSyntax GenerateInternal(ExpressionData expressionData, TypeCode parentTypeCode)
+        private ExpressionSyntax GenerateInternal(ExpressionData expressionData, TypeCode parentTypeCode, bool isParentImmutableType)
         {
             var (success, typeCode, (generatedSyntax, argumentList)) = GenerateForMainExpression(expressionData);
             if (success)
@@ -108,7 +130,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 var generated = generatedSyntax.FirstOrDefault();
                 if (IsNotImmutableType(generated, typeCode))
                 {
-                    return GenerateExpressionSyntax(expressionData, parentTypeCode, generated);
+                    return GenerateExpressionSyntax(expressionData, generated, isParentImmutableType, parentTypeCode);
                 }
 
                 if (_typeAnalyzer.IsPrimitiveType(parentTypeCode))
@@ -118,10 +140,10 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
 
                 var objectCreationSyntax = _immutableInitializationGenerator.Generate(expressionData, argumentList);
 
-                return GenerateExpressionSyntax(expressionData, parentTypeCode, objectCreationSyntax);
+                return GenerateExpressionSyntax(expressionData, objectCreationSyntax, isParentImmutableType, parentTypeCode);
             }
 
-            var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode);
+            var underlyingExpressionData = IterateThroughUnderlyingExpressionsData(expressionData.UnderlyingExpressionData, typeCode, isParentImmutableType);
 
             switch (typeCode)
             {
@@ -132,7 +154,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                         {
                             return null;
                         }
-                        
+
                         var dictionaryValue = GetExpressionDataForDictionary(expressionData, "Value");
 
                         if (dictionaryValue == null)
@@ -140,8 +162,8 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                             return null;
                         }
 
-                        var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode);
-                        var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode);
+                        var keyExpressionSyntax = GenerateInternal(dictionaryKey, typeCode, isParentImmutableType);
+                        var valueExpressionSyntax = GenerateInternal(dictionaryValue, typeCode, isParentImmutableType);
 
                         return _dictionaryExpressionGenerator.Generate(keyExpressionSyntax, valueExpressionSyntax);
                     }
@@ -154,16 +176,16 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 default:
                     {
                         var complexTypeExpression = _complexTypeInitializationGenerator.Generate(expressionData, underlyingExpressionData);
-                        return GenerateExpressionSyntax(expressionData, parentTypeCode, complexTypeExpression);
+                        return GenerateExpressionSyntax(expressionData, complexTypeExpression, isParentImmutableType, parentTypeCode);
                     }
             }
         }
 
-        private ExpressionSyntax GenerateExpressionSyntax(ExpressionData expressionData, TypeCode parentTypeCode, ExpressionSyntax objectCreationSyntax)
+        private ExpressionSyntax GenerateExpressionSyntax(ExpressionData expressionData, ExpressionSyntax objectCreationSyntax, bool isParentImmutableType, TypeCode parentTypeCode)
         {
-            return parentTypeCode == TypeCode.ComplexObject
-                ? _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, objectCreationSyntax)
-                : objectCreationSyntax;
+            return isParentImmutableType || parentTypeCode != TypeCode.ComplexObject
+                ? objectCreationSyntax
+                : _assignmentExpressionGenerator.GenerateAssignmentExpression(expressionData.Name, objectCreationSyntax);
         }
 
         private static bool IsNotImmutableType(ExpressionSyntax generated, TypeCode typeCode)
@@ -197,15 +219,13 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             if (typeCode == TypeCode.Regex)
             {
                 var guidSyntax = _regexInitializationManager.Generate(expressionData);
-                return (true, TypeCode.Guid, guidSyntax);
+                return (true, TypeCode.Regex, guidSyntax);
             }
 
-            if (_typeAnalyzer.IsPrimitiveType(expressionData.TypeWithNamespace, expressionData.Value))
+            if (_typeAnalyzer.IsPrimitiveType(typeCode))
             {
                 var primitiveExpression = _primitiveExpressionGenerator.Generate(typeCode, expressionData.Value);
-                {
-                    return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), null));
-                }
+                return (true, typeCode, (new SeparatedSyntaxList<ExpressionSyntax>().Add(primitiveExpression), null));
             }
 
             var immutableArgumentsList = _argumentListManager.GetArgumentList(expressionData, type);
@@ -214,7 +234,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             {
                 var argumentSyntaxList = immutableArgumentsList
                                          .UnderlyingExpressionData
-                                         .Select(x => GenerateForMainObject(x).generatedSyntax)
+                                         .Select(x => GenerateForMainObject(x, true).generatedSyntax)
                                          .Where(x => x != null)
                                          .ToList();
 
@@ -248,7 +268,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
                 valueTuple,
                 System.Type type) TryGetBuiltInDotNetType(ExpressionData expressionData)
         {
-            var type = System.Type.GetType(expressionData.TypeWithNamespace);
+            var type = System.Type.GetType(expressionData.TypeWithNamespace.TrimEnd('?'));
             if (type == null || !type.IsEnum)
             {
                 return (false, (new SeparatedSyntaxList<ExpressionSyntax>(), null), type);
@@ -268,12 +288,12 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
             return expressionData.UnderlyingExpressionData.First(x => x.Name == keyOrValueName);
         }
 
-        private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData, TypeCode parentType)
+        private SeparatedSyntaxList<ExpressionSyntax> IterateThroughUnderlyingExpressionsData(IReadOnlyList<ExpressionData> expressionsData, TypeCode parentType, bool isParentImmutableType)
         {
             var expressionsSyntax = new SeparatedSyntaxList<ExpressionSyntax>();
             foreach (var expressionData in expressionsData.Where(x => x != null))
             {
-                var generatedUnderlyingExpression = GenerateInternal(expressionData, parentType);
+                var generatedUnderlyingExpression = GenerateInternal(expressionData, parentType, isParentImmutableType);
                 if (generatedUnderlyingExpression == null)
                 {
                     continue;

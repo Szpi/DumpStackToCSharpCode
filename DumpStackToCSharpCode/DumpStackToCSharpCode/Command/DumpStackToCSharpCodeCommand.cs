@@ -15,6 +15,7 @@ using DumpStackToCSharpCode.Window;
 using System.Windows.Controls;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
 using static RuntimeTestDataCollector.Options.DialogPageProvider;
+using DumpStackToCSharpCode.Command.Util;
 
 namespace RuntimeTestDataCollector.Command
 {
@@ -41,6 +42,7 @@ namespace RuntimeTestDataCollector.Command
         private static DTE2 _dte;
         private static DebuggerEvents _debuggerEvents;
         private ICurrentStackWrapper _currentStackWrapper;
+        private ArgumentsListPurifier _argumentsListPurifier;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DumpStackToCSharpCodeCommand"/> class.
@@ -57,6 +59,7 @@ namespace RuntimeTestDataCollector.Command
             var menuItem = new MenuCommand(this.Execute, menuCommandID);
             commandService.AddCommand(menuItem);
             _currentStackWrapper = new CurrentStackWrapper();
+            _argumentsListPurifier = new ArgumentsListPurifier();
         }
 
         /// <summary>
@@ -254,7 +257,9 @@ namespace RuntimeTestDataCollector.Command
                 {
                     continue;
                 }
-                readonlyObjects[className] = argumentList;
+
+                var purifiedArgumentList = _argumentsListPurifier.Purify(argumentList);
+                readonlyObjects[className] = purifiedArgumentList;
             }
 
             return readonlyObjects;

@@ -174,7 +174,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
         }
 
         private bool IsDateTime(string dataMemberType)
-        {
+        {            
             return dataMemberType == DateTime;
         }
 
