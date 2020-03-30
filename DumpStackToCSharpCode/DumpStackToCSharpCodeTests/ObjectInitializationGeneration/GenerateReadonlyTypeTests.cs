@@ -26,7 +26,16 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         [Test]
         public void ShouldGenerate_ReadonlyTypeViaConstructor()
         {
-            var stackObject = new ExpressionData("ExpressionData", "{ConsoleApp1.Program.ExpressionData}", "mainObject", new List<ExpressionData>()
+            var stackObject = GetReadonlyTypeDefinition();
+
+            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
+
+            generated.Should().Be("var mainObject = new ExpressionData(\"List<ExpressionData>\",\n\"Count = 1\",\n\"testList\",\nnew List<ExpressionData>()\n{\r\n    new ExpressionData(\"ExpressionData\", \"{ConsoleApp1.Program.ExpressionData}\", \"[0]\", new List<ExpressionData>()\r\n    {\r\n        new ExpressionData(\"string\", \"ExpressionData21212\", \"Name\", null, \"string\")\r\n    }, \"ConsoleApp1.Program.ExpressionData\")\r\n},\n\"System.Collections.Generic.List<ConsoleApp1.Program.ExpressionData>\");\n");
+        }
+
+        private static ExpressionData GetReadonlyTypeDefinition()
+        {
+            return new ExpressionData("ExpressionData", "{ConsoleApp1.Program.ExpressionData}", "mainObject", new List<ExpressionData>()
             {
                 new ExpressionData("string", "testList", "Name", new List<ExpressionData>()
                 {
@@ -80,10 +89,6 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
                 {
                 }, "string")
             }, "ConsoleApp1.Program.ExpressionData");
-                                 
-            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
-
-            generated.Should().Be("var mainObject = new ExpressionData(\"List<ExpressionData>\", \"Count = 1\", \"testList\", new List<ExpressionData>()\n{\r\n    new ExpressionData(\"ExpressionData\", \"{ConsoleApp1.Program.ExpressionData}\", \"[0]\", new List<ExpressionData>()\r\n    {\r\n        new ExpressionData(\"string\", \"ExpressionData21212\", \"Name\", null, \"string\")\r\n    }, \"ConsoleApp1.Program.ExpressionData\")\r\n}, \"System.Collections.Generic.List<ConsoleApp1.Program.ExpressionData>\");\n");
         }
     }
 }

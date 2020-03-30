@@ -22,10 +22,10 @@ namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Expression
         public ExpressionSyntax GenerateForArray(string type, SeparatedSyntaxList<ExpressionSyntax> expressions)
         {
             return SyntaxFactory.ObjectCreationExpression(SyntaxFactory.IdentifierName(type))
-                                                                       .WithInitializer(SyntaxFactory.InitializerExpression(SyntaxKind .ObjectInitializerExpression,expressions));
+                                                                       .WithInitializer(SyntaxFactory.InitializerExpression(SyntaxKind.ObjectInitializerExpression, expressions));
         }
 
-        public ExpressionSyntax GenerateForObject(string type, 
+        public ExpressionSyntax GenerateForObject(string type,
                                      SeparatedSyntaxList<ExpressionSyntax> expressions,
                                      List<ExpressionSyntax> argumentSyntax)
         {
@@ -51,10 +51,21 @@ namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Expression
         private static ArgumentListSyntax GenerateArgumentListSyntaxWithCommas(List<ExpressionSyntax> argumentSyntax)
         {
             var argumentListSyntaxWithCommas = new List<SyntaxNodeOrToken>();
+            var allArgumentsLengthRequiresBreak = argumentSyntax?.Sum(x => x.FullSpan.Length) > 50 && argumentSyntax?.Count > 2;
             for (var i = 0; i < argumentSyntax?.Count; i++)
             {
                 argumentListSyntaxWithCommas.Add(SyntaxFactory.Argument(argumentSyntax[i]));
-                if (i != argumentSyntax.Count - 1)
+
+                if (i == argumentSyntax.Count - 1)
+                {
+                    continue;
+                }
+
+                if (allArgumentsLengthRequiresBreak)
+                {
+                    argumentListSyntaxWithCommas.Add(CreateCommaTokenWithEnter());
+                }
+                else
                 {
                     argumentListSyntaxWithCommas.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
                 }
@@ -62,6 +73,15 @@ namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Expression
 
             return SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList<ArgumentSyntax>(argumentListSyntaxWithCommas));
         }
+
+        private static SyntaxToken CreateCommaTokenWithEnter()
+        {
+            return SyntaxFactory.Token(SyntaxFactory.TriviaList(),
+                                       SyntaxKind.CommaToken,
+                                       SyntaxFactory.TriviaList(
+                                       SyntaxFactory.LineFeed));
+        }
+
         private static ArgumentListSyntax CreateEmptyArgumentList()
         {
             return SyntaxFactory.ArgumentList().WithCloseParenToken(
