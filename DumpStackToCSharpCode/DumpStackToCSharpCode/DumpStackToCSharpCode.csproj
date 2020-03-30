@@ -65,7 +65,6 @@
     <Compile Include="ObjectInitializationGeneration\CodeGeneration\Generators\ArrayCodeGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\Constructor\ArgumentListManager.cs" />
     <Compile Include="Command\OrdinalIgnoreCaseComparer.cs" />
-    <Compile Include="ObjectInitializationGeneration\Expression\ComplexObjectNullableExpressionGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\Expression\EnumExpressionGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\Expression\ObjectInicializationExpressionGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\Expression\NullableExpressionGenerator.cs" />
