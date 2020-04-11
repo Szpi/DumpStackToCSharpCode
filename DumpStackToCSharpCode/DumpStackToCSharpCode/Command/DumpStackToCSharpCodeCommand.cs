@@ -230,7 +230,8 @@ namespace RuntimeTestDataCollector.Command
                                                                                           GeneralOptions.Instance.GenerateTypeWithNamespace,
                                                                                           GeneralOptions.Instance.MaxObjectsToAnalyze,
                                                                                           GeneralOptions.Instance.MaxGenerationTime,
-                                                                                          readonlyObjects);
+                                                                                          readonlyObjects,
+                                                                                          GeneralOptions.Instance.GenerateConcreteType);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode.dumpedObjectToCsharpCode, dumpedObjectsToCsharpCode.errorMessage);
         }

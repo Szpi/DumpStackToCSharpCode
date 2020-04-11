@@ -1,4 +1,5 @@
 ﻿using DumpStackToCSharpCode.Command.Util;
+using DumpStackToCSharpCode.ObjectInitializationGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
@@ -11,7 +12,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
 {
     public class CodeGeneratorManagerFactory
     {
-        public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects)
+        public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects, bool useConcreteType)
         {
             var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer());
 
@@ -29,7 +30,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.RegexInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()),
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Expression.NullableExpressionGenerator());
             
-            return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator());
+            return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator(new VariableDeclarationManager(useConcreteType)), new VariableDeclarationManager(useConcreteType));
         }
     }
 }

@@ -71,6 +71,7 @@
     <Compile Include="ObjectInitializationGeneration\Initialization\GuidInitializationManager.cs" />
     <Compile Include="ObjectInitializationGeneration\Initialization\ImmutableInitializationGenerator.cs" />
     <Compile Include="ObjectInitializationGeneration\Initialization\RegexInitializationManager.cs" />
+    <Compile Include="ObjectInitializationGeneration\VariableDeclarationManager.cs" />
     <Compile Include="Options\BaseOptionModel.cs" />
     <Compile Include="Options\BaseOptionPage.cs">
       <SubType>Component</SubType>

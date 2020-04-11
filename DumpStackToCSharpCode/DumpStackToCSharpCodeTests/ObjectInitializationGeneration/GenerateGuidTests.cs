@@ -19,7 +19,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         public void Setup()
         {
             var _ = typeof(Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions);
-            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(new Dictionary<string, IReadOnlyList<string>>());
+            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(new Dictionary<string, IReadOnlyList<string>>(), false);
         }
         [Test]
         public void ShouldGenerate_Guid()

@@ -20,7 +20,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
                 ["ExpressionData"] = new List<string> { "type", "value", "name", "underlyingExpressionData", "typeWithNamespace" }
 
             };
-            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(readOnlyTypeConstructorDefinition);
+            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(readOnlyTypeConstructorDefinition, false);
         }
 
         [Test]

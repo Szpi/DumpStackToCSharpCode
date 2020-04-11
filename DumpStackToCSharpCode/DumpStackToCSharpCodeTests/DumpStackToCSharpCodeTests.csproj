@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\Util\ArgumentsListPurifierTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateConcreteTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateImmutableComplexTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateArrayTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateCharacterTypeTests.cs" />

@@ -18,7 +18,7 @@ namespace DumpStackToCSharpCodeTests
             _codeGeneratorManager = CodeGeneratorManagerFactory.Create(new Dictionary<string, IReadOnlyList<string>>
             {
                 ["ReadOnlyClass"] = new List<string>() { "testString", "dateTime", "timeSpan", "dateTimeOffset", "testInt", "testNullableInt", "testDecimal", "intList", "intStringList" }
-            });
+            }, false);
         }
 
         [Test]
