@@ -14,7 +14,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
     {
         public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects, bool useConcreteType)
         {
-            var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer());
+            var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer(), new DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor.ConstructorsManager());
 
             var initializationManager = new InitializationManager(new TypeAnalyzer(),
                                                                   new PrimitiveExpressionGenerator(),
