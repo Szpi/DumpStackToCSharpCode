@@ -193,7 +193,7 @@ namespace DumpStackToCSharpCode.Window
                     ClassName = x.Name,
                     Arguments = string.Join(",", _constructorsManager.GetMostDescriptiveConstructor(x))
                 })
-                .Where(x => !string.IsNullOrEmpty(x.Arguments))
+                .Where(x => !string.IsNullOrEmpty(x.Arguments) && !string.IsNullOrEmpty(x.ClassName))
                 .ToList();
 
                 GenerateArguments(arguments);
@@ -208,10 +208,16 @@ namespace DumpStackToCSharpCode.Window
 
         private void GenerateArguments(List<ReadOnlyObjectDescription> objectDescriptions)
         {
+            var currentClasses = new HashSet<string>(Arguments.Children.Cast< TextBox>().Select(x => x.Text));
             for (int i = 0; i < objectDescriptions?.Count; i++)
             {
                 var objectDescription = objectDescriptions[i];
                 if (string.IsNullOrWhiteSpace(objectDescription.ClassName) || string.IsNullOrWhiteSpace(objectDescription.Arguments))
+                {
+                    continue;
+                }
+
+                if (currentClasses.Contains(objectDescription.ClassName))
                 {
                     continue;
                 }
