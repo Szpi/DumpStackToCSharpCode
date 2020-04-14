@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace RuntimeTestDataCollector.Options
+namespace DumpStackToCSharpCode.Options
 {
     internal class GeneralOptions : BaseOptionModel<GeneralOptions>
     {

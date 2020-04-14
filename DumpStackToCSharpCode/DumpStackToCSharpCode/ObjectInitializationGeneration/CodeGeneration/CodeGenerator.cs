@@ -2,10 +2,10 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration
 {
     public class CodeGenerator
     {

@@ -1,11 +1,11 @@
-﻿using RuntimeTestDataCollector.Command;
-using RuntimeTestDataCollector.Options;
+﻿using DumpStackToCSharpCode.Command;
+using DumpStackToCSharpCode.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
 
-namespace RuntimeTestDataCollector.Window
+namespace DumpStackToCSharpCode.Window
 {
     using DumpStackToCSharpCode.CurrentStack;
     using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
@@ -18,7 +18,7 @@ namespace RuntimeTestDataCollector.Window
     using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
-    using static RuntimeTestDataCollector.Options.DialogPageProvider;
+    using static DumpStackToCSharpCode.Options.DialogPageProvider;
 
     /// <summary>
     /// Interaction logic for StackDataDumpControl.

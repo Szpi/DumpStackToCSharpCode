@@ -1,9 +1,9 @@
 ﻿using DumpStackToCSharpCode.ObjectInitializationGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Generators;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration
 {
     public class CodeGeneratorManager
     {

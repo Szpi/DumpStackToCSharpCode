@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using DumpStackToCSharpCode.Options;
 using Microsoft.VisualStudio.Shell;
-using RuntimeTestDataCollector.Command;
-using RuntimeTestDataCollector.Window;
+using DumpStackToCSharpCode.Command;
+using DumpStackToCSharpCode.Window;
 
-namespace RuntimeTestDataCollector.Options
+namespace DumpStackToCSharpCode.Options
 {
     /// <summary>
     /// A provider for custom <see cref="DialogPage" /> implementations.

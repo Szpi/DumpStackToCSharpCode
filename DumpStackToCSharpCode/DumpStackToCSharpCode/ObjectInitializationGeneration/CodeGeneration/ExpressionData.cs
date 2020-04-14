@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration
 {
     public class ExpressionData
     {

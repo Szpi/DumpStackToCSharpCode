@@ -1,14 +1,14 @@
 ﻿using DumpStackToCSharpCode.Resources;
 using EnvDTE;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
-using RuntimeTestDataCollector.Window;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.Window;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace RuntimeTestDataCollector.StackFrameAnalyzer
+namespace DumpStackToCSharpCode.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using RuntimeTestDataCollector.Window;
+using DumpStackToCSharpCode.Window;
 using System;
 using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;

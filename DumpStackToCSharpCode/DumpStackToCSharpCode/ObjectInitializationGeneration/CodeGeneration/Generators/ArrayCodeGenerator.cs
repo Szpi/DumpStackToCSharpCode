@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Generators
 {
     public class ArrayCodeGenerator
     {

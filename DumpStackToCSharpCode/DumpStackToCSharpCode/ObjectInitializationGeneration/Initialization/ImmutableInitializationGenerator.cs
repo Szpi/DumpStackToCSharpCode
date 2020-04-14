@@ -2,9 +2,9 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization
 {
     public class ImmutableInitializationGenerator
     {

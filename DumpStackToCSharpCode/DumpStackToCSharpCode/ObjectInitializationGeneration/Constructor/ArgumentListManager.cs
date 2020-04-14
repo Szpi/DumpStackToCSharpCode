@@ -1,13 +1,13 @@
 ﻿using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor
 {
     public class ArgumentListManager
     {

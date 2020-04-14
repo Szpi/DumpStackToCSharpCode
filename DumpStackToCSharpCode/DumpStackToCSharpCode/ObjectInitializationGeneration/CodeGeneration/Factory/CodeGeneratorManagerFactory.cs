@@ -1,14 +1,14 @@
 ﻿using DumpStackToCSharpCode.Command.Util;
 using DumpStackToCSharpCode.ObjectInitializationGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.AssignmentExpression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Generators;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory
 {
     public class CodeGeneratorManagerFactory
     {

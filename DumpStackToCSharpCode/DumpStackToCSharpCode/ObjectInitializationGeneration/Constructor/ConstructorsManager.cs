@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor
 {
     public class ConstructorsManager
     {
-        public IReadOnlyList<string> GetMostDescriptiveConstructor(Type type)
+        public IReadOnlyList<string> GetMostDescriptiveConstructor(System.Type type)
         {
             var constructors = type.GetConstructors();
 

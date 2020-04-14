@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Microsoft.VisualStudio.Shell;
 
-namespace RuntimeTestDataCollector.Options
+namespace DumpStackToCSharpCode.Options
 {
     /// <summary>
     /// A base class for a DialogPage to show in Tools -> Options.

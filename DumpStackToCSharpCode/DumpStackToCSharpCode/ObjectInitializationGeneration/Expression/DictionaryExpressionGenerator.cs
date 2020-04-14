@@ -1,8 +1,8 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Expression
 {
     public class DictionaryExpressionGenerator
     {   
