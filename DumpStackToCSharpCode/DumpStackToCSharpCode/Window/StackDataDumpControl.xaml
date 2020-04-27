@@ -220,12 +220,13 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"></ColumnDefinition>
                     <ColumnDefinition Width="3*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>                
+                </Grid.ColumnDefinitions>
                 
                 <Button Grid.Row="0" Grid.ColumnSpan="2" Click="LoadArgumentsFromDll_Click" Width="200" Height="30" HorizontalAlignment="Center"
                         Margin="0,0,5,5"
@@ -241,14 +242,14 @@
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
                 <Label Grid.Row="1" Grid.Column="1" Content="Arguments" 
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                            Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
                 <Button Grid.Row="1" Grid.Column="1" Click="SaveArguments_Click" Width="70" Height="30" HorizontalAlignment="Right"
@@ -261,62 +262,34 @@
 
                     <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center"/>
                 </Button>
-                <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Name="Class" Margin="5,5,5,5">
-                        <TextBox  Name="ClassPrototype" Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                    </StackPanel>
-                </ScrollViewer>
-                <ScrollViewer Grid.Row="2" Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Name="Arguments" Margin="5,5,5,5">
-                        <TextBox Name="ArgumentsPrototype" Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                    </StackPanel>
-                </ScrollViewer>
-                <Button Grid.Column="1" Grid.Row="3" Click="AddRow_Click" Width="60" Height="30" 
+
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                    <Grid >
+                        <Grid.RowDefinitions >
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Name="Class" Grid.Row="0" Grid.Column="0">
+                        </StackPanel>
+                        <StackPanel  Name="Arguments" Grid.Row="0" Grid.Column="1">
+                        </StackPanel>
+                        
+                        <Button Grid.Row="1" Click="AddRow_Click" Width="60" Height="30" Grid.ColumnSpan="2"
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                         Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
-                    <TextBlock Text="Add row" TextWrapping="Wrap" TextAlignment="Center"/>
-                </Button>
+                            <TextBlock Text="Add row" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </Button>
+                        
+                    </Grid>
+                </ScrollViewer>
+                
             </Grid>
         </TabItem>
     </TabControl>

@@ -141,21 +141,15 @@ namespace DumpStackToCSharpCode.Window
         {
             Arguments.Children.Add(new TextBox()
             {
-                Background = ClassPrototype.Background,
-                Foreground = ClassPrototype.Foreground,
-                FontFamily = ClassPrototype.FontFamily,
-                Width = ClassPrototype.Width,
-                Margin = ClassPrototype.Margin,
-                Height = ClassPrototype.Height
+                Background = CopyEverythingToClipboard.Background,
+                Foreground = CopyEverythingToClipboard.Foreground,
+                FontFamily = CopyEverythingToClipboard.FontFamily,
             });
             Class.Children.Add(new TextBox()
             {
-                Background = ArgumentsPrototype.Background,
-                Foreground = ArgumentsPrototype.Foreground,
-                FontFamily = ArgumentsPrototype.FontFamily,
-                Width = ArgumentsPrototype.Width,
-                Margin = ArgumentsPrototype.Margin,
-                Height = ArgumentsPrototype.Height
+                Background = CopyEverythingToClipboard.Background,
+                Foreground = CopyEverythingToClipboard.Foreground,
+                FontFamily = CopyEverythingToClipboard.FontFamily,
             });
         }
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
@@ -239,20 +233,16 @@ namespace DumpStackToCSharpCode.Window
 
                 Arguments.Children.Add(new TextBox()
                 {
-                    Background = ClassPrototype.Background,
-                    Foreground = ClassPrototype.Foreground,
-                    FontFamily = ClassPrototype.FontFamily,
-                    Width = ClassPrototype.Width,
-                    Margin = ClassPrototype.Margin,
+                    Background = CopyEverythingToClipboard.Background,
+                    Foreground = CopyEverythingToClipboard.Foreground,
+                    FontFamily = CopyEverythingToClipboard.FontFamily,
                     Text = objectDescription.ClassName
                 });
                 Class.Children.Add(new TextBox()
                 {
-                    Background = ArgumentsPrototype.Background,
-                    Foreground = ArgumentsPrototype.Foreground,
-                    FontFamily = ArgumentsPrototype.FontFamily,
-                    Width = ArgumentsPrototype.Width,
-                    Margin = ArgumentsPrototype.Margin,
+                    Background = CopyEverythingToClipboard.Background,
+                    Foreground = CopyEverythingToClipboard.Foreground,
+                    FontFamily = CopyEverythingToClipboard.FontFamily,
                     Text = objectDescription.Arguments
                 });
 
