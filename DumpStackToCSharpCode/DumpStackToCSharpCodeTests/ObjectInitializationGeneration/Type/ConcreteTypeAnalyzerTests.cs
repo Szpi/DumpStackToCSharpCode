@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration.Type
 {

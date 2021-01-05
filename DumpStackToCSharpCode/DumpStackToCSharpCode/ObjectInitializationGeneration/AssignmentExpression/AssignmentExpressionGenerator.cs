@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.AssignmentExpression
 {
     public class AssignmentExpressionGenerator
     {

@@ -2,15 +2,15 @@
 using DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.AssignmentExpression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization
 {
     public class InitializationManager
     {

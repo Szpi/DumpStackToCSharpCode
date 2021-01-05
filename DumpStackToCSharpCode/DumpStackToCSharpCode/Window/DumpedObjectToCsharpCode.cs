@@ -1,4 +1,4 @@
-﻿namespace RuntimeTestDataCollector.Window
+﻿namespace DumpStackToCSharpCode.Window
 {
     public class DumpedObjectToCsharpCode
     {

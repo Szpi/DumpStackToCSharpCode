@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Type
 {
     public class ConcreteTypeAnalyzer
     {

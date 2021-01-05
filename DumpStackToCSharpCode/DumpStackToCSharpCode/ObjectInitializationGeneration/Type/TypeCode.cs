@@ -1,4 +1,4 @@
-﻿namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
+﻿namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Type
 {
     public enum TypeCode
     {

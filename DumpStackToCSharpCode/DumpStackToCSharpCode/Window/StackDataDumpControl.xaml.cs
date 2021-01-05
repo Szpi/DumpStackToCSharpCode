@@ -1,21 +1,24 @@
-﻿using RuntimeTestDataCollector.Command;
-using RuntimeTestDataCollector.Options;
+﻿using DumpStackToCSharpCode.Command;
+using DumpStackToCSharpCode.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
 
-namespace RuntimeTestDataCollector.Window
+namespace DumpStackToCSharpCode.Window
 {
     using DumpStackToCSharpCode.CurrentStack;
+    using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
     using DumpStackToCSharpCode.Options;
     using DumpStackToCSharpCode.Window;
     using EnvDTE;
     using System.Collections;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+    using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
-    using static RuntimeTestDataCollector.Options.DialogPageProvider;
+    using static DumpStackToCSharpCode.Options.DialogPageProvider;
 
     /// <summary>
     /// Interaction logic for StackDataDumpControl.
@@ -28,11 +31,7 @@ namespace RuntimeTestDataCollector.Window
         private const int GeneralTabIndex = 0;
         public const int LocalsTabIndex = 1;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StackDataDumpControl"/> class.
-        /// </summary>
-        /// <param name="stackDataDump"></param>
-
+        private readonly ConstructorsManager _constructorsManager = new ConstructorsManager();
         public StackDataDumpControl()
         {
             this.InitializeComponent();
@@ -117,6 +116,7 @@ namespace RuntimeTestDataCollector.Window
             Clipboard.SetText(buffer.ToString());
         }
 
+
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
         private void GenerateLocals_Click(object sender, RoutedEventArgs e)
@@ -141,21 +141,15 @@ namespace RuntimeTestDataCollector.Window
         {
             Arguments.Children.Add(new TextBox()
             {
-                Background = ClassPrototype.Background,
-                Foreground = ClassPrototype.Foreground,
-                FontFamily = ClassPrototype.FontFamily,
-                Width = ClassPrototype.Width,
-                Margin = ClassPrototype.Margin,
-                Height = ClassPrototype.Height
+                Background = CopyEverythingToClipboard.Background,
+                Foreground = CopyEverythingToClipboard.Foreground,
+                FontFamily = CopyEverythingToClipboard.FontFamily,
             });
             Class.Children.Add(new TextBox()
             {
-                Background = ArgumentsPrototype.Background,
-                Foreground = ArgumentsPrototype.Foreground,
-                FontFamily = ArgumentsPrototype.FontFamily,
-                Width = ArgumentsPrototype.Width,
-                Margin = ArgumentsPrototype.Margin,
-                Height = ArgumentsPrototype.Height
+                Background = CopyEverythingToClipboard.Background,
+                Foreground = CopyEverythingToClipboard.Foreground,
+                FontFamily = CopyEverythingToClipboard.FontFamily,
             });
         }
         [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
@@ -164,13 +158,60 @@ namespace RuntimeTestDataCollector.Window
         {
             SaveReadonlyObjectArguments();
         }
+        [SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions", Justification = "Sample code")]
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1300:ElementMustBeginWithUpperCaseLetter", Justification = "Default event handler naming pattern")]
+        private void LoadArgumentsFromDll_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+
+            openFileDialog1.Filter = "Dll files (*.dll)|*.dll";
+            openFileDialog1.FilterIndex = 0;
+            openFileDialog1.RestoreDirectory = true;
+
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var selectedFileName = openFileDialog1.FileName;
+                var assembly = Assembly.LoadFrom(selectedFileName);
+                Type[] types;
+                try
+                {
+                    types = assembly.GetTypes();
+                }
+                catch (ReflectionTypeLoadException ex)
+                {
+                    types = ex.Types.Where(t => t != null).ToArray();
+                }
+
+                var arguments = types.Select(x => new ReadOnlyObjectDescription
+                {
+                    ClassName = x.Name,
+                    Arguments = string.Join(",", _constructorsManager.GetMostDescriptiveConstructor(x))
+                })
+                .Where(x => !string.IsNullOrEmpty(x.Arguments) && !string.IsNullOrEmpty(x.ClassName))
+                .ToList();
+
+                GenerateArguments(arguments);
+            }
+        }
 
         private void GenerateArguments()
         {
-            for (int i = 0; i < ReadOnlyObjectArgumentsOptions.Instance?.ObjectDescription?.Count; i++)
+            var objectDescriptions = ReadOnlyObjectArgumentsOptions.Instance?.ObjectDescription;
+            GenerateArguments(objectDescriptions);
+        }
+
+        private void GenerateArguments(List<ReadOnlyObjectDescription> objectDescriptions)
+        {
+            var currentClasses = new HashSet<string>(Arguments.Children.Cast< TextBox>().Select(x => x.Text));
+            for (int i = 0; i < objectDescriptions?.Count; i++)
             {
-                var objectDescription = ReadOnlyObjectArgumentsOptions.Instance.ObjectDescription[i];
+                var objectDescription = objectDescriptions[i];
                 if (string.IsNullOrWhiteSpace(objectDescription.ClassName) || string.IsNullOrWhiteSpace(objectDescription.Arguments))
+                {
+                    continue;
+                }
+
+                if (currentClasses.Contains(objectDescription.ClassName))
                 {
                     continue;
                 }
@@ -192,20 +233,16 @@ namespace RuntimeTestDataCollector.Window
 
                 Arguments.Children.Add(new TextBox()
                 {
-                    Background = ClassPrototype.Background,
-                    Foreground = ClassPrototype.Foreground,
-                    FontFamily = ClassPrototype.FontFamily,
-                    Width = ClassPrototype.Width,
-                    Margin = ClassPrototype.Margin,
+                    Background = CopyEverythingToClipboard.Background,
+                    Foreground = CopyEverythingToClipboard.Foreground,
+                    FontFamily = CopyEverythingToClipboard.FontFamily,
                     Text = objectDescription.ClassName
                 });
                 Class.Children.Add(new TextBox()
                 {
-                    Background = ArgumentsPrototype.Background,
-                    Foreground = ArgumentsPrototype.Foreground,
-                    FontFamily = ArgumentsPrototype.FontFamily,
-                    Width = ArgumentsPrototype.Width,
-                    Margin = ArgumentsPrototype.Margin,
+                    Background = CopyEverythingToClipboard.Background,
+                    Foreground = CopyEverythingToClipboard.Foreground,
+                    FontFamily = CopyEverythingToClipboard.FontFamily,
                     Text = objectDescription.Arguments
                 });
 

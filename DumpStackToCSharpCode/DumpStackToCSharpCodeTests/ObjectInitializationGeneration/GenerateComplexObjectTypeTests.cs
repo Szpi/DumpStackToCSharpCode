@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory;
 
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
@@ -15,7 +15,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         public void Setup()
         {
             var _ = typeof(Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions);
-            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(null);
+            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(null, false);
         }
 
         [Test]

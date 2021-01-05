@@ -1,14 +1,14 @@
 ﻿using DumpStackToCSharpCode.Resources;
 using EnvDTE;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
-using RuntimeTestDataCollector.Window;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.Window;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace RuntimeTestDataCollector.StackFrameAnalyzer
+namespace DumpStackToCSharpCode.StackFrameAnalyzer
 {
     public class DebuggerStackToDumpedObject
     {
@@ -18,7 +18,8 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                                                                                           bool generateTypeWithNamespace,
                                                                                           int maxObjectsToAnalyze,
                                                                                           TimeSpan maxGenerationTime,
-                                                                                          Dictionary<string, IReadOnlyList<string>> readonlyObjects)
+                                                                                          Dictionary<string, IReadOnlyList<string>> readonlyObjects,
+                                                                                          bool useConcreteType)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -36,7 +37,7 @@ namespace RuntimeTestDataCollector.StackFrameAnalyzer
                 return (new List<DumpedObjectToCsharpCode>(), objectsOnStack?.FirstOrDefault()?.ErrorMessage ?? ErrorMessages.EmptyObjectOnStack);
             }
 
-            var codeGeneratorManager = CodeGeneratorManagerFactory.Create(readonlyObjects);
+            var codeGeneratorManager = CodeGeneratorManagerFactory.Create(readonlyObjects, useConcreteType);
 
             var generationTime = Stopwatch.StartNew();
             var dumpedObjectsToCsharpCode = new List<DumpedObjectToCsharpCode>();

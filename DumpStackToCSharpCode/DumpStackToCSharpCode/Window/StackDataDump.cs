@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace RuntimeTestDataCollector.Window
+namespace DumpStackToCSharpCode.Window
 {
     using System;
     using System.Runtime.InteropServices;

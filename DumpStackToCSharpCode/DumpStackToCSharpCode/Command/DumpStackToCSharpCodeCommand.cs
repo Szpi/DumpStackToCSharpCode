@@ -2,22 +2,22 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using RuntimeTestDataCollector.StackFrameAnalyzer;
-using RuntimeTestDataCollector.Window;
+using DumpStackToCSharpCode.StackFrameAnalyzer;
+using DumpStackToCSharpCode.Window;
 using System;
 using System.ComponentModel.Design;
-using RuntimeTestDataCollector.Options;
+using DumpStackToCSharpCode.Options;
 using Task = System.Threading.Tasks.Task;
 using DumpStackToCSharpCode.CurrentStack;
 using System.Collections.Generic;
 using System.Linq;
 using DumpStackToCSharpCode.Window;
 using System.Windows.Controls;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
-using static RuntimeTestDataCollector.Options.DialogPageProvider;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
+using static DumpStackToCSharpCode.Options.DialogPageProvider;
 using DumpStackToCSharpCode.Command.Util;
 
-namespace RuntimeTestDataCollector.Command
+namespace DumpStackToCSharpCode.Command
 {
     /// <summary>
     /// Command handler
@@ -230,7 +230,8 @@ namespace RuntimeTestDataCollector.Command
                                                                                           GeneralOptions.Instance.GenerateTypeWithNamespace,
                                                                                           GeneralOptions.Instance.MaxObjectsToAnalyze,
                                                                                           GeneralOptions.Instance.MaxGenerationTime,
-                                                                                          readonlyObjects);
+                                                                                          readonlyObjects,
+                                                                                          GeneralOptions.Instance.GenerateConcreteType);
 
             _stackDataDumpControl.CreateStackDumpControls(dumpedObjectsToCsharpCode.dumpedObjectToCsharpCode, dumpedObjectsToCsharpCode.errorMessage);
         }

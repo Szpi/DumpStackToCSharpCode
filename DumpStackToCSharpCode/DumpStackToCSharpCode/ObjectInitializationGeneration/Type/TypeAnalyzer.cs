@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Type
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Type
 {
     public class TypeAnalyzer
     {

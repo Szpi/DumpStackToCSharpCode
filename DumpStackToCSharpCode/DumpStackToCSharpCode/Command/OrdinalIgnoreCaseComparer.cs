@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor
 {
     public class OrdinalIgnoreCaseComparer : IEqualityComparer<string>
     {

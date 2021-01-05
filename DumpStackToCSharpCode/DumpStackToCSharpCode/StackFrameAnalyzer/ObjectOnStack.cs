@@ -1,4 +1,4 @@
-﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+﻿using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
 
 namespace DumpStackToCSharpCode.StackFrameAnalyzer
 {

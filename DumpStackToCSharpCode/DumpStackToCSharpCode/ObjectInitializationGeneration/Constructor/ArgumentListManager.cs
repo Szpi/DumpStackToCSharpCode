@@ -1,24 +1,27 @@
-﻿using DumpStackToCSharpCode.Command.Util;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+﻿using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor
 {
     public class ArgumentListManager
     {
         private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
         private readonly Dictionary<string, IReadOnlyList<string>> _typeToArgumentNames;
-        
-        public ArgumentListManager(Dictionary<string, IReadOnlyList<string>> typeToArgumentNames, ConcreteTypeAnalyzer concreteTypeAnalyzer)
+        private readonly ConstructorsManager _constructorsManager;
+        public ArgumentListManager(
+            Dictionary<string, IReadOnlyList<string>> typeToArgumentNames, 
+            ConcreteTypeAnalyzer concreteTypeAnalyzer,
+            ConstructorsManager constructorsManager)
         {
             _typeToArgumentNames = typeToArgumentNames;
             _concreteTypeAnalyzer = concreteTypeAnalyzer;
-
+            _constructorsManager = constructorsManager;
             var builtInTypes = new Dictionary<string, IReadOnlyList<string>>
             {
                 [nameof(Uri)] = new List<string> { nameof(Uri.AbsoluteUri) },
@@ -59,17 +62,14 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
                 return true;
             }
 
-            var constructors = type.GetConstructors();
+            var mostDescriptiveConstructor = _constructorsManager.GetMostDescriptiveConstructor(type);
 
-            if (!constructors.Any())
+            if (mostDescriptiveConstructor.Count == 0)
             {
-                return true;
+                return false;
             }
 
-            Array.Sort(constructors,
-                       (info, constructorInfo) => info.GetParameters().Length - constructorInfo.GetParameters().Length);
-
-            _typeToArgumentNames[expressionData.Type] = constructors.Last().GetParameters().Select(x => x.Name).ToList();
+            _typeToArgumentNames[expressionData.Type] = mostDescriptiveConstructor;
             return false;
         }
 

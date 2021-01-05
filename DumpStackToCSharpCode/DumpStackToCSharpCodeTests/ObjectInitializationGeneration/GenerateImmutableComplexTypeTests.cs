@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory;
 using System.Collections.Generic;
 
 namespace DumpStackToCSharpCodeTests
@@ -18,7 +18,7 @@ namespace DumpStackToCSharpCodeTests
             _codeGeneratorManager = CodeGeneratorManagerFactory.Create(new Dictionary<string, IReadOnlyList<string>>
             {
                 ["ReadOnlyClass"] = new List<string>() { "testString", "dateTime", "timeSpan", "dateTimeOffset", "testInt", "testNullableInt", "testDecimal", "intList", "intStringList" }
-            });
+            }, false);
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace DumpStackToCSharpCodeTests
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var readonlyClass = new ReadOnlyClass(\"testStringad691a26-4398-4ca6-be89-a84ff8f1d90b\", new Nullable<DateTime>(new DateTime(2021, 11, 7, 3, 9, 45, 771, DateTimeKind.Unspecified)), new Nullable<TimeSpan>(new TimeSpan(0, 0, 0, 0, 0)), new Nullable<DateTimeOffset>(new DateTimeOffset(2018, 9, 2, 14, 5, 36, 423, new TimeSpan(0, 2, 0, 0, 0))), 84, new Nullable<int>(153), new Nullable<decimal>(144M), new List<int>()\n{\r\n    66,\r\n    232,\r\n    161\r\n}, new List<string>()\n{\r\n    \"5fe2da12-02a4-43aa-b35b-05915a60dad4\",\r\n    \"979d153d-cf1b-4ac7-b486-ca1f64977a2b\",\r\n    \"252ae04a-db0a-406a-bd86-b98fb6d22537\"\r\n});\n");
+            generated.Should().Be("var readonlyClass = new ReadOnlyClass(\"testStringad691a26-4398-4ca6-be89-a84ff8f1d90b\",\nnew Nullable<DateTime>(new DateTime(2021, 11, 7, 3, 9, 45, 771, DateTimeKind.Unspecified)),\nnew Nullable<TimeSpan>(new TimeSpan(0, 0, 0, 0, 0)),\nnew Nullable<DateTimeOffset>(new DateTimeOffset(2018, 9, 2, 14, 5, 36, 423, new TimeSpan(0, 2, 0, 0, 0))),\n84,\nnew Nullable<int>(153),\nnew Nullable<decimal>(144M),\nnew List<int>()\n{\r\n    66,\r\n    232,\r\n    161\r\n},\nnew List<string>()\n{\r\n    \"5fe2da12-02a4-43aa-b35b-05915a60dad4\",\r\n    \"979d153d-cf1b-4ac7-b486-ca1f64977a2b\",\r\n    \"252ae04a-db0a-406a-bd86-b98fb6d22537\"\r\n});\n");
         }
 
         private ExpressionData GetImmutableComplexType()

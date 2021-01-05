@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.Shell.Settings;
 using Microsoft.VisualStudio.Threading;
 using Task = System.Threading.Tasks.Task;
 
-namespace RuntimeTestDataCollector.Options
+namespace DumpStackToCSharpCode.Options
 {
     /// <summary>
     /// A base class for specifying options

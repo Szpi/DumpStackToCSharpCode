@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using TypeCode = RuntimeTestDataCollector.ObjectInitializationGeneration.Type.TypeCode;
+using TypeCode = DumpStackToCSharpCode.ObjectInitializationGeneration.Type.TypeCode;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Expression
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Expression
 {
     public class PrimitiveExpressionGenerator
     {

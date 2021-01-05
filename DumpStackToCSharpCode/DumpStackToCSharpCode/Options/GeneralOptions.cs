@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace RuntimeTestDataCollector.Options
+namespace DumpStackToCSharpCode.Options
 {
     internal class GeneralOptions : BaseOptionModel<GeneralOptions>
     {
@@ -58,5 +58,11 @@ namespace RuntimeTestDataCollector.Options
         [Description("Automatically save readonly class arguments whenever you add it in arguments tab")]
         [DefaultValue(true)]
         public bool AutomaticallySaveConsturctorParameters{ get; set; } = true;
+
+        [Category("General")]
+        [DisplayName("Generate concrete type")]
+        [Description("When generating variable use concrete type instead of var keyword")]
+        [DefaultValue(false)]
+        public bool GenerateConcreteType { get; set; } = false;
     }
 }

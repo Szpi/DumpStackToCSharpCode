@@ -1,19 +1,19 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using RuntimeTestDataCollector.Window;
+using DumpStackToCSharpCode.Window;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory;
-using RuntimeTestDataCollector.Options;
-using RuntimeTestDataCollector.StackFrameAnalyzer;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory;
+using DumpStackToCSharpCode.Options;
+using DumpStackToCSharpCode.StackFrameAnalyzer;
 using Task = System.Threading.Tasks.Task;
 using DumpStackToCSharpCode.Command;
 using DumpStackToCSharpCode.Options;
 
-namespace RuntimeTestDataCollector.Command
+namespace DumpStackToCSharpCode.Command
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.

@@ -1,19 +1,20 @@
 ﻿using DumpStackToCSharpCode.Command.Util;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.AssignmentExpression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.AssignmentExpression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Generators;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Factory
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory
 {
     public class CodeGeneratorManagerFactory
     {
-        public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects)
+        public static CodeGeneratorManager Create(Dictionary<string, IReadOnlyList<string>> readonlyObjects, bool useConcreteType)
         {
-            var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer());
+            var argumentListManager = new ArgumentListManager(readonlyObjects, new ConcreteTypeAnalyzer(), new DumpStackToCSharpCode.ObjectInitializationGeneration.Constructor.ConstructorsManager());
 
             var initializationManager = new InitializationManager(new TypeAnalyzer(),
                                                                   new PrimitiveExpressionGenerator(),
@@ -29,7 +30,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization.RegexInitializationManager(new ComplexTypeInitializationGenerator(new TypeAnalyzer()), new PrimitiveExpressionGenerator()),
                                                                   new DumpStackToCSharpCode.ObjectInitializationGeneration.Expression.PrimitiveNullableExpressionGenerator(new DumpStackToCSharpCode.ObjectInitializationGeneration.Expression.ObjectInicializationExpressionGenerator(new TypeAnalyzer())));
             
-            return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator());
+            return new CodeGeneratorManager(new TypeAnalyzer(), initializationManager, new ArrayCodeGenerator(new VariableDeclarationManager(useConcreteType)), new VariableDeclarationManager(useConcreteType));
         }
     }
 }

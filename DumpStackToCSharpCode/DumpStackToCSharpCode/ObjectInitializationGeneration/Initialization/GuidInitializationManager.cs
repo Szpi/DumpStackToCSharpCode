@@ -1,9 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Expression;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Initialization;
-using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Expression;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization;
+using DumpStackToCSharpCode.ObjectInitializationGeneration.Type;
 using System.Collections.Generic;
 
 namespace DumpStackToCSharpCode.ObjectInitializationGeneration.Initialization

@@ -2,12 +2,16 @@
 using NUnit.Framework;
 using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration;
 using DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Factory;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 {
     [TestFixture]
-    public class GenerateGenericListTests
+    class GenerateConcreteTypeTests
     {
         private CodeGeneratorManager _codeGeneratorManager;
 
@@ -15,7 +19,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
         public void Setup()
         {
             var _ = typeof(Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions);
-            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(new Dictionary<string, IReadOnlyList<string>>(), false);
+            _codeGeneratorManager = CodeGeneratorManagerFactory.Create(new Dictionary<string, IReadOnlyList<string>>(), true);
         }
 
         [Test]
@@ -25,7 +29,7 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
 
             var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
 
-            generated.Should().Be("var test123 = new ConcurrentBag<DateTime>()\n{\r\n    new DateTime(2018, 4, 9, 0, 9, 25, 874, DateTimeKind.Unspecified),\r\n    new DateTime(2021, 6, 10, 15, 50, 2, 609, DateTimeKind.Unspecified),\r\n    new DateTime(2019, 1, 21, 15, 6, 53, 551, DateTimeKind.Unspecified)\r\n};\n");
+            generated.Should().Be("ConcurrentBag<DateTime> test123 = new ConcurrentBag<DateTime>()\n{\r\n    new DateTime(2018, 4, 9, 0, 9, 25, 874, DateTimeKind.Unspecified),\r\n    new DateTime(2021, 6, 10, 15, 50, 2, 609, DateTimeKind.Unspecified),\r\n    new DateTime(2019, 1, 21, 15, 6, 53, 551, DateTimeKind.Unspecified)\r\n};\n");
         }
 
         private static ExpressionData GetConcurrentBagOfThreeDateTimeDefinition()
@@ -168,42 +172,6 @@ namespace DumpStackToCSharpCodeTests.ObjectInitializationGeneration
                     }, "ulong")
                 }, "System.DateTime")
             }, "System.Collections.Concurrent.ConcurrentBag<System.DateTime>");
-        }
-
-        [Test]
-        public void ShouldGenerate_ListOfComplexType()
-        {
-            var stackObject = new ExpressionData("Test", "{ConsoleApp1.Program.Test}", "test123", new List<ExpressionData>()
-            {
-                new ExpressionData("List<int>", "Count = 3", "IntList", new List<ExpressionData>()
-                {
-                    new ExpressionData("int", "221", "[0]", new List<ExpressionData>()
-                    {
-                    }, "int"),
-                    new ExpressionData("int", "195", "[1]", new List<ExpressionData>()
-                    {
-                    }, "int"),
-                    new ExpressionData("int", "10", "[2]", new List<ExpressionData>()
-                    {
-                    }, "int")
-                }, "System.Collections.Generic.List<int>"),
-                new ExpressionData("List<string>", "Count = 3", "IntString", new List<ExpressionData>()
-                {
-                    new ExpressionData("string", "ef311e42-8e09-4f69-8332-880e87b02add", "[0]", new List<ExpressionData>()
-                    {
-                    }, "string"),
-                    new ExpressionData("string", "3d5f03ec-556e-4ca5-9bf5-2162a392b2be", "[1]", new List<ExpressionData>()
-                    {
-                    }, "string"),
-                    new ExpressionData("string", "4df373a1-5785-4787-94cb-0b5bddadac0b", "[2]", new List<ExpressionData>()
-                    {
-                    }, "string")
-                }, "System.Collections.Generic.List<string>")
-            }, "ConsoleApp1.Program.Test");
-
-            var generated = _codeGeneratorManager.GenerateStackDump(stackObject);
-            
-            generated.Should().Be("var test123 = new Test()\n{\r\n    IntList = new List<int>() { 221, 195, 10 },\r\n    IntString = new List<string>() { \"ef311e42-8e09-4f69-8332-880e87b02add\", \"3d5f03ec-556e-4ca5-9bf5-2162a392b2be\", \"4df373a1-5785-4787-94cb-0b5bddadac0b\" }\r\n};\n");
         }
     }
 }

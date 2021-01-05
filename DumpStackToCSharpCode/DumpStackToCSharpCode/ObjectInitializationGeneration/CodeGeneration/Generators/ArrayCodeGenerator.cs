@@ -1,17 +1,25 @@
 ﻿using System.Collections.Generic;
+using DumpStackToCSharpCode.ObjectInitializationGeneration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration.Generators
+namespace DumpStackToCSharpCode.ObjectInitializationGeneration.CodeGeneration.Generators
 {
     public class ArrayCodeGenerator
     {
-        public MemberDeclarationSyntax Generate(string name, ExpressionSyntax expressionSyntax)
+        private readonly VariableDeclarationManager _variableDeclarationManager;
+
+        public ArrayCodeGenerator(VariableDeclarationManager variableDeclarationManager)
+        {
+            _variableDeclarationManager = variableDeclarationManager;
+        }
+
+        public MemberDeclarationSyntax Generate(string name, string type, ExpressionSyntax expressionSyntax)
         {
             return SyntaxFactory.FieldDeclaration(
                                     SyntaxFactory.VariableDeclaration(
-                                                     SyntaxFactory.IdentifierName("var"))
+                                                     SyntaxFactory.IdentifierName(_variableDeclarationManager.GetDeclarationType(type)))
                                                  .WithVariables(
                                                      SyntaxFactory.SingletonSeparatedList<
                                                          VariableDeclaratorSyntax>(

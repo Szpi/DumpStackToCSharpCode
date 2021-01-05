@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="RuntimeTestDataCollector.Window.StackDataDumpControl"
+﻿<UserControl x:Class="DumpStackToCSharpCode.Window.StackDataDumpControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -63,7 +63,7 @@
                         <ColumnDefinition Width="1*"></ColumnDefinition>
                         <ColumnDefinition Width="2*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    
+
                     <Grid.RowDefinitions >
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
@@ -78,7 +78,7 @@
 
                         <TextBlock Text="Generate" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
-                    
+
                     <Button Grid.Column="0" Grid.Row="1" Click="CopyEverythingToClipBoard_Click" Width="75" Height="60" Name="CopyEverythingToClipboard" 
                             Margin="0,5"
                         HorizontalAlignment="Center"
@@ -98,7 +98,7 @@
                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" >Refresh automatically</CheckBox>
                     </Grid>
-                    
+
                     <Grid Grid.Column="1" Grid.Row="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"></ColumnDefinition>
@@ -119,7 +119,7 @@
                                         Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                                         MaxLength="2"/>
 
-                        
+
                     </Grid>
                 </Grid>
                 <Grid Grid.Row="2" Name="ErrorMessageGrid" Margin="0,5,0,0">
@@ -215,32 +215,44 @@
                  Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                  Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
-            <Grid >
+            <Grid>
                 <Grid.RowDefinitions >
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"></ColumnDefinition>
                     <ColumnDefinition Width="3*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-
-                <Label Grid.Row="0" Grid.Column="0" Content="Class name" 
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-
-                <Label Grid.Row="0" Grid.Column="1" Content="Arguments" 
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
-                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 
-                <Button Grid.Column="1" Click="SaveArguments_Click" Width="60" Height="30" HorizontalAlignment="Right"
+                <Button Grid.Row="0" Grid.ColumnSpan="2" Click="LoadArgumentsFromDll_Click" Width="200" Height="30" HorizontalAlignment="Center"
+                        Margin="0,0,5,5"
+                        VerticalAlignment="top" 
+                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+
+                    <TextBlock Text="Load Argumens from DLL" TextWrapping="Wrap" TextAlignment="Center"/>
+                </Button>
+                <Label Grid.Row="1" Grid.Column="0" Content="Class name" 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                <Label Grid.Row="1" Grid.Column="1" Content="Arguments" 
+                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
+                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+
+                <Button Grid.Row="1" Grid.Column="1" Click="SaveArguments_Click" Width="70" Height="30" HorizontalAlignment="Right"
                         Margin="5,0,5,0"
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
@@ -250,62 +262,34 @@
 
                     <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center"/>
                 </Button>
-                <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Name="Class" Margin="5,5,5,5">
-                        <TextBox  Name="ClassPrototype" Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                    </StackPanel>
-                </ScrollViewer>
-                <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel Name="Arguments" Margin="5,5,5,5">
-                        <TextBox Name="ArgumentsPrototype" Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                        <TextBox Height="20"
-                           Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
-                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
-                    </StackPanel>
-                </ScrollViewer>
-                <Button Grid.Column="1" Grid.Row="2" Click="AddRow_Click" Width="60" Height="30" 
+
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Grid.ColumnSpan="2">
+                    <Grid >
+                        <Grid.RowDefinitions >
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Name="Class" Grid.Row="0" Grid.Column="0">
+                        </StackPanel>
+                        <StackPanel  Name="Arguments" Grid.Row="0" Grid.Column="1">
+                        </StackPanel>
+                        
+                        <Button Grid.Row="1" Click="AddRow_Click" Width="60" Height="30" Grid.ColumnSpan="2"
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
                         Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
-                    <TextBlock Text="Add row" TextWrapping="Wrap" TextAlignment="Center"/>
-                </Button>
+                            <TextBlock Text="Add row" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </Button>
+                        
+                    </Grid>
+                </ScrollViewer>
+                
             </Grid>
         </TabItem>
     </TabControl>
