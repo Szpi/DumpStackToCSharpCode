@@ -1,4 +1,5 @@
-﻿using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
+﻿using DumpStackToCSharpCode.Command.Util;
+using RuntimeTestDataCollector.ObjectInitializationGeneration.CodeGeneration;
 using RuntimeTestDataCollector.ObjectInitializationGeneration.Type;
 using System;
 using System.Collections;
@@ -12,6 +13,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
     {
         private readonly ConcreteTypeAnalyzer _concreteTypeAnalyzer;
         private readonly Dictionary<string, IReadOnlyList<string>> _typeToArgumentNames;
+        
         public ArgumentListManager(Dictionary<string, IReadOnlyList<string>> typeToArgumentNames, ConcreteTypeAnalyzer concreteTypeAnalyzer)
         {
             _typeToArgumentNames = typeToArgumentNames;
@@ -79,7 +81,7 @@ namespace RuntimeTestDataCollector.ObjectInitializationGeneration.Constructor
                 return false;
             }
 
-            if (_typeToArgumentNames.TryGetValue(expressionData.Type, out argumentNames))
+            if (_typeToArgumentNames.TryGetValue(expressionData.Type.TrimEnd('?'), out argumentNames))
             {
                 return true;
             }

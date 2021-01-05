@@ -158,6 +158,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\Util\ArgumentsListPurifierTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateImmutableComplexTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateArrayTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateCharacterTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateComplexObjectTypeTests.cs" />
@@ -168,6 +170,8 @@
     <Compile Include="ObjectInitializationGeneration\GenerateGenericListTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateGuidTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateImmutableTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GenerateNullableTimeSpanTypeTests.cs" />
+    <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveNullabeTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GeneratePrimitiveTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateReadonlyTypeTests.cs" />
     <Compile Include="ObjectInitializationGeneration\GenerateRegexTypeTests.cs" />
@@ -179,6 +183,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="Monikers.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

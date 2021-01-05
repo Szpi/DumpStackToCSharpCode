@@ -45,7 +45,7 @@
 
         <TabItem Header="General" 
                  Name="General"
-                 Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                 Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                  Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
             <Grid Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
@@ -74,7 +74,7 @@
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}">
 
                         <TextBlock Text="Generate" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
@@ -84,7 +84,7 @@
                         HorizontalAlignment="Center"
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}">
 
                         <TextBlock Text="Copy everything to clipboard" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
@@ -96,7 +96,7 @@
                                     Unchecked="AutomaticallyRefresh_Unchecked"
                                     Checked="AutomaticallyRefresh_Checked"
                           FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                          Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" >Refresh automatically</CheckBox>
+                          Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" >Refresh automatically</CheckBox>
                     </Grid>
                     
                     <Grid Grid.Column="1" Grid.Row="1">
@@ -108,7 +108,7 @@
                         <Label Grid.Row="1" Grid.Column="0" Content="Max Object Depth:" 
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
@@ -116,7 +116,7 @@
                                         HorizontalAlignment="Left"
                                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                                         MaxLength="2"/>
 
                         
@@ -138,7 +138,7 @@
                            Name="ErrorMessage"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
                            VerticalAlignment="Center" HorizontalAlignment="Left"                           
                            Margin="5,3,5,3"                          
                            TextWrapping="WrapWithOverflow"/>
@@ -153,7 +153,7 @@
                     <Label Grid.Row="1" Grid.Column="0" Content="Busy ..." Name="BusyLabel" Visibility="Hidden"
                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                       Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                       Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
                        VerticalAlignment="Center" HorizontalAlignment="Center"
                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 </Grid>
@@ -174,7 +174,7 @@
 
         <TabItem Header="Locals"                  
                  Name="LocalsTab" 
-                 Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                 Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                  Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
             <Grid >
@@ -188,7 +188,7 @@
                     <Label Grid.Row="1" Grid.Column="0" Content="Pick locals to generate" Name="LocalsToGenerateLabel" Visibility="Visible"                           
                        Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                        FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                       Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                       Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
                        VerticalAlignment="Top" HorizontalAlignment="Center"
                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 </Grid>
@@ -197,7 +197,7 @@
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}">
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}">
 
                         <TextBlock Text="Generate" TextWrapping="Wrap" TextAlignment="Center"/>
                     </Button>
@@ -212,7 +212,7 @@
         </TabItem>
         <TabItem Header="Arguments"                  
                  Name="ReadOnlyArguments" 
-                 Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                 Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                  Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}">
 
             <Grid >
@@ -229,14 +229,14 @@
                 <Label Grid.Row="0" Grid.Column="0" Content="Class name" 
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 
                 <Label Grid.Row="0" Grid.Column="1" Content="Arguments" 
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" 
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" 
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 
@@ -245,7 +245,7 @@
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"
                         BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
                     <TextBlock Text="Save" TextWrapping="Wrap" TextAlignment="Center"/>
@@ -255,23 +255,23 @@
                         <TextBox  Name="ClassPrototype" Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                     </StackPanel>
                 </ScrollViewer>
                 <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
@@ -279,30 +279,30 @@
                         <TextBox Name="ArgumentsPrototype" Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                         <TextBox Height="20"
                            Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                            FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                           Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                           Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" />
                     </StackPanel>
                 </ScrollViewer>
                 <Button Grid.Column="1" Grid.Row="2" Click="AddRow_Click" Width="60" Height="30" 
                         VerticalAlignment="top" 
                         Background="{DynamicResource VsBrush.EnvironmentBackgroundGradient}"
                         FontFamily="{DynamicResource VsBrush.EnvironmentFontFamily}"
-                        Foreground="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                        Foreground="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
 
                     <TextBlock Text="Add row" TextWrapping="Wrap" TextAlignment="Center"/>
                 </Button>
