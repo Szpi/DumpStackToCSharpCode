@@ -174,7 +174,7 @@ namespace DumpStackToCSharpCode.Window
                 var assembly = Assembly.LoadFrom(selectedFileName);
                 Type[] types;
                 try
-                {
+                {                    
                     types = assembly.GetTypes();
                 }
                 catch (ReflectionTypeLoadException ex)
@@ -231,14 +231,14 @@ namespace DumpStackToCSharpCode.Window
                     continue;
                 }
 
-                Arguments.Children.Add(new TextBox()
+                Class.Children.Add(new TextBox()
                 {
                     Background = CopyEverythingToClipboard.Background,
                     Foreground = CopyEverythingToClipboard.Foreground,
                     FontFamily = CopyEverythingToClipboard.FontFamily,
                     Text = objectDescription.ClassName
                 });
-                Class.Children.Add(new TextBox()
+                Arguments.Children.Add(new TextBox()
                 {
                     Background = CopyEverythingToClipboard.Background,
                     Foreground = CopyEverythingToClipboard.Foreground,
